@@ -13,6 +13,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 15:10 UTC
+**Author:** Codex
+**Entry:** Merged `parallel-agent-unifier-20260326` into `implement-core-runtime-17609737249557533045` to resolve integration conflicts before further branch review cleanup. Reconciled overlapping updates in `BITACORA.md`, `PLAN.md`, `STATUS.md`, and the runtime scripts while preserving the validated bootstrap, backend run, and test execution paths.
+
+---
+**Timestamp:** 2026-03-26 12:46 UTC
+**Author:** Codex
+**Entry:** Brought the `implement-core-runtime-17609737249557533045` branch up to the actual prompt scope expectation. Added branch-specific review and plan documents under `branches/implement-core-runtime-17609737249557533045/`, repaired the bootstrap/runtime/test scripts so they work from a clean checkout path, and added a release metadata workflow using the canonical timestamp stamp.
+
+---
 **Timestamp:** 2026-03-26 12:18 UTC
 **Author:** Codex
 **Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.

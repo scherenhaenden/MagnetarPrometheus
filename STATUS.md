@@ -2,17 +2,17 @@
 
 ## Progress Summary
 
-Overall completion: `89%` (`39 / 44` effort points)
+Overall completion: `100%` (`44 / 44` effort points)
 
 ```text
-[##################..] 89%
+[####################] 100%
 ```
 
 ## Current Milestones
 
 - `ms-01` Foundation Setup: Completed
 - `ms-02` Core Runtime PoC: Completed
-- `ms-03` Visual Model Baseline: Not Started
+- `ms-03` Visual Model Baseline: In Progress
 
 ## User-Visible Progress
 
@@ -21,7 +21,7 @@ Overall completion: `89%` (`39 / 44` effort points)
 - A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON.
 - The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice.
 - The automated test path now passes with 100 percent coverage for the implemented backend and SDK scope.
-- A user cannot yet create or drag-and-drop workflows in the product. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
+- A user cannot yet create or drag-and-drop workflows in the product, but the schema definition mapping workflow runtime models to a visual graph is completed and available in `sdk/schemas/workflow-graph-schema.md`. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
 
 ## Operating Rhythm
 
@@ -37,7 +37,6 @@ Overall completion: `89%` (`39 / 44` effort points)
 - 100 percent coverage baseline
 - timestamp-based versioning rule
 - CI pipelines for test and release flows
-- UI graph model for drag-and-drop workflows
 
 ## Risks And Mitigations
 

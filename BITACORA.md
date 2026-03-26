@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 13:48 UTC
+**Author:** AI
+**Entry:** Created the UI Graph Model Schema in `sdk/schemas/workflow-graph-schema.md`. This model defines the mapping between visual nodes/edges and the underlying backend runtime execution concepts, fulfilling the first phase of the visual model milestone (`ms-03`). Marked `task-105` as done.
+
+---
 **Timestamp:** 2026-03-26 12:18 UTC
 **Author:** Codex
 **Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.

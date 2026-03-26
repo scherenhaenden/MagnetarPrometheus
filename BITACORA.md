@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 17:35 UTC
+**Author:** Codex
+**Entry:** Governance correction recorded after issue-tracking review feedback. Review-derived GitHub issues must preserve full review evidence, including code examples, proposed diffs, source PR linkage, and file-specific remediation guidance. Compressed summaries without the original implementation context are no longer acceptable.
+
+---
 **Timestamp:** 2026-03-26 15:10 UTC
 **Author:** Codex
 **Entry:** Merged `parallel-agent-unifier-20260326` into `implement-core-runtime-17609737249557533045` to resolve integration conflicts before further branch review cleanup. Reconciled overlapping updates in `BITACORA.md`, `PLAN.md`, `STATUS.md`, and the runtime scripts while preserving the validated bootstrap, backend run, and test execution paths.

@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 13:41 UTC
+**Author:** Jules
+**Entry:** Refined the bootstrap logic in `backend/src/magnetar_prometheus/bootstrap.py` to use a structured `BootstrapPolicy` dataclass for `auto_install` configuration and a `BootstrapResult` dataclass to report dependency checks rather than relying purely on print statements. Expanded test coverage in `backend/tests/test_bootstrap.py` and `backend/tests/test_bootstrap2.py` to cover new paths and maintain 100% code coverage.
+
+---
 **Timestamp:** 2026-03-26 12:18 UTC
 **Author:** Codex
 **Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.

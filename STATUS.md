@@ -19,7 +19,7 @@ Overall completion: `89%` (`39 / 44` effort points)
 - The repository is now structured to support a backend runtime, shared schema/SDK layer, and a future visual workflow builder.
 - The project can now be managed with canonical governance documents instead of ad hoc notes.
 - A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON.
-- The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice.
+- The bootstrap flow can now prepare a virtual environment and use a structured `BootstrapPolicy` to determine whether to install Python dependencies, safely reporting back detailed statuses without just relying on raw logs.
 - The automated test path now passes with 100 percent coverage for the implemented backend and SDK scope.
 - A user cannot yet create or drag-and-drop workflows in the product. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
 

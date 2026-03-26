@@ -16,15 +16,15 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `task-101` | `ms-01` | Establish canonical governance documents | Edward + AI | 3 | 14 | `done` | Initial repository governance baseline created. |
 | `task-102` | `ms-01` | Create modular repository layout for backend, sdk, and ui | Edward + AI | 3 | 14 | `done` | Layout added for PyCharm-friendly project root. |
-| `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `ready` | Includes Python runtime models and shared schema boundary. |
+| `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `ready` | GitHub issue: #1. Includes Python runtime models and shared schema boundary. |
 | `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `planned` | Based on `PocPlan.md`. |
-| `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | Must stay aligned with canonical workflow schema. |
+| `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | GitHub issue: #7. Must stay aligned with canonical workflow schema. |
 | `task-106` | `ms-03` | Define user-visible progress reporting and agile issue/discussion flow | Edward + AI | 3 | 14 | `ready` | Add user-perspective status tracking and GitHub issue/discussion operating rules. |
-| `task-107` | `ms-02` | Add runnable scripts for backend, tests, and local bootstrap flows | Edward + AI | 3 | 14 | `ready` | The repo must expose simple scripts to run the product and validation flows. |
-| `task-108` | `ms-02` | Design Python runtime dependency detection and on-run installation flow | Edward | 5 | 24 | `ready` | The application must detect missing libraries and bootstrap them dynamically when possible. |
-| `task-109` | `ms-02` | Enforce 100 percent automated test coverage for core and shared contracts | Edward + AI | 5 | 24 | `ready` | Coverage target is strict and should be automated in the test run path. |
-| `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `ready` | Use `yyyy.MM.dd HH:mm:sss` as the canonical versioning and release stamp format. |
-| `task-111` | `ms-02` | Create CI pipelines for testing, validation, and release flows | Edward + AI | 5 | 24 | `ready` | The repository needs automated pipelines for test, quality, and release operations. |
+| `task-107` | `ms-02` | Add runnable scripts for backend, tests, and local bootstrap flows | Edward + AI | 3 | 14 | `ready` | GitHub issue: #6. The repo must expose simple scripts to run the product and validation flows. |
+| `task-108` | `ms-02` | Design Python runtime dependency detection and on-run installation flow | Edward | 5 | 24 | `ready` | GitHub issue: #5. The application must detect missing libraries and bootstrap them dynamically when possible. |
+| `task-109` | `ms-02` | Enforce 100 percent automated test coverage for core and shared contracts | Edward + AI | 5 | 24 | `ready` | GitHub issue: #4. Coverage target is strict and should be automated in the test run path. |
+| `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `ready` | GitHub issue: #3. Use `yyyy.MM.dd HH:mm:sss` as the canonical versioning and release stamp format. |
+| `task-111` | `ms-02` | Create CI pipelines for testing, validation, and release flows | Edward + AI | 5 | 24 | `ready` | GitHub issue: #2. The repository needs automated pipelines for test, quality, and release operations. |
 
 ## Effort Summary
 

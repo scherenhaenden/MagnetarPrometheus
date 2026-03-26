@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 13:45 UTC
+**Author:** AI
+**Entry:** Reorganized the example workflow into a structured module (`email_module`) under `backend/src/magnetar_prometheus/modules/`, introducing a proper `manifest.yaml` and moving `example_module.py` to `steps.py` and `example_workflow.yaml` to `email_triage.yaml`. Updated imports and scripts to keep the backend runnable and tests passing with 100% coverage, moving towards the target module structure outlined in `PocPlan.md`.
+
+---
 **Timestamp:** 2026-03-26 12:18 UTC
 **Author:** Codex
 **Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.

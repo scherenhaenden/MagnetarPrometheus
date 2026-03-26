@@ -21,11 +21,11 @@ from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.registry.step_registry import StepRegistry
 from magnetar_prometheus.executors.python_executor import PythonExecutor
-from magnetar_prometheus.example_module import register_example_steps
+from magnetar_prometheus.modules.email_module.steps import register_example_steps
 import json
 
 loader = WorkflowLoader()
-wf = loader.load_workflow('${ROOT_DIR}/backend/src/magnetar_prometheus/example_workflow.yaml')
+wf = loader.load_workflow('${ROOT_DIR}/backend/src/magnetar_prometheus/modules/email_module/email_triage.yaml')
 
 registry = StepRegistry()
 register_example_steps(registry)

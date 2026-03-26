@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 14:07 UTC
+**Author:** AI
+**Entry:** Extracted evaluation logic from `Engine._safe_evaluate` into `ConditionEvaluator` in `backend/src/magnetar_prometheus/core/evaluator.py`. Hardened engine next-step resolution logic to be more explicit, testable, and maintainable. Added edge-case tests to maintain 100% automated test coverage.
+
+---
 **Timestamp:** 2026-03-26 12:18 UTC
 **Author:** Codex
 **Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.

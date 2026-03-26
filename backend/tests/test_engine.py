@@ -140,16 +140,12 @@ def test_engine_next_step_from_result(engine):
     assert len(result["history"]) == 1
     assert result["history"][0]["step"] == "step1"
 
-def test_engine_conditional_branching_eval_error(engine):
-    # This test verifies that if safe_evaluate throws an exception, it is caught
-    class BuggyEngine(Engine):
-        def _safe_evaluate(self, expr, ctx):
-            raise Exception("Unexpected eval error")
+def test_engine_conditional_branching_eval_error(engine, monkeypatch):
+    # This test verifies that if evaluate throws an exception, it is caught
+    def mock_eval(*args, **kwargs):
+        raise Exception("Unexpected eval error")
 
-    router = ExecutorRouter()
-    router.register("python", MockExecutor())
-    cm = ContextManager()
-    buggy_eng = BuggyEngine(router, cm)
+    monkeypatch.setattr(engine.evaluator, 'evaluate', mock_eval)
 
     wf = Workflow(
         id="wf_8",
@@ -166,22 +162,57 @@ def test_engine_conditional_branching_eval_error(engine):
             "step2": StepDefinition(type="success_step", executor="python", next="end")
         }
     )
-    result = buggy_eng.run(wf)
+    result = engine.run(wf)
     assert result["run"]["status"] == "completed"
     assert len(result["history"]) == 1
     assert result["history"][0]["step"] == "step1"
 
-def test_engine_safe_evaluate_paths(engine):
-    ctx = {"ai": {"decision": "x", "other": "y"}}
+def test_engine_resolve_next_step_priority_1_next_step(engine):
+    step_def = StepDefinition(type="success_step", executor="python", next="step2")
+    context = {}
+    result = StepResult(success=True, next_step="step3")
 
-    assert engine._safe_evaluate('context["ai"]["decision"] == "x"', ctx) == True
-    assert engine._safe_evaluate("context['ai']['decision'] == 'x'", ctx) == True
-    assert engine._safe_evaluate('context["ai"].get("decision") == "x"', ctx) == True
-    assert engine._safe_evaluate("context['ai']['other'] == 'y'", ctx) == True
-    assert engine._safe_evaluate("context['ai']['other'] == 'z'", ctx) == False
+    assert engine._resolve_next_step(step_def, context, result) == "step3"
 
-    # unsupported evaluation pattern falls back safely to False
-    assert engine._safe_evaluate("foo == 'bar'", ctx) == False
-    assert engine._safe_evaluate("context['ai']['other'] == y", ctx) == False
-    assert engine._safe_evaluate("context['ai']['other'] == ", ctx) == False
-    assert engine._safe_evaluate("not an equal equal statement", ctx) == False
+def test_engine_resolve_next_step_priority_2_linear(engine):
+    step_def = StepDefinition(type="success_step", executor="python", next="step2")
+    context = {}
+    result = StepResult(success=True)
+
+    assert engine._resolve_next_step(step_def, context, result) == "step2"
+
+def test_engine_resolve_next_step_priority_3_conditional(engine):
+    step_def = StepDefinition(type="success_step", executor="python", next={
+        "mode": "conditional",
+        "conditions": [
+            {"when": "context['ai']['decision'] == 'x'", "go_to": "step2"}
+        ]
+    })
+    context = {"ai": {"decision": "x"}}
+    result = StepResult(success=True)
+
+    assert engine._resolve_next_step(step_def, context, result) == "step2"
+
+def test_engine_resolve_next_step_priority_4_fallback_end(engine):
+    step_def = StepDefinition(type="success_step", executor="python", next={
+        "mode": "conditional",
+        "conditions": [
+            {"when": "context['ai']['decision'] == 'y'", "go_to": "step2"}
+        ]
+    })
+    context = {"ai": {"decision": "x"}}
+    result = StepResult(success=True)
+
+    assert engine._resolve_next_step(step_def, context, result) == "end"
+
+def test_engine_resolve_next_step_fallback_invalid_mode(engine):
+    step_def = StepDefinition(type="success_step", executor="python", next={
+        "mode": "unknown",
+        "conditions": [
+            {"when": "context['ai']['decision'] == 'x'", "go_to": "step2"}
+        ]
+    })
+    context = {"ai": {"decision": "x"}}
+    result = StepResult(success=True)
+
+    assert engine._resolve_next_step(step_def, context, result) == "end"

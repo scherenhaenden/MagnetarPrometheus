@@ -1,0 +1,30 @@
+name: Release Metadata
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "release-*"
+
+jobs:
+  release-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate canonical version stamp
+        id: version
+        run: |
+          VERSION_STAMP="$(date -u '+%Y.%m.%d %H:%M:%S%3N')"
+          echo "version_stamp=${VERSION_STAMP}" >> "${GITHUB_OUTPUT}"
+          echo "${VERSION_STAMP}" > release-version.txt
+
+      - name: Upload release metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-metadata
+          path: release-version.txt
+
+      - name: Print release stamp
+        run: echo "Release stamp ${{ steps.version.outputs.version_stamp }}"

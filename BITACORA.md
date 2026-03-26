@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 13:53 UTC
+**Author:** AI
+**Entry:** Improved version handling to explicitly separate Python PEP-440 semantic versions from the `yyyy.MM.dd HH:mm:sss` canonical version stamp. Created `scripts/get_version_stamp.sh` to generate the stamp cleanly. Updated the release CI to use this script. Created `magnetar_prometheus.version.get_canonical_version_stamp()` helper for the backend to fetch the stamp dynamically at runtime or from a release metadata artifact. Updated `pyproject.toml` files with clarifying comments and appended the strategy to `ARCHITECTURE.md` and `sdk/schemas/README.md`.
+
+---
 **Timestamp:** 2026-03-26 12:18 UTC
 **Author:** Codex
 **Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.

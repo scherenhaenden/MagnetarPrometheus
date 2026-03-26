@@ -11,6 +11,9 @@
 - The system must expose a modular executor model so step execution can later move outside Python.
 - The system must provide a visual-model-compatible workflow representation that can power a future drag-and-drop editor.
 - The system must allow a UI to create, edit, validate, and serialize complete workflows.
+- The repository must provide runnable scripts for startup, bootstrap, and test execution flows.
+- The Python runtime must detect missing required libraries during startup.
+- The Python runtime must install missing libraries dynamically when execution policy permits it, or fail with explicit remediation guidance when it does not.
 
 ### Should-Have
 
@@ -40,15 +43,16 @@
 - The repository must remain IDE-friendly, starting with PyCharm.
 - Workflow contracts must be language-neutral where possible.
 - All meaningful project changes must remain traceable through canonical governance documents.
+- Core runtime and shared contract tests must achieve 100 percent automated coverage.
 
 ### Should-Have
 
 - Core runtime components should be unit-testable in isolation.
 - Shared schemas should be versionable and stable.
 - UI-facing graph definitions should be compatible with future drag-and-drop editing behavior.
+- Auto-install dependency behavior should be testable without relying on uncontrolled global environment mutations.
 
 ### Could-Have
 
 - Cross-language SDKs generated from shared schemas
 - Automated compliance checks for canonical documentation
-

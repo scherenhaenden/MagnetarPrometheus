@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 10:42 UTC
+**Author:** Codex
+**Entry:** Decision: planning, architecture, requirements, and testing were tightened to require runnable scripts, Python-first runtime structure, startup-time dependency detection with dynamic installation when permitted, and a strict 100 percent automated coverage target.
+
+---
 **Timestamp:** 2026-03-26 10:28 UTC
 **Author:** Codex
 **Entry:** Decision: agile operating guidance expanded so daily updates must include user-visible progress. GitHub issues are designated for actionable work items and GitHub discussions for broader product, architecture, and governance conversations.

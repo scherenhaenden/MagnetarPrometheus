@@ -30,12 +30,16 @@ Responsibility:
 - executor routing
 - runtime context management
 - logging and persistence
+- runtime bootstrap and dependency readiness checks
+- CLI and script entrypoints for local execution
 
 Technologies:
 
 - Python
 - Pydantic
 - YAML/JSON workflow definitions
+
+Python is the primary implementation architecture for the first usable version. That matters beyond language choice. It means packaging, startup behavior, module discovery, dependency handling, and local execution flows should be designed coherently around Python first, while still preserving contract boundaries for future non-Python executors.
 
 ### SDK
 
@@ -71,4 +75,13 @@ Technologies:
 - Shared contracts are not buried inside backend internals.
 - The visual builder is treated as a first-class future subsystem, not a later add-on.
 - The product follows the Magnetar canon for project administration but does not define the canon itself.
+- The repository must expose explicit scripts for running the backend, tests, and bootstrap flows.
+- The runtime should detect missing Python dependencies at startup and install or guide installation automatically when the chosen execution mode permits it.
 
+## Python Runtime Constraints
+
+- The backend must have a clear Python entrypoint and script-based launch path.
+- Missing libraries should be detected before execution reaches deep runtime code.
+- Where allowed by execution policy, the startup flow should install missing dependencies dynamically and continue.
+- If automatic installation is not permitted or fails, the error path must be explicit and actionable.
+- Dependency auto-install behavior must be isolated so it does not contaminate domain logic or shared contracts.

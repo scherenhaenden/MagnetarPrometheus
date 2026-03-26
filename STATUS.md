@@ -19,12 +19,20 @@ Overall completion: `25%` (`6 / 24` effort points)
 - The repository is now structured to support a backend runtime, shared schema/SDK layer, and a future visual workflow builder.
 - The project can now be managed with canonical governance documents instead of ad hoc notes.
 - A user cannot yet create or drag-and-drop workflows in the product. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
+- A runnable backend or bootstrap script is not yet in place as a usable product entrypoint. That remains visible work.
 
 ## Operating Rhythm
 
 - Update this file daily during active work.
 - Include both technical progress and user-visible product progress.
 - When GitHub operations are enabled, map concrete work to issues and broader decisions to discussions.
+
+## Immediate Delivery Focus
+
+- backend run scripts
+- Python runtime startup contract
+- dependency detection and install policy
+- 100 percent coverage baseline
 
 ## Risks And Mitigations
 

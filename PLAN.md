@@ -20,13 +20,16 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `planned` | Based on `PocPlan.md`. |
 | `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | Must stay aligned with canonical workflow schema. |
 | `task-106` | `ms-03` | Define user-visible progress reporting and agile issue/discussion flow | Edward + AI | 3 | 14 | `ready` | Add user-perspective status tracking and GitHub issue/discussion operating rules. |
+| `task-107` | `ms-02` | Add runnable scripts for backend, tests, and local bootstrap flows | Edward + AI | 3 | 14 | `ready` | The repo must expose simple scripts to run the product and validation flows. |
+| `task-108` | `ms-02` | Design Python runtime dependency detection and on-run installation flow | Edward | 5 | 24 | `ready` | The application must detect missing libraries and bootstrap them dynamically when possible. |
+| `task-109` | `ms-02` | Enforce 100 percent automated test coverage for core and shared contracts | Edward + AI | 5 | 24 | `ready` | Coverage target is strict and should be automated in the test run path. |
 
 ## Effort Summary
 
-- Total effort: 24 pts
+- Total effort: 37 pts
 - Completed: 6 pts
 - In progress: 0 pts
-- Remaining: 18 pts
+- Remaining: 31 pts
 
 ## State Definitions
 

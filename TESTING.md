@@ -9,14 +9,22 @@
 
 ## Code Coverage
 
-- Backend automated test target: at least 80% coverage on core orchestration code
-- Shared schema validation target: all schema transformations covered by tests
+- Backend automated test target: 100% coverage on core orchestration code
+- Shared schema and SDK target: 100% coverage on validation and transformation logic
+- Bootstrap and dependency-detection flows must also be covered, including success, install-needed, install-failed, and policy-disabled paths
 
 ## Acceptance Criteria
 
 - A sample workflow can load, execute, branch, and produce a deterministic context output
 - Invalid workflow definitions fail validation clearly
 - Shared schema artifacts can round-trip between editor-facing and runtime-facing representations
+- Runtime startup detects missing dependencies before execution proceeds
+- Automatic dependency installation behavior is validated under controlled test scenarios
+
+## Coverage Enforcement
+
+- Coverage thresholds should be enforced in the standard test run path
+- Pull requests should not be considered complete if they reduce the enforced threshold
 
 ## Bug Reporting Process
 
@@ -24,4 +32,3 @@
 2. If the bug blocks progress, add it to [BLOCKERS.md](/home/edward/Development/MagnetarPrometheus/BLOCKERS.md).
 3. Reflect impact in [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md) when material.
 4. Log key diagnosis and resolution steps in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
-

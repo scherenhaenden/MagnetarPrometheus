@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "magnetar-prometheus-sdk"
 version = "0.1.0"
-description = "Shared Python SDK and schema helpers for MagnetarPrometheus."
+description = "Shared contracts and models for the MagnetarPrometheus workflow orchestration platform."
 requires-python = ">=3.11"
 dependencies = [
   "pydantic>=2.0",
@@ -16,4 +16,3 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

@@ -2,24 +2,24 @@
 
 ## Progress Summary
 
-Overall completion: `25%` (`6 / 24` effort points)
+Overall completion: `82%` (`36 / 44` effort points)
 
 ```text
-[#####...............] 25%
+[################....] 82%
 ```
 
 ## Current Milestones
 
 - `ms-01` Foundation Setup: In Progress
-- `ms-02` Core Runtime PoC: Not Started
+- `ms-02` Core Runtime PoC: Completed
 - `ms-03` Visual Model Baseline: Not Started
 
 ## User-Visible Progress
 
 - The repository is now structured to support a backend runtime, shared schema/SDK layer, and a future visual workflow builder.
 - The project can now be managed with canonical governance documents instead of ad hoc notes.
+- A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON.
 - A user cannot yet create or drag-and-drop workflows in the product. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
-- A runnable backend or bootstrap script is not yet in place as a usable product entrypoint. That remains visible work.
 
 ## Operating Rhythm
 

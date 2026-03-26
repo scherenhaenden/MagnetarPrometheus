@@ -47,6 +47,11 @@ Each entry should use:
 **Author:** Codex
 **Entry:** `task-101`: state changed from `planned` to `done`. Canonical governance documents initialized. Clarified that MagnetarPrometheus follows the Magnetar canonical model but is not itself the canonical model repository.
 
+---
+**Timestamp:** 2026-03-26 11:00 UTC
+**Author:** AI
+**Entry:** Implemented first core slice of the backend runtime and SDK schemas. Defined Pydantic models in `magnetar_prometheus_sdk`. Implemented `WorkflowLoader`, `Engine`, `ContextManager`, `ExecutorRouter`, and `PythonExecutor` in the backend. Added a runnable example email module and YAML workflow. Replaced placeholder scripts with real runnable `.sh` scripts. Enforced 100% test coverage with pytest-cov. Added a GitHub Actions workflow `.github/workflows/ci.yml`. Resolved tasks `task-103`, `task-104`, `task-107`, `task-108`, `task-109`, and `task-111`.
+
 ## Immutability
 
 This logbook should not be rewritten retroactively. Corrections must be made by adding a new entry that clarifies an earlier one.

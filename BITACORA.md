@@ -13,6 +13,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 12:18 UTC
+**Author:** Codex
+**Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.
+
+---
+**Timestamp:** 2026-03-26 12:05 UTC
+**Author:** Codex
+**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
+
+---
 **Timestamp:** 2026-03-26 10:58 UTC
 **Author:** Codex
 **Entry:** GitHub tracking initialized. Created issues `#1` runtime domain models and schema contracts, `#2` CI pipelines, `#3` timestamp-based versioning, `#4` 100 percent coverage enforcement, `#5` dependency detection and auto-install flow, `#6` runnable scripts, and `#7` UI graph model. Discussion creation is currently blocked because the repository has no discussion categories configured.

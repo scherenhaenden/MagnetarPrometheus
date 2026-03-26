@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VENV_DIR="${VENV_DIR:-${ROOT_DIR}/venv}"
+VENV_ACTIVATE="${VENV_DIR}/bin/activate"
+
 echo "Running tests for MagnetarPrometheus..."
 
-source venv/bin/activate
+if [ ! -f "${VENV_ACTIVATE}" ]; then
+    echo "Virtual environment missing. Bootstrapping first..."
+    bash "${ROOT_DIR}/scripts/bootstrap_python.sh"
+fi
 
-# We enforce 100% coverage on the combined sdk and backend packages.
-# --cov-fail-under=100 ensures the process exits with an error if it misses the target.
-PYTHONPATH=sdk/python/src:backend/src pytest --cov=magnetar_prometheus_sdk --cov=magnetar_prometheus --cov-report=term-missing --cov-fail-under=100 sdk/python/tests/ backend/tests/
+source "${VENV_ACTIVATE}"
+
+cd "${ROOT_DIR}/backend"
+PYTHONPATH="${ROOT_DIR}/sdk/python/src:${ROOT_DIR}/backend/src" pytest

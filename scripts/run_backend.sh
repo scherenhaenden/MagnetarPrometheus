@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VENV_DIR="${VENV_DIR:-${ROOT_DIR}/venv}"
+VENV_ACTIVATE="${VENV_DIR}/bin/activate"
+
 echo "Running MagnetarPrometheus backend..."
 
-source venv/bin/activate
+if [ ! -f "${VENV_ACTIVATE}" ]; then
+    echo "Virtual environment missing. Bootstrapping first..."
+    bash "${ROOT_DIR}/scripts/bootstrap_python.sh"
+fi
 
-python -c "
-import sys
+source "${VENV_ACTIVATE}"
+
+PYTHONPATH="${ROOT_DIR}/sdk/python/src:${ROOT_DIR}/backend/src" python <<PY
 from magnetar_prometheus.core.workflow_loader import WorkflowLoader
 from magnetar_prometheus.core.executor_router import ExecutorRouter
 from magnetar_prometheus.core.context_manager import ContextManager
@@ -17,7 +25,7 @@ from magnetar_prometheus.example_module import register_example_steps
 import json
 
 loader = WorkflowLoader()
-wf = loader.load_workflow('backend/src/magnetar_prometheus/example_workflow.yaml')
+wf = loader.load_workflow('${ROOT_DIR}/backend/src/magnetar_prometheus/example_workflow.yaml')
 
 registry = StepRegistry()
 register_example_steps(registry)
@@ -31,5 +39,4 @@ engine = Engine(router, cm)
 
 result_context = engine.run(wf)
 print(json.dumps(result_context, indent=2))
-"
-
+PY

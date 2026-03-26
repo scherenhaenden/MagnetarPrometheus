@@ -18,3 +18,19 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests",
+  "../sdk/python/tests",
+]
+pythonpath = [
+  "src",
+  "../sdk/python/src",
+]
+addopts = "--cov=magnetar_prometheus --cov=magnetar_prometheus_sdk --cov-report=term-missing --cov-fail-under=100"

@@ -17,7 +17,7 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | `task-101` | `ms-01` | Establish canonical governance documents | Edward + AI | 3 | 14 | `done` | Initial repository governance baseline created. |
 | `task-102` | `ms-01` | Create modular repository layout for backend, sdk, and ui | Edward + AI | 3 | 14 | `done` | Layout added for PyCharm-friendly project root. |
 | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `done` | GitHub issue: #1. Includes Python runtime models and shared schema boundary. |
-| `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `done` | Based on `PocPlan.md`. |
+| `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `done` | Based on `PocPlan.md`. Includes restructuring the example module. |
 | `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | GitHub issue: #7. Must stay aligned with canonical workflow schema. |
 | `task-106` | `ms-03` | Define user-visible progress reporting and agile issue/discussion flow | Edward + AI | 3 | 14 | `done` | User-visible progress and GitHub issue/discussion operating rules are documented in the governance files. |
 | `task-107` | `ms-02` | Add runnable scripts for backend, tests, and local bootstrap flows | Edward + AI | 3 | 14 | `done` | GitHub issue: #6. The repo must expose simple scripts to run the product and validation flows. |

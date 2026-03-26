@@ -26,6 +26,12 @@
 - Coverage thresholds should be enforced in the standard test run path
 - Pull requests should not be considered complete if they reduce the enforced threshold
 
+## Pipeline Expectations
+
+- CI must execute the standard test and validation path on every relevant change
+- coverage enforcement must run in pipeline, not only locally
+- release-oriented pipeline stages should preserve the canonical version stamp format `yyyy.MM.dd HH:mm:sss`
+
 ## Bug Reporting Process
 
 1. Record the defect in the team tracking system.

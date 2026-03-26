@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 10:49 UTC
+**Author:** Codex
+**Entry:** Decision: canonical versioning now requires the timestamp format `yyyy.MM.dd HH:mm:sss`. CI/CD expectations were expanded so the repository must gain pipelines for testing, validation, and release flows in addition to local scripts.
+
+---
 **Timestamp:** 2026-03-26 10:42 UTC
 **Author:** Codex
 **Entry:** Decision: planning, architecture, requirements, and testing were tightened to require runnable scripts, Python-first runtime structure, startup-time dependency detection with dynamic installation when permitted, and a strict 100 percent automated coverage target.

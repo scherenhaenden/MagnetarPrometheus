@@ -77,6 +77,8 @@ Technologies:
 - The product follows the Magnetar canon for project administration but does not define the canon itself.
 - The repository must expose explicit scripts for running the backend, tests, and bootstrap flows.
 - The runtime should detect missing Python dependencies at startup and install or guide installation automatically when the chosen execution mode permits it.
+- Release and build metadata should use a timestamp-oriented version stamp in the form `yyyy.MM.dd HH:mm:sss`.
+- The repository should be pipeline-driven for test, validation, packaging, and release operations.
 
 ## Python Runtime Constraints
 
@@ -85,3 +87,9 @@ Technologies:
 - Where allowed by execution policy, the startup flow should install missing dependencies dynamically and continue.
 - If automatic installation is not permitted or fails, the error path must be explicit and actionable.
 - Dependency auto-install behavior must be isolated so it does not contaminate domain logic or shared contracts.
+
+## Delivery Automation Constraints
+
+- CI pipelines should run the standard validation and test scripts.
+- Release flows should produce an auditable version stamp based on the repository versioning rule.
+- Pipeline design should keep backend, shared SDK contracts, and future UI delivery separable.

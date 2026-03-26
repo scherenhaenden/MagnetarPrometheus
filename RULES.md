@@ -28,6 +28,11 @@ The following files must exist unless an exemption is logged in [BITACORA.md](/h
 - `CONTRIBUTING.md`
 - `projects/<project>.project.yml` or an instantiated equivalent derived from the template
 
+## Versioning Standard
+
+- Canonical version and release stamps use the format `yyyy.MM.dd HH:mm:sss`
+- The same timestamp-oriented format should be reused across release notes, pipeline artifacts, and other operational metadata where practical
+
 ## Branching Conventions
 
 - `master` is the release line and should only receive documented, validated merges.
@@ -86,3 +91,4 @@ Allowed progression is normally:
 
 - CI should validate the presence and basic structure of required files.
 - Periodic audits should verify planning, status, branching, and blocker compliance.
+- CI and release pipelines should enforce the active versioning and testing rules.

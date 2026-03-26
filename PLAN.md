@@ -23,13 +23,15 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | `task-107` | `ms-02` | Add runnable scripts for backend, tests, and local bootstrap flows | Edward + AI | 3 | 14 | `ready` | The repo must expose simple scripts to run the product and validation flows. |
 | `task-108` | `ms-02` | Design Python runtime dependency detection and on-run installation flow | Edward | 5 | 24 | `ready` | The application must detect missing libraries and bootstrap them dynamically when possible. |
 | `task-109` | `ms-02` | Enforce 100 percent automated test coverage for core and shared contracts | Edward + AI | 5 | 24 | `ready` | Coverage target is strict and should be automated in the test run path. |
+| `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `ready` | Use `yyyy.MM.dd HH:mm:sss` as the canonical versioning and release stamp format. |
+| `task-111` | `ms-02` | Create CI pipelines for testing, validation, and release flows | Edward + AI | 5 | 24 | `ready` | The repository needs automated pipelines for test, quality, and release operations. |
 
 ## Effort Summary
 
-- Total effort: 37 pts
+- Total effort: 44 pts
 - Completed: 6 pts
 - In progress: 0 pts
-- Remaining: 31 pts
+- Remaining: 38 pts
 
 ## State Definitions
 

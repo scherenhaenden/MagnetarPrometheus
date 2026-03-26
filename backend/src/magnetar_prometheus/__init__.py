@@ -1,0 +1,2 @@
+"""MagnetarPrometheus backend package."""
+

@@ -1,0 +1,41 @@
+metadata:
+  project_name: "project-name"
+  description: "Short description of the project."
+  start_date: "2026-03-26"
+  repository_type: "product"
+  canonical_model_usage: "This project follows the Magnetar Canonical Project Model but is not the canonical model repository."
+
+stakeholders:
+  - name: "Project Owner"
+    role: "owner"
+  - name: "Technical Lead"
+    role: "technical_lead"
+
+milestones:
+  - id: "ms-01"
+    name: "Foundation Setup"
+    target_date: "2026-04-02"
+  - id: "ms-02"
+    name: "Core Runtime PoC"
+    target_date: "2026-04-12"
+
+tasks:
+  - id: "task-101"
+    title: "Establish governance baseline"
+    owner: "owner"
+    state: "planned"
+  - id: "task-102"
+    title: "Create modular repository structure"
+    owner: "technical_lead"
+    state: "planned"
+
+risks:
+  - id: "risk-001"
+    description: "Backend and UI models diverge."
+    mitigation: "Use shared schemas in sdk."
+
+reporting:
+  status_file: "STATUS.md"
+  logbook_file: "BITACORA.md"
+  plan_file: "PLAN.md"
+

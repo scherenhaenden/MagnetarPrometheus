@@ -102,12 +102,12 @@ Implemented:
 
 Relevant files:
 
-- [engine.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/core/engine.py)
-- [workflow_loader.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/core/workflow_loader.py)
-- [context_manager.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/core/context_manager.py)
-- [executor_router.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/core/executor_router.py)
-- [python_executor.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/executors/python_executor.py)
-- [step_registry.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/registry/step_registry.py)
+- `backend/src/magnetar_prometheus/core/engine.py`
+- `backend/src/magnetar_prometheus/core/workflow_loader.py`
+- `backend/src/magnetar_prometheus/core/context_manager.py`
+- `backend/src/magnetar_prometheus/core/executor_router.py`
+- `backend/src/magnetar_prometheus/executors/python_executor.py`
+- `backend/src/magnetar_prometheus/registry/step_registry.py`
 
 Remaining gaps:
 
@@ -125,7 +125,7 @@ Implemented:
 
 Relevant file:
 
-- [models.py](/home/edward/Development/MagnetarPrometheus/sdk/python/src/magnetar_prometheus_sdk/models.py)
+- `sdk/python/src/magnetar_prometheus_sdk/models.py`
 
 Remaining gaps:
 
@@ -145,8 +145,8 @@ Implemented:
 
 Relevant files:
 
-- [example_module.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/example_module.py)
-- [example_workflow.yaml](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/example_workflow.yaml)
+- `backend/src/magnetar_prometheus/example_module.py`
+- `backend/src/magnetar_prometheus/example_workflow.yaml`
 
 Remaining gaps:
 
@@ -164,7 +164,7 @@ Implemented:
 
 Relevant file:
 
-- [bootstrap.py](/home/edward/Development/MagnetarPrometheus/backend/src/magnetar_prometheus/bootstrap.py)
+- `backend/src/magnetar_prometheus/bootstrap.py`
 
 Remaining gaps:
 
@@ -183,9 +183,9 @@ Implemented:
 
 Relevant files:
 
-- [bootstrap_python.sh](/home/edward/Development/MagnetarPrometheus/scripts/bootstrap_python.sh)
-- [run_backend.sh](/home/edward/Development/MagnetarPrometheus/scripts/run_backend.sh)
-- [run_tests.sh](/home/edward/Development/MagnetarPrometheus/scripts/run_tests.sh)
+- `scripts/bootstrap_python.sh`
+- `scripts/run_backend.sh`
+- `scripts/run_tests.sh`
 
 Remaining gaps:
 
@@ -203,13 +203,13 @@ Implemented:
 
 Relevant files:
 
-- [backend/tests/test_engine.py](/home/edward/Development/MagnetarPrometheus/backend/tests/test_engine.py)
-- [backend/tests/test_loader.py](/home/edward/Development/MagnetarPrometheus/backend/tests/test_loader.py)
-- [backend/tests/test_executor.py](/home/edward/Development/MagnetarPrometheus/backend/tests/test_executor.py)
-- [backend/tests/test_example.py](/home/edward/Development/MagnetarPrometheus/backend/tests/test_example.py)
-- [backend/tests/test_bootstrap.py](/home/edward/Development/MagnetarPrometheus/backend/tests/test_bootstrap.py)
-- [backend/tests/test_bootstrap2.py](/home/edward/Development/MagnetarPrometheus/backend/tests/test_bootstrap2.py)
-- [sdk/python/tests/test_models.py](/home/edward/Development/MagnetarPrometheus/sdk/python/tests/test_models.py)
+- `backend/tests/test_engine.py`
+- `backend/tests/test_loader.py`
+- `backend/tests/test_executor.py`
+- `backend/tests/test_example.py`
+- `backend/tests/test_bootstrap.py`
+- `backend/tests/test_bootstrap2.py`
+- `sdk/python/tests/test_models.py`
 
 Remaining gaps:
 
@@ -226,7 +226,7 @@ Implemented:
 
 Relevant file:
 
-- [ci.yml](/home/edward/Development/MagnetarPrometheus/.github/workflows/ci.yml)
+- `.github/workflows/ci.yml`
 
 Remaining gaps:
 
@@ -245,9 +245,9 @@ Implemented:
 
 Relevant files:
 
-- [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md)
-- [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md)
-- [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md)
+- `BITACORA.md`
+- `PLAN.md`
+- `STATUS.md`
 
 Remaining gaps:
 

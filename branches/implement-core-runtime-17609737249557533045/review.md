@@ -1,31 +1,68 @@
 # Branch Review
 
-Branch:
+## Branch Identity
 
-- `implement-core-runtime-17609737249557533045`
+- Branch name: `implement-core-runtime-17609737249557533045`
+- Review date: `2026-03-26`
+- Review type: prompt-scope completion review
 
-Review date:
+## Scope Reviewed
 
-- 2026-03-26
+This review measures the branch against the implementation prompt that required:
 
-## Prompt-Scope Completion
+- real backend runtime scaffolding
+- shared models and schema contracts
+- a runnable example workflow
+- bootstrap/runtime dependency handling
+- working `scripts/` entrypoints
+- tests with 100% enforced coverage
+- CI pipeline baseline
+- governance updates that reflect real delivery state
 
-- Overall prompt-scope completion: `89%`
+## Review Method
+
+- code inspection
+- branch diff against `master`
+- direct execution of `scripts/bootstrap_python.sh`
+- direct execution of `scripts/run_backend.sh`
+- direct execution of `scripts/run_tests.sh`
+
+## Overall Completion Score
+
 - Structural completion: `90%`
 - Practical completion from a clean checkout: `89%`
-- Backend PoC completion: `84%`
-- Drag-and-drop workflow feature completion: `5%`
+- Recommended official prompt-scope score: `89%`
 
-## What This Branch Now Delivers
+## What Is Verified As Done
 
-- a real first backend runtime slice
-- shared SDK models for the current execution contract
-- a runnable example workflow and example step module
-- a working bootstrap script for the current Python PoC path
-- a working backend run script
-- a working test script with 100% enforced coverage for the implemented scope
-- CI test workflow and release metadata workflow
-- branch-specific planning and review documentation
+### Runtime Path
+
+- backend runtime executes successfully through `scripts/run_backend.sh`
+- example workflow produces a completed `RunContext`
+
+### Test Path
+
+- backend + sdk tests execute successfully through `scripts/run_tests.sh`
+- enforced coverage result is `100.00%`
+
+### Bootstrap Path
+
+- bootstrap creates or reuses the virtual environment
+- bootstrap installs the current PoC runtime/test dependencies
+- bootstrap performs the startup dependency check successfully
+
+### Automation
+
+- CI validation workflow exists
+- release metadata workflow exists and emits the canonical timestamp stamp
+
+### Governance
+
+- `PLAN.md` updated
+- `STATUS.md` updated
+- `BITACORA.md` updated
+- branch-local `plan.md` exists
+- branch-local `review.md` exists
 
 ## Workstream Scores
 
@@ -36,22 +73,23 @@ Review date:
 - Scripts / developer experience: `82%`
 - Tests / coverage enforcement: `85%`
 - CI / release automation: `72%`
-- Governance accuracy for this scope: `88%`
+- Governance accuracy for this scope: `90%`
 - UI / drag-and-drop graph model: `5%`
 
-## Remaining Gaps Inside This Branch Scope
+## Remaining In-Scope Gaps
 
 - dependency auto-install is still lightweight and not yet policy-rich
 - runtime entry is still script-first rather than a dedicated Python CLI
-- release workflow currently produces metadata, not a complete packaged release
+- release automation is still metadata-oriented rather than a full release flow
 
-## Remaining Gaps Outside This Branch Scope
+## Remaining Out-Of-Scope Gaps
 
-- visual graph schema for drag-and-drop workflow editing
-- UI scaffolding and user-facing editor implementation
-- broader product-level orchestration expansion beyond the first PoC slice
+- graph schema for drag-and-drop workflows
+- node/edge model for a visual editor
+- UI scaffolding
+- broader product-level expansion beyond the first runtime slice
 
 ## Review Conclusion
 
-This branch now satisfies the original core-runtime scope materially better than the initial implementation commit alone. The largest unresolved item for the overall product remains the visual workflow model and editor path, but that is outside the narrow runtime branch scope.
+This branch now satisfies the original runtime implementation scope substantially. It is no longer blocked on placeholder infrastructure, broken scripts, or missing validation. It is still not a 100 percent completion branch because the remaining runtime-hardening and future UI/editor work are not fully done.
 

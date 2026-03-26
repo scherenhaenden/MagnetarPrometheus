@@ -8,7 +8,6 @@ VENV_PYTHON="${VENV_DIR}/bin/python"
 VENV_PIP="${VENV_DIR}/bin/pip"
 
 echo "Bootstrapping MagnetarPrometheus Python runtime..."
-
 if [ ! -d "${VENV_DIR}" ]; then
     echo "Creating virtual environment..."
     "${PYTHON_BIN}" -m venv "${VENV_DIR}"

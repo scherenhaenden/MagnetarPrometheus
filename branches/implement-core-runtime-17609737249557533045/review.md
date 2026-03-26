@@ -23,6 +23,7 @@ This review measures the branch against the implementation prompt that required:
 
 - code inspection
 - branch diff against `master`
+- merge integration review against `parallel-agent-unifier-20260326`
 - direct execution of `scripts/bootstrap_python.sh`
 - direct execution of `scripts/run_backend.sh`
 - direct execution of `scripts/run_tests.sh`
@@ -63,6 +64,7 @@ This review measures the branch against the implementation prompt that required:
 - `BITACORA.md` updated
 - branch-local `plan.md` exists
 - branch-local `review.md` exists
+- unifier-branch documentation additions are now integrated into this branch
 
 ## Workstream Scores
 
@@ -93,3 +95,4 @@ This review measures the branch against the implementation prompt that required:
 
 This branch now satisfies the original runtime implementation scope substantially. It is no longer blocked on placeholder infrastructure, broken scripts, or missing validation. It is still not a 100 percent completion branch because the remaining runtime-hardening and future UI/editor work are not fully done.
 
+The current branch history now also includes the unifier-branch merge needed to clear integration conflicts before follow-up review work. That merge did not reduce the branch's validated runtime completeness; it mainly reconciled overlapping governance and script edits.

@@ -96,6 +96,7 @@ This branch was responsible for the following prompt-scope outcomes:
 5. Added pytest configuration in `backend/pyproject.toml` so coverage enforcement is controlled in one place.
 6. Added CI validation and a lightweight release metadata workflow to align with the timestamp versioning rule.
 7. Updated governance and branch-local documentation so completion status and remaining gaps are explicit.
+8. Merged `parallel-agent-unifier-20260326` into this branch and resolved the resulting governance/script conflicts by preserving the validated runtime execution path while carrying forward the unifier-side documentation additions.
 
 ## Exact Files Touched For Completion
 
@@ -146,6 +147,12 @@ This branch was responsible for the following prompt-scope outcomes:
 - tests passed
 - enforced coverage result: `100.00%`
 
+## Integration Note
+
+- `parallel-agent-unifier-20260326` was merged into this branch before further review-derived follow-up work.
+- The merge conflicts were concentrated in `BITACORA.md`, `PLAN.md`, `STATUS.md`, and the three runtime scripts.
+- Conflict resolution kept the tested runtime script behavior from this branch and retained the additional documentation artifacts introduced through the unifier branch.
+
 ## Done Criteria Check
 
 - `scripts/run_backend.sh` runs a real example flow successfully: yes
@@ -172,4 +179,3 @@ This branch was responsible for the following prompt-scope outcomes:
 - prompt-scope completion for this branch: `89%`
 - backend PoC completion for this branch: `84%`
 - user-facing drag-and-drop completion for this branch: `5%`
-

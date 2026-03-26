@@ -15,4 +15,4 @@ fi
 source "${VENV_ACTIVATE}"
 
 cd "${ROOT_DIR}/backend"
-PYTHONPATH="${ROOT_DIR}/sdk/python/src:${ROOT_DIR}/backend/src" pytest
+pytest

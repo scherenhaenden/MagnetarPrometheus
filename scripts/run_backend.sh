@@ -14,6 +14,9 @@ fi
 
 source "${VENV_ACTIVATE}"
 
+# The runtime shell wrapper stays intentionally thin.
+# The PoC behavior should be reproducible from a clean checkout without
+# requiring the caller to manually activate a virtual environment first.
 PYTHONPATH="${ROOT_DIR}/sdk/python/src:${ROOT_DIR}/backend/src" python <<PY
 from magnetar_prometheus.core.workflow_loader import WorkflowLoader
 from magnetar_prometheus.core.executor_router import ExecutorRouter

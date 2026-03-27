@@ -1,5 +1,8 @@
 import pytest
-from magnetar_prometheus_sdk.models import Workflow, StepDefinition, StepResult, RunContext, Condition, ConditionalRouting
+from magnetar_prometheus_sdk.models import (
+    Workflow, StepDefinition, StepResult, RunContext, Condition, ConditionalRouting,
+    RunStatus, RunSubmissionRequest, RunResponse, RunListingItem, RunSummary
+)
 
 def test_step_definition_defaults():
     step = StepDefinition(type="test.step", executor="python")
@@ -63,3 +66,46 @@ def test_run_context_defaults():
     assert ctx.ai == {}
     assert ctx.history == []
     assert ctx.errors == []
+
+
+def test_run_status_serialization():
+    assert RunStatus.PENDING == "pending"
+    assert RunStatus.RUNNING == "running"
+    assert RunStatus.COMPLETED == "completed"
+    assert RunStatus.FAILED == "failed"
+    assert RunStatus.CANCELLED == "cancelled"
+
+def test_run_submission_request_defaults():
+    req = RunSubmissionRequest(workflow_id="wf_123")
+    assert req.workflow_id == "wf_123"
+    assert req.workflow_version is None
+    assert req.input_data == {}
+    assert req.tags == []
+
+def test_run_response_defaults():
+    resp = RunResponse(run_id="run_1", workflow_id="wf_123", status=RunStatus.PENDING, created_at="2023-01-01T00:00:00Z")
+    assert resp.run_id == "run_1"
+    assert resp.workflow_id == "wf_123"
+    assert resp.status == RunStatus.PENDING
+    assert resp.created_at == "2023-01-01T00:00:00Z"
+    assert resp.message is None
+
+def test_run_listing_item_defaults():
+    item = RunListingItem(run_id="run_1", workflow_id="wf_123", status=RunStatus.COMPLETED, created_at="2023-01-01T00:00:00Z")
+    assert item.run_id == "run_1"
+    assert item.workflow_id == "wf_123"
+    assert item.status == RunStatus.COMPLETED
+    assert item.created_at == "2023-01-01T00:00:00Z"
+    assert item.completed_at is None
+    assert item.tags == []
+
+def test_run_summary_defaults():
+    summary = RunSummary(run_id="run_1", workflow_id="wf_123", status=RunStatus.FAILED, created_at="2023-01-01T00:00:00Z")
+    assert summary.run_id == "run_1"
+    assert summary.workflow_id == "wf_123"
+    assert summary.status == RunStatus.FAILED
+    assert summary.created_at == "2023-01-01T00:00:00Z"
+    assert summary.completed_at is None
+    assert summary.tags == []
+    assert summary.final_context is None
+    assert summary.error_message is None

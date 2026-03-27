@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Any, Dict, List, Optional, Union, Literal
 from pydantic import BaseModel, Field
 
@@ -42,3 +43,42 @@ class RunContext(BaseModel):
     ai: Dict[str, Any] = Field(default_factory=dict)
     history: List[Dict[str, Any]] = Field(default_factory=list)
     errors: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+class RunStatus(str, Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+class RunSubmissionRequest(BaseModel):
+    workflow_id: str
+    workflow_version: Optional[str] = None
+    input_data: Dict[str, Any] = Field(default_factory=dict)
+    tags: List[str] = Field(default_factory=list)
+
+class RunResponse(BaseModel):
+    run_id: str
+    workflow_id: str
+    status: RunStatus
+    created_at: str
+    message: Optional[str] = None
+
+class RunListingItem(BaseModel):
+    run_id: str
+    workflow_id: str
+    status: RunStatus
+    created_at: str
+    completed_at: Optional[str] = None
+    tags: List[str] = Field(default_factory=list)
+
+class RunSummary(BaseModel):
+    run_id: str
+    workflow_id: str
+    status: RunStatus
+    created_at: str
+    completed_at: Optional[str] = None
+    tags: List[str] = Field(default_factory=list)
+    final_context: Optional[RunContext] = None
+    error_message: Optional[str] = None

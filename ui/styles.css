@@ -1,4 +1,14 @@
-/* CSS Variables */
+/*
+ * UI Shell Stylesheet
+ * Contains the foundational CSS for the MVP web dashboard.
+ * Designed to be lightweight and responsive without requiring preprocessors like SASS.
+ */
+
+/*
+ * CSS Variables (Custom Properties)
+ * Provides a central location for managing the application's color palette
+ * and layout dimensions to ensure consistency across the views.
+ */
 :root {
     --primary-color: #2c3e50;
     --secondary-color: #34495e;
@@ -42,7 +52,11 @@ a:hover {
     text-decoration: underline;
 }
 
-/* App Layout */
+/*
+ * Application Layout Structure
+ * Establishes the primary flexbox container that separates the sidebar
+ * navigation from the main scrollable content area.
+ */
 .app-container {
     display: flex;
     min-height: 100vh;
@@ -142,7 +156,11 @@ a:hover {
     display: block;
 }
 
-/* Buttons */
+/*
+ * Interactive Elements: Buttons
+ * Standardizes button appearances, interaction states (hover, disabled),
+ * and color variations (primary, secondary).
+ */
 button {
     cursor: pointer;
     padding: 0.5rem 1rem;
@@ -176,7 +194,11 @@ button:disabled {
     background-color: #cbd5e0;
 }
 
-/* Dashboard View */
+/*
+ * View-Specific Styles: Dashboard
+ * Handles the responsive grid layout for key performance metrics (stat cards)
+ * and the recent activity list formatting.
+ */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -237,7 +259,11 @@ button:disabled {
     margin-left: 1rem;
 }
 
-/* Workflows View */
+/*
+ * View-Specific Styles: Workflows
+ * Structures the workflow data table, providing clear column boundaries,
+ * hover states, and dynamic status badges.
+ */
 .table-container {
     background-color: #fff;
     border-radius: 8px;
@@ -285,7 +311,11 @@ button:disabled {
 .status-badge.failed { background-color: #f8d7da; color: #721c24; }
 .status-badge.running { background-color: #cce5ff; color: #004085; }
 
-/* Runs View */
+/*
+ * View-Specific Styles: Runs Console
+ * Establishes the dual-pane layout for run history (left list) and detailed
+ * run logs/metadata (right pane with dark-mode coding syntax style).
+ */
 .run-console-container {
     display: flex;
     gap: 1.5rem;
@@ -399,7 +429,11 @@ button:disabled {
     word-wrap: break-word;
 }
 
-/* Modal */
+/*
+ * Modal Component
+ * Styles the full-screen overlay and centered content box used to simulate
+ * the workflow execution process interactively.
+ */
 .modal {
     display: none;
     position: fixed;

@@ -2,13 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Ensure responsive design on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MagnetarPrometheus</title>
+    <!-- Link to the main stylesheet for application layout and design -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!--
+        Main Application Container: Uses Flexbox to separate the sidebar
+        from the main content area, providing a standard web dashboard layout.
+    -->
     <div class="app-container">
-        <!-- Sidebar Navigation -->
+
+        <!--
+            Sidebar Navigation: Fixed left column containing the application
+            branding and primary navigation links.
+        -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>MagnetarPrometheus</h2>
@@ -29,8 +39,15 @@
             </nav>
         </aside>
 
-        <!-- Main Content Area -->
+        <!--
+            Main Content Area: Flexible area that expands to fill remaining space.
+            Contains the dynamic views controlled by JavaScript.
+        -->
         <main class="main-content">
+            <!--
+                Top Header: Sticky top bar containing the current view title
+                and primary global actions (e.g., "Run Example Workflow").
+            -->
             <header class="top-header">
                 <div class="header-title">
                     <h1 id="current-view-title">Dashboard</h1>
@@ -40,9 +57,18 @@
                 </div>
             </header>
 
+            <!--
+                View Container: Holds the separate sections (Dashboard, Workflows, Runs).
+                Only one view is displayed at a time, controlled by the "active" class.
+            -->
             <div class="view-container">
-                <!-- Dashboard View -->
+
+                <!--
+                    Dashboard View: The default landing page.
+                    Displays high-level statistics and recent activity history.
+                -->
                 <section id="dashboard-view" class="view active">
+                    <!-- Key metrics grid (mocked data) -->
                     <div class="stats-grid">
                         <div class="stat-card">
                             <h3>Active Runs</h3>
@@ -69,8 +95,12 @@
                     </div>
                 </section>
 
-                <!-- Workflows View -->
+                <!--
+                    Workflows View: Displays a list of available workflows.
+                    Currently populated with mock definitions via JavaScript.
+                -->
                 <section id="workflows-view" class="view">
+                    <!-- Table wrapper for clean borders and scrolling -->
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
@@ -89,15 +119,22 @@
                     </div>
                 </section>
 
-                <!-- Runs View -->
+                <!--
+                    Runs View: Displays execution history and detailed logs.
+                    Split into two columns: a history list and a details console.
+                -->
                 <section id="runs-view" class="view">
+                    <!-- Two-column layout container -->
                     <div class="run-console-container">
+
+                        <!-- Left column: List of historical or active runs -->
                         <div class="runs-list-panel">
                             <h3>Run History</h3>
                             <ul class="runs-list" id="runs-history-list">
                                 <!-- Populated by JS -->
                             </ul>
                         </div>
+                        <!-- Right column: Detailed metadata and log output for selected run -->
                         <div class="run-details-panel">
                             <h3 id="run-details-title">Select a run</h3>
                             <div class="run-metadata" id="run-metadata">
@@ -113,7 +150,10 @@
         </main>
     </div>
 
-    <!-- Modal for Run Execution -->
+    <!--
+        Modal for Run Execution: Simulated popup overlay to demonstrate
+        how a user might trigger and watch a workflow execution in real-time.
+    -->
     <div id="run-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -135,6 +175,7 @@
         </div>
     </div>
 
+    <!-- Load the main application logic, state, and mock data injection -->
     <script src="app.js"></script>
 </body>
 </html>

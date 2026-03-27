@@ -1,10 +1,28 @@
-// Mock Data
+/**
+ * MagnetarPrometheus MVP UI Shell Controller
+ *
+ * This script provides the interactivity for the static HTML shell.
+ * It manages view routing, DOM population, and simulates backend interactions.
+ * All data is currently mocked; future iterations will replace this with real HTTP API calls.
+ */
+
+/**
+ * Mock Data Structure: Workflows
+ * Represents registered workflows that would normally be fetched from the backend schema.
+ * @type {Array<Object>}
+ */
 const mockWorkflows = [
     { id: 'wf-001', name: 'Email Triage', description: 'Classifies and routes incoming support emails.', version: '1.2.0', status: 'active' },
     { id: 'wf-002', name: 'Data Processing', description: 'ETL pipeline for nightly data sync.', version: '0.9.1', status: 'draft' },
     { id: 'wf-003', name: 'Weekly Report', description: 'Generates and distributes weekly metrics.', version: '2.0.1', status: 'active' }
 ];
 
+/**
+ * Mock Data Structure: Runs History
+ * Represents historical executions. The structure maps to what the backend `RunContext`
+ * and summary API endpoints would eventually return.
+ * @type {Array<Object>}
+ */
 const mockRuns = [
     { id: 'run-8f72', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: '2026-04-12T08:30:00Z', duration: '45s' },
     { id: 'run-3a1b', workflowId: 'wf-002', workflowName: 'Data Processing', status: 'failed', startTime: '2026-04-11T23:00:00Z', duration: '12m' },
@@ -12,6 +30,12 @@ const mockRuns = [
     { id: 'run-2e5f', workflowId: 'wf-003', workflowName: 'Weekly Report', status: 'success', startTime: '2026-04-10T09:00:00Z', duration: '3m' },
 ];
 
+/**
+ * Mock Data Structure: Detailed Run Logs
+ * Key-value mapping of run IDs to their simulated execution console output.
+ * Demonstrates how step-by-step evaluator and module execution logs are rendered.
+ * @type {Object.<string, string>}
+ */
 const mockRunDetails = {
     'run-8f72': `[INFO] Starting workflow execution: Email Triage
 [INFO] Loading dependencies...
@@ -60,17 +84,30 @@ const modalViewRunBtn = document.getElementById('modal-view-run-btn');
 const modalExecutionStatus = document.getElementById('modal-execution-status');
 const modalConsoleOutput = document.getElementById('modal-console-output').querySelector('code');
 
-// Helper Functions
+/**
+ * Formats an ISO 8601 date string into a user-friendly locale string.
+ * @param {string} dateString - The raw date string to format.
+ * @returns {string} The localized date and time.
+ */
 const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString();
 };
 
+/**
+ * Generates HTML for a standardized status badge component.
+ * @param {string} status - The status text (e.g., 'active', 'success', 'failed').
+ * @returns {string} The raw HTML string for the badge.
+ */
 const getStatusBadge = (status) => {
     return `<span class="status-badge ${status}">${status.toUpperCase()}</span>`;
 };
 
-// Navigation Logic
+/**
+ * Navigation / View Router Controller
+ * Listens for clicks on the sidebar items and toggles the visibility
+ * of the main `<section>` views by updating the `active` CSS class.
+ */
 navItems.forEach(item => {
     item.addEventListener('click', () => {
         // Update active nav
@@ -90,7 +127,10 @@ navItems.forEach(item => {
     });
 });
 
-// Populate Dashboard
+/**
+ * Renders the Recent Activity list on the Dashboard view.
+ * Slices the mockRuns array to show only the most recent items.
+ */
 const populateDashboard = () => {
     dashboardActivityList.innerHTML = '';
     mockRuns.slice(0, 3).forEach(run => {
@@ -103,7 +143,10 @@ const populateDashboard = () => {
     });
 };
 
-// Populate Workflows
+/**
+ * Renders the rows inside the Workflows table view.
+ * Populates name, description, status badges, and stub action buttons.
+ */
 const populateWorkflows = () => {
     workflowsTableBody.innerHTML = '';
     mockWorkflows.forEach(wf => {
@@ -121,7 +164,11 @@ const populateWorkflows = () => {
     });
 };
 
-// Populate Runs
+/**
+ * Renders the Runs view console.
+ * This creates a selectable list of past runs on the left.
+ * Clicking a run triggers `displayRunDetails` to show its logs and metadata on the right.
+ */
 const populateRuns = () => {
     runsHistoryList.innerHTML = '';
     mockRuns.forEach((run, index) => {
@@ -152,6 +199,11 @@ const populateRuns = () => {
     }
 };
 
+/**
+ * Updates the right-hand panel of the Runs view with detailed metadata and logs
+ * for the currently selected run. Simulates network loading latency for realism.
+ * @param {Object} run - The specific run object payload.
+ */
 const displayRunDetails = (run) => {
     runDetailsTitle.textContent = `Run: ${run.id} - ${run.workflowName}`;
     runMetadata.innerHTML = `
@@ -167,7 +219,13 @@ const displayRunDetails = (run) => {
     }, 300);
 };
 
-// Modal Logic (Simulate Run)
+/**
+ * Run Execution Simulator (Modal Logic)
+ *
+ * Demonstrates a user-facing interactive flow for triggering a workflow execution.
+ * Instead of waiting for a single batch response, it simulates streaming console
+ * output to demonstrate step-by-step progression and evaluator routing.
+ */
 const openModal = () => {
     runModal.classList.add('active');
     modalExecutionStatus.innerHTML = '<span class="spinner"></span> Executing: Email Triage Example...';
@@ -210,6 +268,10 @@ modalViewRunBtn.addEventListener('click', () => {
 });
 
 // Initialize
+/**
+ * Application Entrypoint
+ * Bootstraps the mock data into the DOM upon initial page load.
+ */
 const init = () => {
     populateDashboard();
     populateWorkflows();

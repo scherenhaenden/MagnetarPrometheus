@@ -185,3 +185,83 @@ def test_engine_safe_evaluate_paths(engine):
     assert engine._safe_evaluate("context['ai']['other'] == y", ctx) == False
     assert engine._safe_evaluate("context['ai']['other'] == ", ctx) == False
     assert engine._safe_evaluate("not an equal equal statement", ctx) == False
+
+def test_engine_conditional_branching_dict_compatibility(engine):
+    # Tests the backward compatibility logic where next is a dict
+    wf = Workflow(
+        id="wf_dict",
+        name="Test",
+        version="1.0.0",
+        start_step="step1",
+        steps={
+            "step1": StepDefinition(type="ai_step", executor="python", next={
+                "mode": "conditional",
+                "conditions": [
+                    {"when": "context['ai'].get('decision') == 'branch_a'", "go_to": "step2"},
+                    {"when": "context['ai'].get('decision') == 'branch_b'", "go_to": "step3"}
+                ]
+            }),
+            "step2": StepDefinition(type="success_step", executor="python", next="end"),
+            "step3": StepDefinition(type="success_step", executor="python", next="end")
+        }
+    )
+    # the dict is converted to dict internally by pydantic because of Union[str, ConditionalRouting, Dict[str, Any], None]
+    # Actually wait, Union will try to parse it into ConditionalRouting if it matches the schema.
+    # To test the dict branch explicitly, we need to bypass Pydantic model validation
+    # or ensure it doesn't match ConditionalRouting (e.g. invalid mode).
+    # If it parses to ConditionalRouting, the dict branch is never hit.
+    # Let's write a mock object that mimics dict but is a dict to force the branch,
+    # or just mock the step_def.next directly.
+    step1 = StepDefinition(type="ai_step", executor="python")
+    step1.next = {
+        "mode": "conditional",
+        "conditions": [
+            {"when": "context['ai'].get('decision') == 'branch_a'", "go_to": "step2"},
+            {"when": "context['ai'].get('decision') == 'branch_b'", "go_to": "step3"}
+        ]
+    }
+    wf.steps["step1"] = step1
+    result = engine.run(wf)
+    assert result["run"]["status"] == "completed"
+    assert result["history"][-1]["step"] == "step3"
+
+def test_engine_conditional_branching_dict_eval_error(engine):
+    # Covers the exception block in the dict compatibility branch
+    class BuggyEngineDict(Engine):
+        def _safe_evaluate(self, expr, ctx):
+            raise Exception("Unexpected eval error")
+
+    from magnetar_prometheus.core.executor_router import ExecutorRouter
+    from magnetar_prometheus.core.context_manager import ContextManager
+    from magnetar_prometheus.executors.base import BaseExecutor
+
+    class MockExecutor2(BaseExecutor):
+        def execute(self, step_def, context):
+            return StepResult(success=True)
+
+    router = ExecutorRouter()
+    router.register("python", MockExecutor2())
+    cm = ContextManager()
+    buggy_eng = BuggyEngineDict(router, cm)
+
+    wf = Workflow(
+        id="wf_dict_err",
+        name="Test",
+        version="1.0.0",
+        start_step="step1",
+        steps={
+            "step1": StepDefinition(type="success_step", executor="python"),
+            "step2": StepDefinition(type="success_step", executor="python", next="end")
+        }
+    )
+    step1 = wf.steps["step1"]
+    step1.next = {
+        "mode": "conditional",
+        "conditions": [
+            {"when": "something", "go_to": "step2"}
+        ]
+    }
+    result = buggy_eng.run(wf)
+    assert result["run"]["status"] == "completed"
+    assert len(result["history"]) == 1
+    assert result["history"][0]["step"] == "step1"

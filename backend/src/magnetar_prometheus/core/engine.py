@@ -55,6 +55,14 @@ class Engine:
                             return condition.get("go_to")
                     except Exception:
                         pass
+        elif hasattr(next_val, "mode") and next_val.mode == "conditional":
+            for condition in getattr(next_val, "conditions", []):
+                when_expr = getattr(condition, "when", None)
+                try:
+                    if when_expr and self._safe_evaluate(when_expr, context):
+                        return getattr(condition, "go_to", "end")
+                except Exception:
+                    pass
         return "end"
 
     def _safe_evaluate(self, expression: str, context: Dict[str, Any]) -> bool:

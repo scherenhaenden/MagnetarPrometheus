@@ -302,3 +302,32 @@ def test_engine_conditional_branching_dict_compatibility(engine):
     result = engine.run(wf)
     assert result["run"]["status"] == "completed"
     assert result["history"][-1]["step"] == "step3"
+
+
+def test_engine_conditional_branching_dict_eval_error(engine, monkeypatch):
+    def mock_eval(*args, **kwargs):
+        raise Exception("Unexpected eval error")
+
+    monkeypatch.setattr(engine.evaluator, "evaluate", mock_eval)
+
+    wf = Workflow(
+        id="wf_dict_err",
+        name="Test",
+        version="1.0.0",
+        start_step="step1",
+        steps={
+            "step1": StepDefinition(type="success_step", executor="python"),
+            "step2": StepDefinition(type="success_step", executor="python", next="end"),
+        },
+    )
+
+    step1 = wf.steps["step1"]
+    step1.next = {
+        "mode": "conditional",
+        "conditions": [{"when": "something", "go_to": "step2"}],
+    }
+
+    result = engine.run(wf)
+    assert result["run"]["status"] == "completed"
+    assert len(result["history"]) == 1
+    assert result["history"][0]["step"] == "step1"

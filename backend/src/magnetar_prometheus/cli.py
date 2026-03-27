@@ -9,25 +9,27 @@ from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.registry.step_registry import StepRegistry
 from magnetar_prometheus.executors.python_executor import PythonExecutor
-from magnetar_prometheus.example_module import register_example_steps
+from magnetar_prometheus.modules.email_module.steps import register_example_steps
 
 
 def main():
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")
 
     # default path to the example workflow relative to the file location
-    default_workflow_path = Path(__file__).parent / "example_workflow.yaml"
+    default_workflow_path = (
+        Path(__file__).parent / "modules" / "email_module" / "email_triage.yaml"
+    )
 
     parser.add_argument(
         "--workflow",
-        type=str,
-        default=str(default_workflow_path),
+        type=Path,
+        default=default_workflow_path,
         help="Path to the workflow YAML file."
     )
 
     args = parser.parse_args()
 
-    workflow_path = Path(args.workflow)
+    workflow_path = args.workflow
     if not workflow_path.is_file():
         print(f"Error: Workflow file not found at {workflow_path}", file=sys.stderr)
         sys.exit(1)

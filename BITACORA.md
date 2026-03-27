@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-27 12:24 UTC
+**Author:** Codex
+**Entry:** Resolved the backend CLI merge on `backend-cli-entrypoint-11356941968286402664` by keeping `scripts/run_backend.sh` as a thin wrapper over the Python CLI entrypoint, updating `backend/src/magnetar_prometheus/cli.py` to the current `modules/email_module` layout, and preserving the merged runtime/governance changes already staged on the branch. Verified the repo test path after the reconciliation: `51 passed`, `100.00%` coverage.
+
+---
 **Timestamp:** 2026-03-27 12:05 UTC
 **Author:** Codex
 **Entry:** Resolved the bootstrap-policy merge on `implement-bootstrap-policy-and-error-handling-15223370939952239359` by preserving Jules’ structured bootstrap work (`BootstrapPolicy` and `BootstrapResult`) while retaining the runtime/bootstrap coverage from the merged branch. Kept the governance files additive, preserved all existing bitacora entries, and reconciled the bootstrap tests so both dependency-check and `bootstrap_runtime(...)` paths remain covered.

@@ -31,12 +31,15 @@ Current implemented slice:
 - context accumulation
 - shared SDK models and schema documents
 
-Planned but not yet implemented:
+Actively Planned (Next Slice):
 
 - long-running backend service
 - HTTP API
 - persistent run storage
 - user-facing web interface
+
+Future / Unplanned:
+
 - desktop application shell
 - visual drag-and-drop workflow editor
 
@@ -168,3 +171,5 @@ The engine exists, but users still lack:
 - a submission model for runs/jobs
 - a place to inspect executions without reading raw terminal JSON
 - a first interactive UI or API layer
+
+The newly established planning slice formally targets the persistent API and web UI to address this gap.

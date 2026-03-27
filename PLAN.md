@@ -9,6 +9,8 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | `ms-01` | Foundation Setup | 2026-04-02 | Establish repository structure, governance files, and backend/sdk/ui boundaries. | Governance documents exist, project schema exists, and subproject layout is committed. |
 | `ms-02` | Core Runtime PoC | 2026-04-12 | Build the first serial workflow engine with models, loader, executor routing, and mock module flow. | A sample workflow runs end-to-end and produces structured context output. |
 | `ms-03` | Visual Model Baseline | 2026-04-26 | Define workflow graph schema and UI/editor integration boundary. | Shared schema supports visual nodes and edges, and UI scaffolding can render/edit a sample workflow graph. |
+| `ms-04` | Service API & Persistence | 2026-05-10 | Introduce a long-running backend service that accepts job submissions and records persistent run history. | A long-running backend service can accept job submissions via an HTTP API, queue runs, and write persistent run history. |
+| `ms-05` | Minimal Web UI | 2026-05-24 | Build the first user-facing web interface for interacting with the workflow platform. | A user-facing web UI can fetch and display run history and workflow details. |
 
 ## How To Read This Plan
 
@@ -45,6 +47,8 @@ Execution strategy for upcoming slices:
 | `task-109` | `ms-02` | Enforce 100 percent automated test coverage for core and shared contracts | Edward + AI | 5 | 24 | `done` | GitHub issue: #4. Coverage target is strict and should be automated in the test run path. |
 | `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `done` | GitHub issue: #3. The canonical format is explicitly integrated in backend via a version helper and distinguished from semantic versions. |
 | `task-111` | `ms-02` | Create CI pipelines for testing, validation, and release flows | Edward + AI | 5 | 24 | `done` | GitHub issue: #2. CI test workflow exists and release metadata automation has been added. |
+| `task-112` | `ms-04` | Implement HTTP API and local persistence for job submission | Unassigned | 5 | 24 | `planned` | User increment: A user can start a backend service, submit workflow runs via HTTP rather than CLI, and inspect run outcomes. |
+| `task-113` | `ms-05` | Develop a minimal web UI for observing workflows | Unassigned | 5 | 24 | `planned` | User increment: A user can open a browser and view persistent run history and job statuses without reading raw JSON. |
 
 ## Preserved Historical Task Records
 
@@ -96,9 +100,6 @@ These notes preserve exact branch-specific wording that would otherwise be lost 
 
 These items are not contradicted by the current `done` state. They simply belong to the next planning baseline rather than the current one.
 
-- Build a long-running backend service or API around the engine.
-- Create a first visible UI for running and inspecting workflows.
-- Define how jobs/runs are submitted, queued, persisted, and observed.
 - Turn the visual graph schema into an actual editable UI surface.
 - Clarify the future module lifecycle: discovery, registration, packaging, and execution policies.
 

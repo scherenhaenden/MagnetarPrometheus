@@ -2,7 +2,15 @@
 
 ## Progress Summary
 
-Overall completion: `89%` (`39 / 44` effort points)
+Overall completion: `84%` (prompt-scope completion), `43%` (`19 / 44` effort points fully completed)
+
+Preserved historical progress summary from merged branch: `89%` (`39 / 44` effort points)
+
+```text
+[########............] 43%
+```
+
+Preserved historical progress bar from merged branch:
 
 ```text
 [##################..] 89%
@@ -11,17 +19,30 @@ Overall completion: `89%` (`39 / 44` effort points)
 ## Current Milestones
 
 - `ms-01` Foundation Setup: Completed
-- `ms-02` Core Runtime PoC: Completed
+- `ms-02` Core Runtime PoC: In Progress
 - `ms-03` Visual Model Baseline: Not Started
+
+Preserved historical milestone state from merged branch:
+- `ms-02` Core Runtime PoC: Completed
 
 ## User-Visible Progress
 
 - The repository is now structured to support a backend runtime, shared schema/SDK layer, and a future visual workflow builder.
 - The project can now be managed with canonical governance documents instead of ad hoc notes.
-- A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON.
+- A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON. Note that a dedicated Python CLI is currently missing.
+- A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a structured `email_module` containing a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON.
+- The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice, although it is not yet a hardened policy subsystem.
 - The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice.
+- The repository structure has been improved to support modular capabilities (like `email_module` with manifest).
 - The automated test path now passes with 100 percent coverage for the implemented backend and SDK scope.
+- Release automation exists but only emits version metadata without a full publication pipeline.
 - A user cannot yet create or drag-and-drop workflows in the product. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
+
+## Preserved Historical Status Notes
+
+- Merged-branch user-visible wording preserved: `A runnable backend is now available. A user can run \`scripts/run_backend.sh\` to execute a structured \`email_module\` containing a mock email triage workflow via the terminal and observe the resulting \`RunContext\` as structured JSON.`
+- Merged-branch bootstrap wording preserved: `The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice.`
+- Merged-branch omission preserved for reference: release automation was previously described without the explicit limitation `only emits version metadata without a full publication pipeline`.
 
 ## Operating Rhythm
 
@@ -35,9 +56,12 @@ Overall completion: `89%` (`39 / 44` effort points)
 - Python runtime startup contract
 - dependency detection and install policy
 - 100 percent coverage baseline
-- timestamp-based versioning rule
 - CI pipelines for test and release flows
 - UI graph model for drag-and-drop workflows
+- UI graph model schema
+- Hardened dependency auto-install policy
+- Expanded backend entrypoints (Python CLI)
+- Expanded release automation
 
 ## Risks And Mitigations
 

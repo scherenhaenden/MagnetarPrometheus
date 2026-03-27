@@ -22,6 +22,8 @@ This repository follows the Magnetar standard for:
 
 It should be run in an agile way. Progress tracking must not stop at technical implementation details. Daily visibility should include what a user can already do, what changed in the product experience, and what remains blocked from a user-facing perspective.
 
+The working style for this repository is explicitly user-incremental. Each meaningful round of work should leave behind something new that a user or operator can actually try, observe, or validate, even if the increment is still rough or limited.
+
 ## Product Boundaries
 
 This repository contains a product that uses the canonical model. The canonical model itself is a separate concept used to administer projects.
@@ -60,6 +62,29 @@ MagnetarPrometheus/
 6. Use the example repository structure under `backend/`, `sdk/`, and `ui/` to keep runtime, contracts, and visual tooling decoupled.
 7. Use GitHub issues for actionable work items and GitHub discussions for broader architectural, product, and governance conversations.
 
+## Run The Application
+
+The current runnable product slice is the backend workflow runner. From the repository root, use:
+
+```bash
+bash run_app.sh
+```
+
+That single command will:
+
+- bootstrap the local Python environment if needed
+- install the runtime dependencies required by the PoC
+- execute the example workflow
+- print the resulting workflow state as JSON in the terminal
+
+To run a specific workflow file instead of the default example:
+
+```bash
+bash run_app.sh --workflow backend/src/magnetar_prometheus/modules/email_module/email_triage.yaml
+```
+
+At the moment there is no browser-based UI application to launch from this repository. The CLI workflow runner is the current user-facing entrypoint.
+
 ## Project Contents
 
 | File | Purpose |
@@ -92,6 +117,12 @@ In addition, daily status should answer user-facing questions, not just implemen
 - what is now possible for a user or operator
 - what is visible in the product or workflow editor
 - what remains missing before a usable increment exists
+
+The preferred delivery rhythm is:
+
+- every round trip should aim to make one more thing runnable, visible, or testable
+- internal refactors are allowed, but they should be tied to a near-term user-visible increment whenever possible
+- when a slice is not yet user-visible, the docs must say so directly instead of overstating completion
 
 ## YAML Project Schema
 

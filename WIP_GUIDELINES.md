@@ -17,4 +17,5 @@ Exceptions require:
 - finish or review current work before starting additional tasks
 - split oversized tasks before violating WIP limits
 - prefer moving tasks to `ready` rather than starting too many in parallel
-
+- when parallelizing work, split by disjoint file ownership so contributors do not collide in the same surface
+- prefer work packets that each unlock a small user-visible or user-testable increment instead of only internal progress

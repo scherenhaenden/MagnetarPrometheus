@@ -1,61 +1,135 @@
 # Status of MagnetarPrometheus
 
+## Executive Summary
+
+MagnetarPrometheus currently has a working backend proof of concept, not a finished end-user application.
+
+What is real today:
+
+- A Python workflow engine can load a YAML workflow, execute registered steps, evaluate conditional routing, and return a structured `RunContext`.
+- A bootstrap path can prepare the local Python runtime and install the dependencies required by the current proof-of-concept slice.
+- A one-command local launcher exists: `bash run_app.sh`.
+- An example workflow, `email_triage`, runs end to end and produces deterministic JSON output.
+- CI and local test execution enforce `100%` coverage for the implemented backend and SDK scope.
+
+What is not real yet:
+
+- There is no long-running backend service.
+- There is no HTTP API for job submission or run inspection.
+- There is no web UI.
+- There is no desktop UI.
+- There is no operator dashboard, queue manager, or persistent run history.
+- There is no production-grade release/publishing pipeline beyond metadata/version-stamp generation.
+
+So the product state is best described as:
+
+- backend execution core: present
+- shared schema boundary: present
+- visual/editor product surface: not implemented yet
+- operational product surface: not implemented yet
+
+## Current Product Reality
+
+If a user runs:
+
+```bash
+bash run_app.sh
+```
+
+the repository will:
+
+1. bootstrap the local Python environment
+2. load the example workflow from `backend/src/magnetar_prometheus/modules/email_module/email_triage.yaml`
+3. execute that workflow through the backend engine
+4. print the resulting workflow state as JSON
+5. exit
+
+That means the current user experience is batch-style CLI execution, not an interactive app session.
+
+## What A User Can Do Right Now
+
+- Run the current proof-of-concept workflow engine locally from the repository root.
+- Execute the built-in example workflow and inspect the final workflow state.
+- Point the CLI at another compatible workflow YAML file.
+- Inspect how the engine resolves steps, branching, evaluator logic, and context aggregation.
+- Validate changes through the local test path and CI-oriented scripts.
+
+## What A User Cannot Do Yet
+
+- Create workflows through a visual editor.
+- Drag and drop nodes in a UI.
+- Submit jobs to a persistent runtime service.
+- Browse previous runs in a dashboard.
+- Manage installed modules through an application surface.
+- Run a hosted or desktop application experience.
+
 ## Progress Summary
 
-Overall completion: `100%` (`44 / 44` effort points)
+The tracked planning baseline is marked complete for the currently defined `44 / 44` effort points, but that does not mean the overall product vision is complete. It means the currently scoped foundation/runtime/schema milestones are complete.
 
-Preserved historical progress summary from governance-audit branch: `84%` (prompt-scope completion), `43%` (`19 / 44` effort points fully completed)
-
-Preserved historical progress summary from merged branch: `89%` (`39 / 44` effort points)
+- Active scoped completion: `100%` (`44 / 44` effort points)
+- Historical governance-audit view preserved: `84%` prompt-scope completion, `19 / 44` effort points fully completed at that time
+- Historical merged-branch view preserved: `89%` (`39 / 44` effort points) at that time
 
 ```text
-[####################] 100%
+[####################] 100% of the currently defined baseline
 ```
 
 ## Current Milestones
 
 - `ms-01` Foundation Setup: Completed
+  Meaning: the repository structure, governance files, and versioning/testing conventions exist.
 - `ms-02` Core Runtime PoC: Completed
+  Meaning: a backend runtime can execute a sample workflow through the CLI.
 - `ms-03` Visual Model Baseline: Completed
+  Meaning: the shared graph/schema boundary is defined, not that a workflow editor already exists.
 
-## User-Visible Progress
+## Implemented Capabilities
 
-- Workflow definition authors now benefit from predictable, prioritized rule processing when defining `next_step`, linear branching, or conditional evaluation.
-- The repository is now structured to support a backend runtime, shared schema/SDK layer, and a future visual workflow builder.
-- The project can now be managed with canonical governance documents instead of ad hoc notes.
-- A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON.
-- The bootstrap flow can now prepare a virtual environment and use a structured `BootstrapPolicy` to determine whether to install Python dependencies, safely reporting back detailed statuses without just relying on raw logs.
-- The repository structure has been improved to support modular capabilities (like `email_module` with manifest).
-- The automated test path now passes with 100 percent coverage for the implemented backend and SDK scope.
-- A user cannot yet create or drag-and-drop workflows in the product, but the schema definition mapping workflow runtime models to a visual graph is completed and available in `sdk/schemas/workflow-graph-schema.md`.
-- Release automation exists and emits the canonical version metadata stamp for every push to master.
+- Workflow loading from YAML through the backend loader.
+- Serial workflow execution with step-by-step context accumulation.
+- Conditional routing through the evaluator path.
+- Step registration and Python executor routing.
+- Structured context/result output for completed runs.
+- Example email-triage module with manifest, workflow, and step handlers.
+- Runtime bootstrap with dependency checking and policy-driven install behavior.
+- Local scripts for bootstrap, run, and test flows.
+- Canonical version-stamp generation for release metadata.
+- High-coverage automated tests for the current backend and SDK slice.
 
-## Preserved Historical Status Notes
+## Important Limitations
 
-- Merged-branch user-visible wording preserved: `A runnable backend is now available. A user can run \`scripts/run_backend.sh\` to execute a structured \`email_module\` containing a mock email triage workflow via the terminal and observe the resulting \`RunContext\` as structured JSON.`
-- Merged-branch bootstrap wording preserved: `The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice.`
-- Merged-branch omission preserved for reference: release automation was previously described without the explicit limitation `only emits version metadata without a full publication pipeline`.
-
-## Operating Rhythm
-
-- Update this file daily during active work.
-- Include both technical progress and user-visible product progress.
-- When GitHub operations are enabled, map concrete work to issues and broader decisions to discussions.
+- The runtime is invoked per command and exits after the workflow completes.
+- There is no scheduler, queue, or worker pool.
+- Workflow definitions are still authored manually rather than through a product interface.
+- The UI graph schema is a contract artifact only; it is not backed by a functioning editor.
+- The current module surface is demonstrative, not yet a mature plug-and-play module system.
+- Release automation currently produces metadata/version-stamp outputs, not a complete distribution pipeline.
 
 ## Immediate Delivery Focus
 
-- Hardened dependency auto-install policy
-- Expanded backend entrypoints (Python CLI)
-- Expanded release automation
-- Visual Workflow Builder (ms-04)
+- Introduce a visible application surface, likely a minimal local web UI or API-backed operator view.
+- Add a long-running execution surface instead of only one-shot CLI execution.
+- Make workflow submission, inspection, and result viewing understandable without reading source code.
+- Keep the UI graph schema aligned with runtime semantics while the first actual UI slice is built.
+- Keep work user-incremental so each round gives the user one more thing to test directly.
 
 ## Risks And Mitigations
 
+- Risk: the project reports “complete” against the current plan while still feeling incomplete to end users
+  Mitigation: describe completion as “baseline scope complete” and document the missing product layers explicitly.
+
 - Risk: workflow runtime and visual graph model diverge early
-  Mitigation: keep schemas in `sdk/` as the shared contract boundary
+  Mitigation: keep shared contracts in `sdk/` as the boundary between runtime and future UI.
 
 - Risk: backend-first implementation hardcodes Python assumptions into workflow definitions
-  Mitigation: validate contract neutrality in models and schema design
+  Mitigation: continue separating runtime internals from shared workflow/schema contracts.
 
-- Risk: UI requirements remain vague while engine contracts solidify
-  Mitigation: reserve `ui/` now and define graph-oriented schema expectations before deep backend implementation
+- Risk: users expect an app surface when only a CLI execution slice exists
+  Mitigation: state plainly in the docs that the current deliverable is a backend proof of concept, not a finished interactive product.
+
+## Operating Rhythm
+
+- Update this file when product reality changes, not only when task states change.
+- Always describe both implemented capability and current limitation.
+- Map implementation work to GitHub issues and broader product/architecture questions to GitHub discussions.

@@ -1,0 +1,15 @@
+id: linear_example
+name: Linear Workflow Example
+version: 1.0.0
+start_step: start_linear
+
+steps:
+  start_linear:
+    type: linear.start
+    executor: python
+    next: process_linear
+
+  process_linear:
+    type: linear.process
+    executor: python
+    next: end

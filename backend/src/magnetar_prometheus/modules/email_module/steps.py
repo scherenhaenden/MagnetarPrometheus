@@ -1,5 +1,7 @@
 from typing import Dict, Any
 from magnetar_prometheus_sdk.models import StepResult
+from magnetar_prometheus.modules.linear_module.steps import register_linear_steps
+from magnetar_prometheus.modules.error_module.steps import register_error_steps
 
 def fetch_emails(context: Dict[str, Any], config: Dict[str, Any]) -> StepResult:
     return StepResult(success=True, output={"data": {"emails": [{"subject": "Urgent problem", "body": "My account is locked."}]}})
@@ -27,3 +29,6 @@ def register_example_steps(registry):
     registry.register("ai.classify", ai_classify)
     registry.register("ticket.create", create_ticket)
     registry.register("review.queue", manual_review)
+
+    register_linear_steps(registry)
+    register_error_steps(registry)

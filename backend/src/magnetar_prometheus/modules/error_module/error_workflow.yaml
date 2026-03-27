@@ -1,0 +1,18 @@
+id: error_example
+name: Error Workflow Example
+version: 1.0.0
+start_step: start_error
+
+settings:
+  stop_on_unhandled_error: true
+
+steps:
+  start_error:
+    type: error.start
+    executor: python
+    next: trigger_error
+
+  trigger_error:
+    type: error.trigger
+    executor: python
+    next: end

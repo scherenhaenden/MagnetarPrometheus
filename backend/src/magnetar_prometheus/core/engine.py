@@ -11,6 +11,18 @@ class Engine:
         self.evaluator = ConditionEvaluator()
 
     def run(self, workflow: Workflow, initial_context: Dict[str, Any] = None) -> Dict[str, Any]:
+        """def run(self, workflow: Workflow, initial_context: Dict[str, Any] = None) ->
+        Dict[str, Any]:
+        Executes a workflow from the starting step to completion.  This method
+        initializes the context for the given workflow and iteratively processes each
+        step defined in the workflow. It retrieves the appropriate executor for each
+        step and handles the execution results, updating the context accordingly. If
+        any step fails, the context is marked as failed, and the execution halts. The
+        final status of the workflow is returned upon completion.
+        
+        Args:
+            workflow (Workflow): The workflow to be executed.
+            initial_context (Dict[str, Any]?): Initial context for the workflow execution."""
         context = self.context_manager.create(workflow.id, initial_context or {})
         current_step_name = workflow.start_step
 
@@ -42,6 +54,24 @@ class Engine:
 
     def _resolve_next_step(self, step_def, context: Dict[str, Any], result: StepResult) -> str:
         # Priority 1: Direct next_step from the step result.
+        """Resolve the next step in a workflow based on the provided step definition and
+        context.
+        
+        This function determines the next step to execute in a workflow by evaluating
+        the `result` for a direct next step, checking the `step_def` for a linear next
+        step, and assessing any conditional branching defined in the workflow. It
+        handles various types of next values, including strings, dictionaries, and
+        `ConditionalRouting` objects, while gracefully managing exceptions during
+        evaluation.
+        
+        Args:
+            step_def (StepDefinition): The definition of the current workflow step.
+            context (Dict[str, Any]): The context in which the workflow is being executed.
+            result (StepResult): The result of the previous step execution.
+        
+        Returns:
+            str: The identifier of the next step to execute, or "end" if no valid path is found.
+        """
         if result.next_step:
             return result.next_step
 

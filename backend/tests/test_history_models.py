@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from magnetar_prometheus.history.models import RunRecord, RunStatus
 
 def test_run_record_serialization():
+    """Test the serialization of a RunRecord to JSON."""
     start = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
     end = datetime(2024, 1, 1, 12, 5, 30, tzinfo=timezone.utc)
 
@@ -34,6 +35,7 @@ def test_run_record_serialization():
     assert data["error_list"] == [{"msg": "warning 1"}]
 
 def test_run_record_deserialization():
+    """Test the deserialization of a RunRecord from JSON data."""
     json_data = {
         "run_id": "run-002",
         "workflow_id": "wf-def",

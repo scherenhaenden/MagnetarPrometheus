@@ -55,7 +55,7 @@ Allowed progression is normally:
 - `planned` to `ready`
 - `ready` to `in_progress`
 - `in_progress` to `in_review`
-- `in_review` to `done`
+- `in_review` to `done` (Note: "done" means the specific task slice is complete; it must not be used to imply a finished product experience when only an internal slice is complete)
 - any active state to `blocked` when a tracked blocker is present
 
 ## Work-In-Progress Constraints
@@ -63,6 +63,7 @@ Allowed progression is normally:
 - Default WIP limit per individual or AI agent: 2 tasks in `in_progress`
 - Exceeding the limit requires explicit approval recorded in [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md) and [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md)
 - Work should be organized around user-incremental delivery. A reasonable default expectation is that each work round leaves a newly testable, runnable, or inspectable increment for the user or operator.
+- Parallel work must be divided by disjoint write ownership so contributors do not collide in the same surface.
 
 ## Blocker Lifecycle
 
@@ -78,7 +79,7 @@ Allowed progression is normally:
 - [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md) is updated at least daily during active work or after each merge.
 - [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md) is the planning source of truth for milestones and task assignments.
 - Daily updates must include user-visible progress, not just technical deltas.
-- Status, plan, and architecture documents must state clearly whether the latest increment is actually user-testable or still only an internal capability.
+- Status, plan, and architecture documents, as well as pull requests, must state clearly whether the latest increment is actually user-testable or still only an internal capability.
 - Actionable work should be mirrored in GitHub issues whenever the repository is using GitHub operationally.
 - Open design, product, and governance questions should be tracked in GitHub discussions when they are broader than a single task.
 - GitHub issues created from reviews must preserve the original review evidence instead of compressing it into a short summary.

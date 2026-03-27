@@ -3,7 +3,7 @@ from magnetar_prometheus_sdk.models import RunContext, StepResult
 
 class ContextManager:
     def create(self, workflow_id: str, initial_context: Dict[str, Any]) -> RunContext:
-        """Create a RunContext with the given workflow ID and initial context."""
+        """Create a RunContext with the specified workflow ID and initial context."""
         ctx = RunContext()
         ctx.run["workflow_id"] = workflow_id
         ctx.run["status"] = "running"
@@ -14,9 +14,9 @@ class ContextManager:
         """Apply the result of a step to the given context.
         
         This function updates the context's history with the step's name and result
-        details.  If the step was successful, it updates the context's AI and data
-        attributes based on  the output. In case of failure, it appends the error
-        information to the context's  errors list. The function ultimately returns the
+        details. If the step was successful, it updates the context's AI and data
+        attributes based on the output. In case of failure, it appends the error
+        information to the context's errors list. The function ultimately returns the
         modified context.
         
         Args:

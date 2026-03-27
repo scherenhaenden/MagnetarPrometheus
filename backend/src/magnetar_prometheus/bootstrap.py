@@ -59,18 +59,20 @@ def check_and_install_dependencies(dependencies: List[Dict[str, str]], policy: O
     return result
 
 def bootstrap_runtime(auto_install: bool = False) -> bool:
-    """def bootstrap_runtime(auto_install: bool = False) -> bool:
-    Bootstrap the runtime by checking and installing required dependencies.  This
-    function verifies the presence of essential modules and their corresponding
-    packages. It utilizes the BootstrapPolicy to determine if automatic
-    installation of missing dependencies is allowed. If dependencies are missing
-    and auto_install is disabled, it lists the required packages for manual
-    installation. If the installation is successful, it confirms the installation;
-    otherwise, it reports any failures encountered during the process.
+    """Bootstrap the runtime by checking and installing required dependencies.
+    
+    This function verifies the presence of essential modules and their
+    corresponding packages. It utilizes the BootstrapPolicy to determine if
+    automatic installation  of missing dependencies is allowed. If dependencies are
+    missing and auto_install  is disabled, it lists the required packages for
+    manual installation. If the  installation is successful, it confirms the
+    installation; otherwise, it reports  any failures encountered during the
+    process.
     
     Args:
         auto_install (bool): Flag indicating whether to automatically install missing
-            dependencies."""
+            dependencies.
+    """
     required_deps = [
         {"module": "yaml", "package": "PyYAML"},
         {"module": "pydantic", "package": "pydantic"},

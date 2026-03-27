@@ -1,0 +1,4 @@
+id: email_module
+name: Email Module
+version: 1.0.0
+description: A module for handling emails, extracting data, classifying it via AI, and creating tickets or manual review requests.

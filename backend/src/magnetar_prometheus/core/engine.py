@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from magnetar_prometheus_sdk.models import Workflow, StepResult
+from magnetar_prometheus_sdk.models import Workflow, StepResult, ConditionalRouting
 from magnetar_prometheus.core.executor_router import ExecutorRouter
 from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.evaluator import ConditionEvaluator
@@ -64,4 +64,12 @@ class Engine:
                         pass
 
         # Priority 4: Terminal completion if no valid path is found or all conditions fail.
+        elif isinstance(next_val, ConditionalRouting):
+            for condition in next_val.conditions:
+                try:
+                    if self.evaluator.evaluate(condition.when, context):
+                        return condition.go_to
+                except Exception:
+                    pass
+
         return "end"

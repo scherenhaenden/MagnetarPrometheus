@@ -60,6 +60,29 @@ MagnetarPrometheus/
 6. Use the example repository structure under `backend/`, `sdk/`, and `ui/` to keep runtime, contracts, and visual tooling decoupled.
 7. Use GitHub issues for actionable work items and GitHub discussions for broader architectural, product, and governance conversations.
 
+## Run The Application
+
+The current runnable product slice is the backend workflow runner. From the repository root, use:
+
+```bash
+bash run_app.sh
+```
+
+That single command will:
+
+- bootstrap the local Python environment if needed
+- install the runtime dependencies required by the PoC
+- execute the example workflow
+- print the resulting workflow state as JSON in the terminal
+
+To run a specific workflow file instead of the default example:
+
+```bash
+bash run_app.sh --workflow backend/src/magnetar_prometheus/modules/email_module/email_triage.yaml
+```
+
+At the moment there is no browser-based UI application to launch from this repository. The CLI workflow runner is the current user-facing entrypoint.
+
 ## Project Contents
 
 | File | Purpose |

@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-27 14:02 UTC
+**Author:** Codex
+**Entry:** Added a repo-root one-command launcher, `run_app.sh`, so users can start the current runnable product slice with `bash run_app.sh` from a clean checkout. Updated `README.md` to document that this command bootstraps the Python environment, runs the example workflow, and prints the resulting workflow state as JSON.
+
+---
 **Timestamp:** 2026-03-27 12:45 UTC
 **Author:** AI
 **Entry:** Conducted a comprehensive audit of PR #94. Created 6 high-integrity GitHub issues (#95-#100) based on review findings from \`gemini-code-assist\`. Each issue rigorously preserves the original review evidence, diff suggestions, and technical context. All issues have been linked to Project #9 (\"MagnetarPrometheus: Development & Governance\").

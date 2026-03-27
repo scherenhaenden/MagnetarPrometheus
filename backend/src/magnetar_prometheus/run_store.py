@@ -3,7 +3,10 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, Optional
 
+from pydantic import ValidationError
+
 from magnetar_prometheus.history.models import RunRecord
+
 
 class RunStore(ABC):
     """
@@ -29,27 +32,38 @@ class LocalJSONRunStore(RunStore):
     """
 
     def __init__(self, storage_dir: str = ".run_history"):
-        self.storage_dir = Path(storage_dir)
+        self.storage_dir = Path(storage_dir).resolve()
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_file_path(self, run_id: str) -> Path:
-        return self.storage_dir / f"{run_id}.json"
+        candidate = (self.storage_dir / f"{run_id}.json").resolve()
+        if candidate.parent != self.storage_dir:
+            raise ValueError(f"Invalid run_id '{run_id}' for local run storage")
+        return candidate
 
     def save(self, record: RunRecord) -> None:
         file_path = self._get_file_path(record.run_id)
-        with open(file_path, "w", encoding="utf-8") as f:
-            # model_dump_json handles datetime serialization
-            f.write(record.model_dump_json(indent=2))
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                # model_dump_json handles datetime serialization.
+                f.write(record.model_dump_json(indent=2))
+        except OSError as exc:
+            raise RuntimeError(f"Failed to save record to {file_path}: {exc}") from exc
 
     def get(self, run_id: str) -> Optional[RunRecord]:
-        file_path = self._get_file_path(run_id)
+        try:
+            file_path = self._get_file_path(run_id)
+        except ValueError:
+            return None
+
         if not file_path.is_file():
             return None
+
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             return RunRecord(**data)
-        except (json.JSONDecodeError, Exception):
+        except (json.JSONDecodeError, OSError, ValidationError):
             return None
 
     def list(self) -> List[RunRecord]:
@@ -63,9 +77,9 @@ class LocalJSONRunStore(RunStore):
                     with open(file_path, "r", encoding="utf-8") as f:
                         data = json.load(f)
                     records.append(RunRecord(**data))
-                except (json.JSONDecodeError, Exception):
+                except (json.JSONDecodeError, OSError, ValidationError):
                     continue
 
-        # Sort by start_time descending by default
+        # Sort by start_time descending by default.
         records.sort(key=lambda r: r.start_time, reverse=True)
         return records

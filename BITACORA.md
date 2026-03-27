@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-27 16:09 UTC
+**Author:** Codex
+**Entry:** Applied the substantive PR `#126` review fixes on the run-store branch without deleting prior review context or comments. Hardened `LocalJSONRunStore` against path traversal by validating `run_id`-derived file paths, introduced a typed `RunStatus` enum, narrowed exception handling to concrete parse/validation/file-operation failures, wrapped save-time write failures in an explicit runtime error, and expanded tests for invalid statuses, invalid stored records, path traversal rejection, and write failures. Verified with `bash scripts/run_tests.sh`: `64 passed`, `100.00%` coverage.
+
+---
 **Timestamp:** 2026-03-27 14:30 UTC
 **Author:** Codex
 **Entry:** Closed the remaining implementation gaps for issues `#2`, `#3`, and `#4` on a follow-up branch by making the canonical version stamp portable and explicit as `yyyy.MM.dd HH:mm:ss.SSS`, validating and locating `release-version.txt` deterministically from the backend, shifting bootstrap dependency installation to the package declarations in `backend/pyproject.toml` and `sdk/python/pyproject.toml`, and hardening the CI/release workflows with dependency-path-aware caching, timeout control, artifact upload, and non-empty version-stamp validation.

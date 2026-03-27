@@ -1,9 +1,10 @@
 import json
-import pytest
+from unittest.mock import patch
 from datetime import datetime, timezone
-from pathlib import Path
 
-from magnetar_prometheus.history.models import RunRecord
+import pytest
+
+from magnetar_prometheus.history.models import RunRecord, RunStatus
 from magnetar_prometheus.run_store import LocalJSONRunStore
 
 
@@ -20,11 +21,11 @@ def sample_record():
     return RunRecord(
         run_id="run-123",
         workflow_id="wf-abc",
-        status="completed",
+        status=RunStatus.COMPLETED,
         start_time=datetime(2023, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
         end_time=datetime(2023, 1, 1, 10, 5, 0, tzinfo=timezone.utc),
         output_summary={"result": "success"},
-        error_list=[]
+        error_list=[],
     )
 
 def test_store_initialization(temp_store_dir):
@@ -43,7 +44,7 @@ def test_save_and_get(store, sample_record):
     assert retrieved is not None
     assert retrieved.run_id == "run-123"
     assert retrieved.workflow_id == "wf-abc"
-    assert retrieved.status == "completed"
+    assert retrieved.status == RunStatus.COMPLETED
     assert retrieved.start_time == sample_record.start_time
     assert retrieved.end_time == sample_record.end_time
     assert retrieved.output_summary == {"result": "success"}
@@ -63,7 +64,7 @@ def test_list_records(store, sample_record):
     record2 = RunRecord(
         run_id="run-456",
         workflow_id="wf-xyz",
-        status="failed",
+        status=RunStatus.FAILED,
         start_time=datetime(2023, 1, 2, 10, 0, 0, tzinfo=timezone.utc),
     )
 
@@ -98,3 +99,27 @@ def test_list_non_existent_dir(tmp_path):
 
     records = store.list()
     assert len(records) == 0
+
+def test_save_wraps_file_write_errors(store, sample_record):
+    with patch("builtins.open", side_effect=OSError("disk full")):
+        with pytest.raises(RuntimeError, match="Failed to save record"):
+            store.save(sample_record)
+
+def test_get_rejects_path_traversal_run_id(store):
+    assert store.get("../escape") is None
+
+def test_list_ignores_invalid_record_shape(store, temp_store_dir):
+    invalid_record = temp_store_dir / "invalid-record.json"
+    invalid_record.write_text(
+        json.dumps(
+            {
+                "run_id": "run-invalid",
+                "workflow_id": "wf-abc",
+                "status": "unknown",
+                "start_time": "2023-01-01T10:00:00Z",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert store.list() == []

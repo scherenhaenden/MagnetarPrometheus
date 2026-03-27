@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagnetarPrometheus</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>MagnetarPrometheus</h2>
+                <span class="version-badge">PoC Shell</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-target="dashboard-view">
+                        <span class="icon">📊</span> Dashboard
+                    </li>
+                    <li class="nav-item" data-target="workflows-view">
+                        <span class="icon">🧩</span> Workflows
+                    </li>
+                    <li class="nav-item" data-target="runs-view">
+                        <span class="icon">▶️</span> Runs
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-title">
+                    <h1 id="current-view-title">Dashboard</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="run-example-btn" class="primary-btn">▶️ Run Example Workflow</button>
+                </div>
+            </header>
+
+            <div class="view-container">
+                <!-- Dashboard View -->
+                <section id="dashboard-view" class="view active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Active Runs</h3>
+                            <div class="stat-value">1</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Completed (24h)</h3>
+                            <div class="stat-value">12</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Failed (24h)</h3>
+                            <div class="stat-value danger">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Registered Workflows</h3>
+                            <div class="stat-value">3</div>
+                        </div>
+                    </div>
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <ul class="activity-list" id="dashboard-activity-list">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Workflows View -->
+                <section id="workflows-view" class="view">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Version</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workflows-table-body">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Runs View -->
+                <section id="runs-view" class="view">
+                    <div class="run-console-container">
+                        <div class="runs-list-panel">
+                            <h3>Run History</h3>
+                            <ul class="runs-list" id="runs-history-list">
+                                <!-- Populated by JS -->
+                            </ul>
+                        </div>
+                        <div class="run-details-panel">
+                            <h3 id="run-details-title">Select a run</h3>
+                            <div class="run-metadata" id="run-metadata">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div class="console-output" id="run-console-output">
+                                <pre><code>Waiting for selection...</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Run Execution -->
+    <div id="run-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Executing Example Workflow</h2>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="execution-status" id="modal-execution-status">
+                    Initializing...
+                </div>
+                <div class="console-output modal-console" id="modal-console-output">
+                    <pre><code></code></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" id="modal-close-btn">Close</button>
+                <button class="primary-btn" id="modal-view-run-btn" disabled>View Details</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

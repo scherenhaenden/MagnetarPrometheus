@@ -37,6 +37,7 @@ Preserved historical milestone states from governance-audit/merged branches:
 
 ## User-Visible Progress
 
+- Workflow definition authors now benefit from predictable, prioritized rule processing when defining `next_step`, linear branching, or conditional evaluation.
 - The repository is now structured to support a backend runtime, shared schema/SDK layer, and a future visual workflow builder.
 - The project can now be managed with canonical governance documents instead of ad hoc notes.
 - A runnable backend is now available. A user can run `scripts/run_backend.sh` to execute a mock email triage workflow via the terminal and observe the resulting `RunContext` as structured JSON. Note that a dedicated Python CLI is currently missing.

@@ -13,6 +13,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-27 11:45 UTC
+**Author:** Codex
+**Entry:** Restored 100% automated coverage after the PR 18 merge by adding explicit dict-path exception coverage in `backend/tests/test_engine.py` for `Engine._resolve_next_step`. Verified the repo test path with `scripts/run_tests.sh`: `44 passed`, total coverage `100.00%`, and `src/magnetar_prometheus/core/engine.py` returned to `56/56` covered lines.
+
+---
+**Timestamp:** 2026-03-26 14:07 UTC
+**Author:** AI
+**Entry:** Extracted evaluation logic from `Engine._safe_evaluate` into `ConditionEvaluator` in `backend/src/magnetar_prometheus/core/evaluator.py`. Hardened engine next-step resolution logic to be more explicit, testable, and maintainable. Added edge-case tests to maintain 100% automated test coverage.
+
+---
 **Timestamp:** 2026-03-26 13:48 UTC
 **Author:** AI
 **Entry:** Created the UI Graph Model Schema in `sdk/schemas/workflow-graph-schema.md`. This model defines the mapping between visual nodes/edges and the underlying backend runtime execution concepts, fulfilling the first phase of the visual model milestone (`ms-03`). Marked `task-105` as done.

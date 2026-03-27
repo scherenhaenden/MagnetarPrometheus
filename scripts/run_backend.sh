@@ -5,11 +5,9 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VENV_DIR="${VENV_DIR:-${ROOT_DIR}/venv}"
 VENV_ACTIVATE="${VENV_DIR}/bin/activate"
 
-echo "Running MagnetarPrometheus backend..."
-
 if [ ! -f "${VENV_ACTIVATE}" ]; then
     echo "Virtual environment missing. Bootstrapping first..."
-    bash "${ROOT_DIR}/scripts/bootstrap_python.sh"
+    bash "${ROOT_DIR}/scripts/bootstrap_python.sh" > /dev/null
 fi
 
 source "${VENV_ACTIVATE}"

@@ -5,7 +5,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BOOTSTRAP_SCRIPT="${ROOT_DIR}/scripts/bootstrap_python.sh"
 RUN_SCRIPT="${ROOT_DIR}/scripts/run_backend.sh"
 
-echo "Starting MagnetarPrometheus..."
+echo "=== MagnetarPrometheus Launcher ==="
+echo "--- Bootstrapping Environment ---"
 
 if [ ! -x "${BOOTSTRAP_SCRIPT}" ]; then
     echo "Bootstrap script not found at ${BOOTSTRAP_SCRIPT}."
@@ -17,7 +18,9 @@ if [ ! -x "${RUN_SCRIPT}" ]; then
     exit 1
 fi
 
-bash "${BOOTSTRAP_SCRIPT}"
+# Print an explicit message so the user knows what's happening
+echo "Bootstrapping (this may take a minute)..."
+bash "${BOOTSTRAP_SCRIPT}" > /dev/null
 echo
-echo "Launching example workflow..."
+echo "--- Executing Workflow Engine ---"
 bash "${RUN_SCRIPT}" "$@"

@@ -9,7 +9,7 @@ from magnetar_prometheus.cli import main
 
 def test_cli_default_workflow(capsys):
     """Test that the CLI runs successfully with the default example workflow."""
-    with patch("sys.argv", ["cli.py"]):
+    with patch("sys.argv", ["cli.py", "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
@@ -49,7 +49,7 @@ steps:
     workflow_file = tmp_path / "test_workflow.yaml"
     workflow_file.write_text(workflow_content)
 
-    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file)]):
+    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file), "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
@@ -58,6 +58,20 @@ steps:
     assert output["run"]["workflow_id"] == "test_workflow"
     assert output["run"]["status"] == "completed"
     assert output["data"]["status"] == "in_review"
+
+def test_cli_format_summary(capsys):
+    """Test that the CLI defaults to the summary format and prints it properly."""
+    with patch("sys.argv", ["cli.py"]):
+        main()
+
+    captured = capsys.readouterr()
+    assert "=== Workflow Execution Summary ===" in captured.out
+    assert "Workflow ID: email_triage" in captured.out
+    assert "Status: completed" in captured.out
+    assert "Steps Completed: 4" in captured.out
+    assert "Final Data Keys:" in captured.out
+    assert "Final AI Keys:" in captured.out
+
 
 def test_cli_main_execution():
     """Test the __main__ block behavior."""

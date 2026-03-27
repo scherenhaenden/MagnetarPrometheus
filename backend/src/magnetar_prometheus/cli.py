@@ -27,6 +27,13 @@ def main():
         help="Path to the workflow YAML file."
     )
 
+    parser.add_argument(
+        "--format",
+        choices=["json", "summary"],
+        default="summary",
+        help="Output format."
+    )
+
     args = parser.parse_args()
 
     workflow_path = args.workflow
@@ -47,8 +54,21 @@ def main():
     cm = ContextManager()
     engine = Engine(router, cm)
 
+    if args.format == "summary":
+        print(f"Executing workflow from {workflow_path}...")
+
     result_context = engine.run(wf)
-    print(json.dumps(result_context, indent=2))
+
+    if args.format == "summary":
+        print("=== Workflow Execution Summary ===")
+        print(f"Workflow ID: {result_context.get('run', {}).get('workflow_id', 'unknown')}")
+        print(f"Status: {result_context.get('run', {}).get('status', 'unknown')}")
+        print(f"Steps Completed: {len(result_context.get('history', []))}")
+        print(f"Final Data Keys: {list(result_context.get('data', {}).keys())}")
+        print(f"Final AI Keys: {list(result_context.get('ai', {}).keys())}")
+        print("To see the full technical output, run with --format json")
+    else:
+        print(json.dumps(result_context, indent=2))
 
 
 if __name__ == "__main__":

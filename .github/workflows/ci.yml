@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    name: Validation and Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Bootstrap Environment
+        run: bash scripts/bootstrap_python.sh
+
+      - name: Run Backend Execution
+        run: bash scripts/run_backend.sh
+
+      - name: Run Tests (Enforces 100% Coverage)
+        run: bash scripts/run_tests.sh

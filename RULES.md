@@ -79,6 +79,10 @@ Allowed progression is normally:
 - Daily updates must include user-visible progress, not just technical deltas.
 - Actionable work should be mirrored in GitHub issues whenever the repository is using GitHub operationally.
 - Open design, product, and governance questions should be tracked in GitHub discussions when they are broader than a single task.
+- GitHub issues created from reviews must preserve the original review evidence instead of compressing it into a short summary.
+- When a review contains concrete code examples, proposed diffs, quoted review prompts, or file-specific remediation guidance, that material must be copied into the issue body or linked verbatim enough to preserve the implementation context.
+- Rewriting an issue for clarity is allowed, but the rewrite must retain the original code relation, examples, source PR/review linkage, and enough detail that a later contributor can act without reopening the original review thread.
+- If part of a review finding is stale or already resolved, mark that status explicitly, but do not delete the historical implementation guidance from the issue body.
 
 ## AI Agent Responsibilities
 
@@ -86,6 +90,7 @@ Allowed progression is normally:
 - Do not prepare a PR state without the task first reaching `in_review`.
 - Document assumptions and deviations in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
 - When using GitHub, keep task execution aligned with issues and use discussions for unresolved design questions.
+- Do not compress review-derived GitHub issues into abstract summaries that drop code examples or remediation details.
 
 ## Compliance And Enforcement
 

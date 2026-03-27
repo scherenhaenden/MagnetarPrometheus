@@ -43,6 +43,9 @@ def main():
 
     args = parser.parse_args()
 
+    # Intercept standard single-workflow execution mode. If the --api flag
+    # is provided, we boot the long-running HTTP server rather than running
+    # the workflow directly. This introduces a continuously running backend boundary.
     if args.api:
         run_server(port=args.port)
         return

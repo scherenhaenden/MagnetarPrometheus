@@ -74,7 +74,13 @@ def test_cli_main_execution():
 
 @patch("magnetar_prometheus.cli.run_server")
 def test_cli_api_flag(mock_run_server):
-    """Test that the CLI starts the API server when the --api flag is passed."""
+    """
+    Test that the CLI starts the API server when the --api flag is passed.
+
+    Verifies that standard CLI workflow execution is skipped, and instead,
+    the newly introduced `run_server` entrypoint is invoked with the supplied
+    --port argument (e.g., 9000).
+    """
     with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
         main()
 

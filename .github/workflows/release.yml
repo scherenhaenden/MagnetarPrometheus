@@ -16,10 +16,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Generate canonical version stamp
         id: version
         run: |
           VERSION_STAMP="$(bash scripts/get_version_stamp.sh)"
+          if [ -z "${VERSION_STAMP}" ]; then
+            echo "scripts/get_version_stamp.sh produced an empty version stamp" >&2
+            exit 1
+          fi
           echo "version_stamp=${VERSION_STAMP}" >> "${GITHUB_OUTPUT}"
           echo "${VERSION_STAMP}" > release-version.txt
 

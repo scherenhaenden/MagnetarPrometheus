@@ -1,12 +1,14 @@
 from typing import Dict, Any
-from magnetar_prometheus_sdk.models import Workflow, StepResult
+from magnetar_prometheus_sdk.models import Workflow, StepResult, ConditionalRouting
 from magnetar_prometheus.core.executor_router import ExecutorRouter
 from magnetar_prometheus.core.context_manager import ContextManager
+from magnetar_prometheus.core.evaluator import ConditionEvaluator
 
 class Engine:
     def __init__(self, executor_router: ExecutorRouter, context_manager: ContextManager):
         self.executor_router = executor_router
         self.context_manager = context_manager
+        self.evaluator = ConditionEvaluator()
 
     def run(self, workflow: Workflow, initial_context: Dict[str, Any] = None) -> Dict[str, Any]:
         context = self.context_manager.create(workflow.id, initial_context or {})
@@ -39,59 +41,35 @@ class Engine:
         return context.model_dump()
 
     def _resolve_next_step(self, step_def, context: Dict[str, Any], result: StepResult) -> str:
+        # Priority 1: Direct next_step from the step result.
         if result.next_step:
             return result.next_step
 
         next_val = step_def.next
+
+        # Priority 2: Direct linear next from the workflow step definition
         if isinstance(next_val, str):
             return next_val
-        elif isinstance(next_val, dict):
+
+        # Priority 3: Conditional next branching from the workflow step definition
+        if isinstance(next_val, dict):
             mode = next_val.get("mode")
             if mode == "conditional":
                 for condition in next_val.get("conditions", []):
                     when_expr = condition.get("when")
                     try:
-                        if self._safe_evaluate(when_expr, context):
+                        if self.evaluator.evaluate(when_expr, context):
                             return condition.get("go_to")
                     except Exception:
                         pass
+
+        # Priority 4: Terminal completion if no valid path is found or all conditions fail.
+        elif isinstance(next_val, ConditionalRouting):
+            for condition in next_val.conditions:
+                try:
+                    if self.evaluator.evaluate(condition.when, context):
+                        return condition.go_to
+                except Exception:
+                    pass
+
         return "end"
-
-    def _safe_evaluate(self, expression: str, context: Dict[str, Any]) -> bool:
-        # A minimal safe evaluator for the PoC, checking patterns like:
-        # "context['ai'].get('decision') == 'create_ticket'"
-        # In a real system, this would be a proper AST-based policy engine.
-        expr = expression.strip()
-
-        # very primitive matching for the PoC requirements without eval()
-        if "==" in expr:
-            left, right = [part.strip() for part in expr.split("==", 1)]
-
-            # parse the right side (expected to be a string like 'some_val')
-            if right.startswith("'") and right.endswith("'"):
-                right_val = right[1:-1]
-            elif right.startswith('"') and right.endswith('"'):
-                right_val = right[1:-1]
-            else:
-                return False
-
-            # parse the left side context path
-            # supporting context['ai'].get('decision') or context['ai']['decision']
-            # allow both single or double quotes
-            left_val = None
-            if left.startswith("context['ai'].get('") and left.endswith("')"):
-                key = left.replace("context['ai'].get('", "").replace("')", "")
-                left_val = context.get("ai", {}).get(key)
-            elif left.startswith('context["ai"].get("') and left.endswith('")'):
-                key = left.replace('context["ai"].get("', "").replace('")', "")
-                left_val = context.get("ai", {}).get(key)
-            elif left.startswith("context['ai']['") and left.endswith("']"):
-                key = left.replace("context['ai']['", "").replace("']", "")
-                left_val = context.get("ai", {}).get(key)
-            elif left.startswith('context["ai"]["') and left.endswith('"]'):
-                key = left.replace('context["ai"]["', "").replace('"]', "")
-                left_val = context.get("ai", {}).get(key)
-
-            return left_val == right_val
-
-        return False

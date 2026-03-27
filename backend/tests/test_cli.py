@@ -70,3 +70,12 @@ def test_cli_main_execution():
             import runpy
             with patch("sys.argv", ["cli.py"]):
                 runpy.run_module("magnetar_prometheus.cli", run_name="__main__")
+
+
+@patch("magnetar_prometheus.cli.run_server")
+def test_cli_api_flag(mock_run_server):
+    """Test that the CLI starts the API server when the --api flag is passed."""
+    with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
+        main()
+
+    mock_run_server.assert_called_once_with(port=9000)

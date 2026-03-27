@@ -12,6 +12,17 @@ def _generate_canonical_version_stamp() -> str:
 
 
 def _candidate_release_version_paths(override_path: Optional[str] = None) -> list[Path]:
+    """def _candidate_release_version_paths(override_path: Optional[str] = None) ->
+    list[Path]:
+    Generate candidate release version paths.  This function constructs a list of
+    potential release version file paths.  If an `override_path` is provided, it is
+    added to the list of candidates.  The function also traverses the parent
+    directories of the current module's  path to include "release-version.txt"
+    files. Duplicate paths are resolved  and filtered out to ensure uniqueness
+    before returning the final list.
+    
+    Args:
+        override_path (Optional[str]): An optional path to override the default"""
     candidates: list[Path] = []
 
     if override_path:
@@ -33,15 +44,13 @@ def _candidate_release_version_paths(override_path: Optional[str] = None) -> lis
 
 
 def get_canonical_version_stamp(override_path: Optional[str] = None) -> str:
-    """
-    Returns the canonical version stamp for MagnetarPrometheus.
-
-    The format follows the rule: yyyy.MM.dd HH:mm:ss.SSS
-
-    It first attempts to read this from a canonical `release-version.txt` file,
-    located deterministically by searching upward from this module toward the
-    repository root. If the file is missing, unreadable, empty, or malformed, it
-    falls back to generating the current UTC timestamp dynamically.
+    """Returns the canonical version stamp for MagnetarPrometheus.
+    
+    The function attempts to retrieve the version stamp from a  `release-
+    version.txt` file by searching upward from the current  module toward the
+    repository root. If the file is not found,  unreadable, empty, or does not
+    match the expected format, it  generates the current UTC timestamp as a
+    fallback. The version  stamp follows the format: yyyy.MM.dd HH:mm:ss.SSS.
     """
     for path in _candidate_release_version_paths(override_path):
         if not path.exists():

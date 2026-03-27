@@ -1,14 +1,23 @@
+# Linear Workflow Example
+# This workflow demonstrates a simple, sequential execution path.
+# It consists of two steps: a starting step and a processing step.
+# It serves as a fundamental example of how the workflow engine handles linear progression.
+
 id: linear_example
 name: Linear Workflow Example
 version: 1.0.0
 start_step: start_linear
 
 steps:
+  # The initial step in the workflow. It executes a Python function
+  # and automatically transitions to the 'process_linear' step upon success.
   start_linear:
     type: linear.start
     executor: python
     next: process_linear
 
+  # The final processing step. It executes a Python function
+  # and marks the end of the workflow sequence.
   process_linear:
     type: linear.process
     executor: python

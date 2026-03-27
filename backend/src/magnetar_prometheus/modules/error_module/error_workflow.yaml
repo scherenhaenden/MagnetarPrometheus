@@ -1,17 +1,27 @@
+# Error Workflow Example
+# This workflow is designed to simulate a failure scenario within the execution engine.
+# It serves to demonstrate how the engine handles steps that return a failed StepResult,
+# halting the workflow and updating the context appropriately.
+
 id: error_example
 name: Error Workflow Example
 version: 1.0.0
 start_step: start_error
 
 settings:
+  # Instructs the engine to cease execution immediately if an error occurs.
   stop_on_unhandled_error: true
 
 steps:
+  # The initialization step, analogous to setting up the environment.
+  # It executes a Python function successfully and proceeds to the error trigger step.
   start_error:
     type: error.start
     executor: python
     next: trigger_error
 
+  # This step intentionally triggers a failure by returning a StepResult with success=False.
+  # The engine should catch this and halt the workflow before reaching the 'end' state.
   trigger_error:
     type: error.trigger
     executor: python

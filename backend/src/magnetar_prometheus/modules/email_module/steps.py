@@ -30,5 +30,9 @@ def register_example_steps(registry):
     registry.register("ticket.create", create_ticket)
     registry.register("review.queue", manual_review)
 
+    # Register additional demonstrative example modules.
+    # We hook into this function because the backend CLI explicitly calls
+    # `register_example_steps` to seed the runtime environment. Modifying
+    # this function ensures all examples are available without changing the CLI itself.
     register_linear_steps(registry)
     register_error_steps(registry)

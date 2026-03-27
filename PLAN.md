@@ -16,9 +16,9 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `task-101` | `ms-01` | Establish canonical governance documents | Edward + AI | 3 | 14 | `done` | Initial repository governance baseline created. |
 | `task-102` | `ms-01` | Create modular repository layout for backend, sdk, and ui | Edward + AI | 3 | 14 | `done` | Layout added for PyCharm-friendly project root. |
-| `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but are oriented mainly around backend needs and not yet shaped for UI graph editing. |
-| `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `in_review` | Based on `PocPlan.md`. Workflow loader and engine loop are mostly done, execute a narrow sample workflow, and now include the `email_module` restructuring. |
-| `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | GitHub issue: #7. Must stay aligned with canonical workflow schema. |
+| `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `done` | GitHub issue: #1. Includes Python runtime models and shared schema boundary. |
+| `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `done` | Based on `PocPlan.md`. |
+| `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward + AI | 5 | 24 | `done` | GitHub issue: #7. Must stay aligned with canonical workflow schema. Defined in `sdk/schemas/workflow-graph-schema.md`. |
 | `task-106` | `ms-03` | Define user-visible progress reporting and agile issue/discussion flow | Edward + AI | 3 | 14 | `done` | User-visible progress and GitHub issue/discussion operating rules are documented in the governance files. |
 | `task-107` | `ms-02` | Add runnable scripts for backend, tests, and local bootstrap flows | Edward + AI | 3 | 14 | `done` | GitHub issue: #6. The repo must expose simple scripts to run the product and validation flows. |
 | `task-108` | `ms-02` | Design Python runtime dependency detection and on-run installation flow | Edward | 5 | 24 | `in_progress` | GitHub issue: #5. Dependency auto-install is currently a pragmatic bootstrap mechanism rather than a hardened policy-driven subsystem. |
@@ -32,6 +32,9 @@ These rows are preserved from the merged branch so no prior planning state is de
 
 | Historical Task ID | Original Task ID | Milestone | Title | Owner | Effort (pts) | Weight (%) | Historical State | Historical Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `task-103-history-20260326-governance-audit` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but are oriented mainly around backend needs and not yet shaped for UI graph editing. Preserved from merged branch during conflict resolution. |
+| `task-104-history-20260326-governance-audit` | `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `in_review` | Based on `PocPlan.md`. Workflow loader and engine loop are mostly done, execute a narrow sample workflow, and now include the `email_module` restructuring. Preserved from merged branch during conflict resolution. |
+| `task-105-history-20260326-governance-audit` | `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | GitHub issue: #7. Must stay aligned with canonical workflow schema. Preserved from merged branch during conflict resolution. |
 | `task-103-history-20260326-runtime-remediation` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `done` | GitHub issue: #1. Includes Python runtime models and shared schema boundary. Preserved from merged branch during conflict resolution. |
 | `task-104-history-20260326-runtime-remediation` | `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `done` | Based on `PocPlan.md`. Includes restructuring the example module. Preserved from merged branch during conflict resolution. |
 | `task-110-history-20260326-runtime-remediation` | `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `done` | GitHub issue: #3. The canonical format is explicitly integrated in backend via a version helper and distinguished from Python package semantic versions. Preserved from merged branch during conflict resolution. |
@@ -48,15 +51,15 @@ These notes preserve exact branch-specific wording that would otherwise be lost 
 - `task-111` governance-audit note: `GitHub issue: #2. CI test pipelines exist, but release automation is only metadata-oriented and lacks a full publication pipeline.`
 - `task-111` runtime-remediation note: `GitHub issue: #2. CI test workflow exists and release metadata automation has been added.`
 - Governance-audit effort summary: `Completed: 19 pts`, `In review: 5 pts`, `In progress: 15 pts`, `Remaining: 5 pts`
+- UI-graph branch effort summary: `Completed: 44 pts`, `In progress: 0 pts`, `Remaining: 0 pts`
 - Runtime-remediation effort summary: `Completed: 39 pts`, `In progress: 0 pts`, `Remaining: 5 pts`
 
 ## Effort Summary
 
 - Total effort: 44 pts
-- Completed: 19 pts
-- In review: 5 pts
-- In progress: 15 pts
-- Remaining: 5 pts
+- Completed: 44 pts
+- In progress: 0 pts
+- Remaining: 0 pts
 
 ## State Definitions
 

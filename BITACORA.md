@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-26 13:48 UTC
+**Author:** AI
+**Entry:** Created the UI Graph Model Schema in `sdk/schemas/workflow-graph-schema.md`. This model defines the mapping between visual nodes/edges and the underlying backend runtime execution concepts, fulfilling the first phase of the visual model milestone (`ms-03`). Marked `task-105` as done.
+
+---
 **Timestamp:** 2026-03-27 10:15 UTC
 **Author:** AI
 **Entry:** Enabled GitHub Discussions for the repository and initialized 9 key discussions (#56-#64) covering Backend CLI, Bootstrap Policy, UI Graph Model, Engine Semantics, Module Architecture, Versioning Strategy, Error Handling, Context Persistence, and Trigger Models. This aligns the repository with the governance rule to use discussions for broad architectural and product conversations.

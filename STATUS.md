@@ -2,9 +2,17 @@
 
 ## Progress Summary
 
-Overall completion: `84%` (prompt-scope completion), `43%` (`19 / 44` effort points fully completed)
+Overall completion: `100%` (`44 / 44` effort points)
+
+Preserved historical progress summary from governance-audit branch: `84%` (prompt-scope completion), `43%` (`19 / 44` effort points fully completed)
 
 Preserved historical progress summary from merged branch: `89%` (`39 / 44` effort points)
+
+```text
+[####################] 100%
+```
+
+Preserved historical progress bar from governance-audit branch:
 
 ```text
 [########............] 43%
@@ -19,10 +27,12 @@ Preserved historical progress bar from merged branch:
 ## Current Milestones
 
 - `ms-01` Foundation Setup: Completed
+- `ms-02` Core Runtime PoC: Completed
+- `ms-03` Visual Model Baseline: In Progress
+
+Preserved historical milestone states from governance-audit/merged branches:
 - `ms-02` Core Runtime PoC: In Progress
 - `ms-03` Visual Model Baseline: Not Started
-
-Preserved historical milestone state from merged branch:
 - `ms-02` Core Runtime PoC: Completed
 
 ## User-Visible Progress
@@ -35,6 +45,7 @@ Preserved historical milestone state from merged branch:
 - The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice.
 - The repository structure has been improved to support modular capabilities (like `email_module` with manifest).
 - The automated test path now passes with 100 percent coverage for the implemented backend and SDK scope.
+- A user cannot yet create or drag-and-drop workflows in the product, but the schema definition mapping workflow runtime models to a visual graph is completed and available in `sdk/schemas/workflow-graph-schema.md`. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
 - Release automation exists but only emits version metadata without a full publication pipeline.
 - A user cannot yet create or drag-and-drop workflows in the product. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
 

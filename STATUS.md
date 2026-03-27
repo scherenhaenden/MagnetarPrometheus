@@ -36,7 +36,6 @@ Overall completion: `89%` (`39 / 44` effort points)
 - Python runtime startup contract
 - dependency detection and install policy
 - 100 percent coverage baseline
-- timestamp-based versioning rule
 - CI pipelines for test and release flows
 - UI graph model for drag-and-drop workflows
 

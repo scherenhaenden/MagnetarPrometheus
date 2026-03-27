@@ -33,6 +33,11 @@ Each entry should use:
 **Entry:** Reorganized the example workflow into a structured module (`email_module`) under `backend/src/magnetar_prometheus/modules/`, introducing a proper `manifest.yaml` and moving `example_module.py` to `steps.py` and `example_workflow.yaml` to `email_triage.yaml`. Updated imports and scripts to keep the backend runnable and tests passing with 100% coverage, moving towards the target module structure outlined in `PocPlan.md`.
 
 ---
+**Timestamp:** 2026-03-26 13:53 UTC
+**Author:** AI
+**Entry:** Improved version handling to explicitly separate Python PEP-440 semantic versions from the `yyyy.MM.dd HH:mm:sss` canonical version stamp. Created `scripts/get_version_stamp.sh` to generate the stamp cleanly. Updated the release CI to use this script. Created `magnetar_prometheus.version.get_canonical_version_stamp()` helper for the backend to fetch the stamp dynamically at runtime or from a release metadata artifact. Updated `pyproject.toml` files with clarifying comments and appended the strategy to `ARCHITECTURE.md` and `sdk/schemas/README.md`.
+
+---
 **Timestamp:** 2026-03-26 12:46 UTC
 **Author:** Codex
 **Entry:** Brought the `implement-core-runtime-17609737249557533045` branch up to the actual prompt scope expectation. Added branch-specific review and plan documents under `branches/implement-core-runtime-17609737249557533045/`, repaired the bootstrap/runtime/test scripts so they work from a clean checkout path, and added a release metadata workflow using the canonical timestamp stamp.

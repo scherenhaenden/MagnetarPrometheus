@@ -4,3 +4,4 @@ __pycache__/
 .pytest_cache/
 .coverage
 test_output.log
+.idea/

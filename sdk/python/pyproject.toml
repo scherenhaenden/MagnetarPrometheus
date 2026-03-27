@@ -4,6 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "magnetar-prometheus-sdk"
+# Note: This is the PEP-440 semantic version for python packaging.
+# The canonical release version stamp for MagnetarPrometheus follows
+# the 'yyyy.MM.dd HH:mm:sss' format and is generated separately.
 version = "0.1.0"
 description = "Shared contracts and models for the MagnetarPrometheus workflow orchestration platform."
 requires-python = ">=3.11"

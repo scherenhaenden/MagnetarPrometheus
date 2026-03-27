@@ -1,5 +1,5 @@
 import pytest
-from magnetar_prometheus.example_module import (
+from magnetar_prometheus.modules.email_module.steps import (
     fetch_emails, extract_email_data, ai_classify, create_ticket, manual_review, register_example_steps
 )
 from magnetar_prometheus.registry.step_registry import StepRegistry

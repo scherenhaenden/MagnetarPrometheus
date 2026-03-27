@@ -3,11 +3,14 @@ name: Release Metadata
 on:
   workflow_dispatch:
   push:
+    branches:
+      - master
     tags:
       - "release-*"
 
 jobs:
-  release-metadata:
+  generate-metadata:
+    name: Generate Release Metadata
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

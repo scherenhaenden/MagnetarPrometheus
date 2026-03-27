@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-27 11:56 UTC
+**Author:** Codex
+**Entry:** Resolved the PR 14 workflow conflict in `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
+
+---
 **Timestamp:** 2026-03-27 11:45 UTC
 **Author:** Codex
 **Entry:** Restored 100% automated coverage after the PR 18 merge by adding explicit dict-path exception coverage in `backend/tests/test_engine.py` for `Engine._resolve_next_step`. Verified the repo test path with `scripts/run_tests.sh`: `44 passed`, total coverage `100.00%`, and `src/magnetar_prometheus/core/engine.py` returned to `56/56` covered lines.

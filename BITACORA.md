@@ -18,6 +18,47 @@ Each entry should use:
 **Entry:** Created the UI Graph Model Schema in `sdk/schemas/workflow-graph-schema.md`. This model defines the mapping between visual nodes/edges and the underlying backend runtime execution concepts, fulfilling the first phase of the visual model milestone (`ms-03`). Marked `task-105` as done.
 
 ---
+**Timestamp:** 2026-03-27 10:15 UTC
+**Author:** AI
+**Entry:** Enabled GitHub Discussions for the repository and initialized 9 key discussions (#56-#64) covering Backend CLI, Bootstrap Policy, UI Graph Model, Engine Semantics, Module Architecture, Versioning Strategy, Error Handling, Context Persistence, and Trigger Models. This aligns the repository with the governance rule to use discussions for broad architectural and product conversations.
+
+---
+**Timestamp:** 2026-03-26 13:45 UTC
+**Author:** AI
+
+**Entry:** Conducted a governance audit to bring the documentation inline with the actual branch reality per `docs/branch-review-core-runtime.md`. Explicitly noted that previous status reports were overly optimistic. Specifically, reverted task states in `PLAN.md` to accurately reflect the true 84% prompt-scope completion: `task-103`, `task-108`, and `task-111` reverted to `in_progress`, and `task-104` to `in_review`. Updated `STATUS.md` to correct milestone states and clarify user-visible progress.
+
+---
+**Timestamp:** 2026-03-26 13:45 UTC
+**Author:** AI
+**Entry:** Reorganized the example workflow into a structured module (`email_module`) under `backend/src/magnetar_prometheus/modules/`, introducing a proper `manifest.yaml` and moving `example_module.py` to `steps.py` and `example_workflow.yaml` to `email_triage.yaml`. Updated imports and scripts to keep the backend runnable and tests passing with 100% coverage, moving towards the target module structure outlined in `PocPlan.md`.
+
+---
+**Timestamp:** 2026-03-26 17:35 UTC
+**Author:** Codex
+**Entry:** Governance correction recorded after issue-tracking review feedback. Review-derived GitHub issues must preserve full review evidence, including code examples, proposed diffs, source PR linkage, and file-specific remediation guidance. Compressed summaries without the original implementation context are no longer acceptable.
+
+---
+**Timestamp:** 2026-03-26 15:10 UTC
+**Author:** Codex
+**Entry:** Merged `parallel-agent-unifier-20260326` into `implement-core-runtime-17609737249557533045` to resolve integration conflicts before further branch review cleanup. Reconciled overlapping updates in `BITACORA.md`, `PLAN.md`, `STATUS.md`, and the runtime scripts while preserving the validated bootstrap, backend run, and test execution paths.
+
+---
+**Timestamp:** 2026-03-26 13:45 UTC
+**Author:** AI
+**Entry:** Reorganized the example workflow into a structured module (`email_module`) under `backend/src/magnetar_prometheus/modules/`, introducing a proper `manifest.yaml` and moving `example_module.py` to `steps.py` and `example_workflow.yaml` to `email_triage.yaml`. Updated imports and scripts to keep the backend runnable and tests passing with 100% coverage, moving towards the target module structure outlined in `PocPlan.md`.
+
+---
+**Timestamp:** 2026-03-26 13:53 UTC
+**Author:** AI
+**Entry:** Improved version handling to explicitly separate Python PEP-440 semantic versions from the `yyyy.MM.dd HH:mm:sss` canonical version stamp. Created `scripts/get_version_stamp.sh` to generate the stamp cleanly. Updated the release CI to use this script. Created `magnetar_prometheus.version.get_canonical_version_stamp()` helper for the backend to fetch the stamp dynamically at runtime or from a release metadata artifact. Updated `pyproject.toml` files with clarifying comments and appended the strategy to `ARCHITECTURE.md` and `sdk/schemas/README.md`.
+
+---
+**Timestamp:** 2026-03-26 12:46 UTC
+**Author:** Codex
+**Entry:** Brought the `implement-core-runtime-17609737249557533045` branch up to the actual prompt scope expectation. Added branch-specific review and plan documents under `branches/implement-core-runtime-17609737249557533045/`, repaired the bootstrap/runtime/test scripts so they work from a clean checkout path, and added a release metadata workflow using the canonical timestamp stamp.
+
+---
 **Timestamp:** 2026-03-26 12:18 UTC
 **Author:** Codex
 **Entry:** Documented the branch review in `docs/branch-review-core-runtime.md`, recalibrated prompt-scope completion to 84 percent after validating the repaired bootstrap, runtime, and test flows, and prepared the remediation branch `review-runtime-remediation-20260326` for commit and push.

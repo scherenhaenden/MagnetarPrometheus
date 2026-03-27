@@ -8,6 +8,7 @@ from magnetar_prometheus.version import (
 )
 
 def test_get_canonical_version_stamp_from_file(tmp_path):
+    """Test the retrieval of the canonical version stamp from a file."""
     version_file = tmp_path / "release-version.txt"
     version_file.write_text("2026.03.26 12:00:00.123")
 
@@ -15,6 +16,7 @@ def test_get_canonical_version_stamp_from_file(tmp_path):
     assert version == "2026.03.26 12:00:00.123"
 
 def test_get_canonical_version_stamp_empty_file(tmp_path):
+    """Test get_canonical_version_stamp with an empty file."""
     version_file = tmp_path / "release-version.txt"
     version_file.write_text("   \n") # empty/whitespace
 
@@ -35,6 +37,7 @@ def test_get_canonical_version_stamp_file_read_error(tmp_path):
         assert len(version) == 23
 
 def test_get_canonical_version_stamp_invalid_file_falls_back(tmp_path):
+    """Test fallback behavior for an invalid version file."""
     version_file = tmp_path / "release-version.txt"
     version_file.write_text("not-a-version-stamp")
 
@@ -44,6 +47,7 @@ def test_get_canonical_version_stamp_invalid_file_falls_back(tmp_path):
 
 def test_get_canonical_version_stamp_dynamic_fallback():
     # Make sure we don't accidentally read a real file in the repo
+    """Test the generation of the canonical version stamp."""
     with patch("magnetar_prometheus.version._candidate_release_version_paths", return_value=[]):
         # We mock datetime to ensure consistent generation
         fixed_dt = datetime.datetime(2026, 3, 26, 12, 5, 10, 45000, tzinfo=datetime.timezone.utc)

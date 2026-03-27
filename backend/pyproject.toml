@@ -27,6 +27,16 @@ dev = [
   "pytest-cov>=5.0",
 ]
 
+# -----------------------------------------------------------------------------
+# Pytest Configuration
+#
+# Tests in this project enforce the Magnetar 100% coverage rule for the core
+# orchestration code and shared SDK/schema layers.
+#
+# The markers defined below classify our testing boundaries so that as
+# the product matures, tests can be targeted independently across our
+# validation tiers (e.g. backend vs. api vs. ui).
+# -----------------------------------------------------------------------------
 [tool.pytest.ini_options]
 testpaths = [
   "tests",
@@ -36,11 +46,18 @@ pythonpath = [
   "src",
   "../sdk/python/src",
 ]
+# Fail immediately on any test suite run that drops below 100% code coverage.
 addopts = "--cov=magnetar_prometheus --cov=magnetar_prometheus_sdk --cov-report=term-missing --cov-fail-under=100"
+
+# Register allowed testing markers so `pytest -m <marker>` can run subsets of logic
+# cleanly without pytest throwing 'unknown marker' warnings.
 markers = [
-  "unit: Fast, isolated unit tests.",
-  "integration: Slower tests that combine multiple engine components.",
-  "contract: Tests validating shared SDK schemas and boundaries.",
-  "api: Future placeholder for HTTP/service boundary tests.",
-  "ui: Future placeholder for end-to-end user interface tests."
+  # Backend slice validation (Currently enforced)
+  "unit: Fast, isolated unit tests validating individual classes and methods.",
+  "integration: Slower tests combining multiple engine components and workflows.",
+  "contract: Tests validating the language-neutral shared SDK schemas/models.",
+
+  # Future visible product slices (Hooks for subsequent iterations)
+  "api: Future placeholder for HTTP/service boundary tests ensuring network logic operates properly.",
+  "ui: Future placeholder for end-to-end user interface tests, ensuring visual components behave appropriately."
 ]

@@ -62,6 +62,7 @@ Allowed progression is normally:
 
 - Default WIP limit per individual or AI agent: 2 tasks in `in_progress`
 - Exceeding the limit requires explicit approval recorded in [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md) and [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md)
+- Work should be organized around user-incremental delivery. A reasonable default expectation is that each work round leaves a newly testable, runnable, or inspectable increment for the user or operator.
 
 ## Blocker Lifecycle
 
@@ -77,6 +78,7 @@ Allowed progression is normally:
 - [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md) is updated at least daily during active work or after each merge.
 - [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md) is the planning source of truth for milestones and task assignments.
 - Daily updates must include user-visible progress, not just technical deltas.
+- Status, plan, and architecture documents must state clearly whether the latest increment is actually user-testable or still only an internal capability.
 - Actionable work should be mirrored in GitHub issues whenever the repository is using GitHub operationally.
 - Open design, product, and governance questions should be tracked in GitHub discussions when they are broader than a single task.
 - GitHub issues created from reviews must preserve the original review evidence instead of compressing it into a short summary.
@@ -91,6 +93,7 @@ Allowed progression is normally:
 - Document assumptions and deviations in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
 - When using GitHub, keep task execution aligned with issues and use discussions for unresolved design questions.
 - Do not compress review-derived GitHub issues into abstract summaries that drop code examples or remediation details.
+- Prefer slices that expose one more user-testable increment per round trip instead of accumulating only invisible internal work across many turns.
 
 ## Compliance And Enforcement
 

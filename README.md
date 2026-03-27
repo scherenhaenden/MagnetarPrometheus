@@ -22,6 +22,8 @@ This repository follows the Magnetar standard for:
 
 It should be run in an agile way. Progress tracking must not stop at technical implementation details. Daily visibility should include what a user can already do, what changed in the product experience, and what remains blocked from a user-facing perspective.
 
+The working style for this repository is explicitly user-incremental. Each meaningful round of work should leave behind something new that a user or operator can actually try, observe, or validate, even if the increment is still rough or limited.
+
 ## Product Boundaries
 
 This repository contains a product that uses the canonical model. The canonical model itself is a separate concept used to administer projects.
@@ -115,6 +117,12 @@ In addition, daily status should answer user-facing questions, not just implemen
 - what is now possible for a user or operator
 - what is visible in the product or workflow editor
 - what remains missing before a usable increment exists
+
+The preferred delivery rhythm is:
+
+- every round trip should aim to make one more thing runnable, visible, or testable
+- internal refactors are allowed, but they should be tied to a near-term user-visible increment whenever possible
+- when a slice is not yet user-visible, the docs must say so directly instead of overstating completion
 
 ## YAML Project Schema
 

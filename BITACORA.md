@@ -13,6 +13,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-27 14:18 UTC
+**Author:** Codex
+**Entry:** Updated the top-level governance and contribution docs to make the delivery model explicit: MagnetarPrometheus should be advanced in user-incremental slices so that each work round leaves something new runnable, visible, or testable. This was added to `README.md`, `RULES.md`, `WIP_GUIDELINES.md`, `CONTRIBUTING.md`, `PLAN.md`, and `STATUS.md`.
+
+---
+**Timestamp:** 2026-03-27 14:10 UTC
+**Author:** Codex
+**Entry:** Rewrote the top-level status and planning docs to describe the actual current product state more directly. `STATUS.md`, `PLAN.md`, `ARCHITECTURE.md`, and `TESTING.md` now explain that the repository currently exposes a backend proof of concept with a CLI execution path, not yet a full user-facing application with a persistent service, API, or UI.
+
+---
 **Timestamp:** 2026-03-27 14:02 UTC
 **Author:** Codex
 **Entry:** Added a repo-root one-command launcher, `run_app.sh`, so users can start the current runnable product slice with `bash run_app.sh` from a clean checkout. Updated `README.md` to document that this command bootstraps the Python environment, runs the example workflow, and prints the resulting workflow state as JSON.

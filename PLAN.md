@@ -10,6 +10,26 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | `ms-02` | Core Runtime PoC | 2026-04-12 | Build the first serial workflow engine with models, loader, executor routing, and mock module flow. | A sample workflow runs end-to-end and produces structured context output. |
 | `ms-03` | Visual Model Baseline | 2026-04-26 | Define workflow graph schema and UI/editor integration boundary. | Shared schema supports visual nodes and edges, and UI scaffolding can render/edit a sample workflow graph. |
 
+## How To Read This Plan
+
+This plan tracks the currently scoped baseline, not the full long-term product ambition.
+
+That distinction matters because the repo now contains a runnable backend slice, but not yet:
+
+- a long-running runtime service
+- a job submission API
+- a web UI
+- a desktop UI
+- an operator console
+
+So when this plan says a milestone is `done`, it means the milestone's scoped deliverable is complete, not that MagnetarPrometheus already behaves like the final workflow platform vision.
+
+Execution strategy for upcoming slices:
+
+- prefer user-incremental delivery over large invisible batches
+- define work so each round makes one more capability runnable, visible, or inspectable
+- when parallelizing, assign disjoint write ownership to avoid collisions between contributors and agents
+
 ## Task Backlog
 
 | Task ID | Milestone | Title | Owner | Effort (pts) | Weight (%) | State | Notes |
@@ -62,6 +82,25 @@ These notes preserve exact branch-specific wording that would otherwise be lost 
 - Completed: 44 pts
 - In progress: 0 pts
 - Remaining: 0 pts
+
+## What The Current Baseline Actually Delivers
+
+- A Python proof-of-concept backend runtime.
+- A CLI execution path for workflow YAML files.
+- A shared SDK/schema layer for workflow contracts.
+- An example module and example workflow.
+- Local bootstrap, run, and test scripts.
+- CI/test/release-metadata automation for the current slice.
+
+## What Still Needs A New Planning Slice
+
+These items are not contradicted by the current `done` state. They simply belong to the next planning baseline rather than the current one.
+
+- Build a long-running backend service or API around the engine.
+- Create a first visible UI for running and inspecting workflows.
+- Define how jobs/runs are submitted, queued, persisted, and observed.
+- Turn the visual graph schema into an actual editable UI surface.
+- Clarify the future module lifecycle: discovery, registration, packaging, and execution policies.
 
 ## State Definitions
 

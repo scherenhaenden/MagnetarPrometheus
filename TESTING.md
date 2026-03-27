@@ -1,5 +1,29 @@
 # Testing Strategy for MagnetarPrometheus
 
+## Current Testing Reality
+
+The current automated test suite validates the backend proof-of-concept slice very aggressively, but it does not validate a finished end-user product because that product surface does not exist yet.
+
+What is covered well today:
+
+- workflow model validation
+- workflow loading
+- step execution
+- next-step resolution
+- conditional evaluation
+- executor routing
+- bootstrap and dependency-policy behavior
+- CLI/module wiring for the current backend slice
+
+What is not covered yet because it does not exist yet:
+
+- web UI behavior
+- desktop UI behavior
+- API endpoints
+- persistent job/run storage
+- end-user session flows
+- queueing/scheduling behavior
+
 ## Types Of Tests
 
 - Unit tests for domain models, validation, next-step resolution, and executor routing
@@ -21,6 +45,8 @@
 - Runtime startup detects missing dependencies before execution proceeds
 - Automatic dependency installation behavior is validated under controlled test scenarios
 
+For the current proof of concept, acceptance should be read as “the backend slice behaves correctly.” It should not be read as “the full application experience is complete.”
+
 ## Coverage Enforcement
 
 - Coverage thresholds should be enforced in the standard test run path
@@ -31,6 +57,20 @@
 - CI must execute the standard test and validation path on every relevant change
 - coverage enforcement must run in pipeline, not only locally
 - release-oriented pipeline stages should preserve the canonical version stamp format `yyyy.MM.dd HH:mm:sss`
+
+## Practical Local Validation
+
+From the repository root, the most useful checks are:
+
+```bash
+bash run_app.sh
+bash scripts/run_tests.sh
+```
+
+Those two commands validate the current product slice in the most direct way:
+
+- `run_app.sh` proves the backend can bootstrap and execute the example workflow
+- `scripts/run_tests.sh` proves the implemented backend and SDK scope still satisfies the enforced coverage contract
 
 ## Bug Reporting Process
 

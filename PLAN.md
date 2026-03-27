@@ -37,6 +37,19 @@ These rows are preserved from the merged branch so no prior planning state is de
 | `task-110-history-20260326-runtime-remediation` | `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `done` | GitHub issue: #3. The canonical format is explicitly integrated in backend via a version helper and distinguished from Python package semantic versions. Preserved from merged branch during conflict resolution. |
 | `task-111-history-20260326-runtime-remediation` | `task-111` | `ms-02` | Create CI pipelines for testing, validation, and release flows | Edward + AI | 5 | 24 | `done` | GitHub issue: #2. CI test workflow exists and release metadata automation has been added. Preserved from merged branch during conflict resolution. |
 
+## Preserved Historical Notes
+
+These notes preserve exact branch-specific wording that would otherwise be lost when two planning stories collide in the same rows.
+
+- `task-104` governance-audit note: `Based on \`PocPlan.md\`. Workflow loader and engine loop are mostly done and execute a narrow sample workflow.`
+- `task-104` runtime-remediation note: `Based on \`PocPlan.md\`. Includes restructuring the example module.`
+- `task-110` governance-audit note: `GitHub issue: #3. The canonical format is documented and a release metadata workflow emits the timestamp stamp.`
+- `task-110` runtime-remediation note: `GitHub issue: #3. The canonical format is explicitly integrated in backend via a version helper and distinguished from Python package semantic versions.`
+- `task-111` governance-audit note: `GitHub issue: #2. CI test pipelines exist, but release automation is only metadata-oriented and lacks a full publication pipeline.`
+- `task-111` runtime-remediation note: `GitHub issue: #2. CI test workflow exists and release metadata automation has been added.`
+- Governance-audit effort summary: `Completed: 19 pts`, `In review: 5 pts`, `In progress: 15 pts`, `Remaining: 5 pts`
+- Runtime-remediation effort summary: `Completed: 39 pts`, `In progress: 0 pts`, `Remaining: 5 pts`
+
 ## Effort Summary
 
 - Total effort: 44 pts

@@ -4,8 +4,16 @@
 
 Overall completion: `84%` (prompt-scope completion), `43%` (`19 / 44` effort points fully completed)
 
+Preserved historical progress summary from merged branch: `89%` (`39 / 44` effort points)
+
 ```text
 [########............] 43%
+```
+
+Preserved historical progress bar from merged branch:
+
+```text
+[##################..] 89%
 ```
 
 ## Current Milestones
@@ -13,6 +21,9 @@ Overall completion: `84%` (prompt-scope completion), `43%` (`19 / 44` effort poi
 - `ms-01` Foundation Setup: Completed
 - `ms-02` Core Runtime PoC: In Progress
 - `ms-03` Visual Model Baseline: Not Started
+
+Preserved historical milestone state from merged branch:
+- `ms-02` Core Runtime PoC: Completed
 
 ## User-Visible Progress
 
@@ -26,6 +37,12 @@ Overall completion: `84%` (prompt-scope completion), `43%` (`19 / 44` effort poi
 - The automated test path now passes with 100 percent coverage for the implemented backend and SDK scope.
 - Release automation exists but only emits version metadata without a full publication pipeline.
 - A user cannot yet create or drag-and-drop workflows in the product. That remains a planned milestone and should stay visible in daily status updates until a usable editor exists.
+
+## Preserved Historical Status Notes
+
+- Merged-branch user-visible wording preserved: `A runnable backend is now available. A user can run \`scripts/run_backend.sh\` to execute a structured \`email_module\` containing a mock email triage workflow via the terminal and observe the resulting \`RunContext\` as structured JSON.`
+- Merged-branch bootstrap wording preserved: `The bootstrap flow can now prepare a virtual environment and install the Python dependencies required for the current PoC slice.`
+- Merged-branch omission preserved for reference: release automation was previously described without the explicit limitation `only emits version metadata without a full publication pipeline`.
 
 ## Operating Rhythm
 

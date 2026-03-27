@@ -24,12 +24,23 @@ What is not covered yet because it does not exist yet:
 - end-user session flows
 - queueing/scheduling behavior
 
-## Types Of Tests
+## Validation Tiers
 
+As the product expands from a backend engine into a visible service and application, validation is organized into explicit tiers. These tiers can be targeted using `bash scripts/run_tests.sh <tier>`.
+
+### 1. Backend (`tier: backend`)
+- Currently active and enforced at 100% code coverage.
 - Unit tests for domain models, validation, next-step resolution, and executor routing
 - Integration tests for full workflow execution using mock modules
 - Contract tests for shared SDK/schema compatibility between backend and UI-facing payloads
-- Future end-to-end tests for visual workflow creation and serialization
+
+### 2. API (`tier: api`)
+- *Future placeholder.*
+- Will contain integration and contract tests validating the HTTP service boundary, job submission, and result retrieval.
+
+### 3. UI (`tier: ui`)
+- *Future placeholder.*
+- Will contain end-to-end browser automation tests validating the visual workflow editor, drag-and-drop operations, and user dashboard.
 
 ## Code Coverage
 
@@ -58,16 +69,18 @@ For the current proof of concept, acceptance should be read as “the backend sl
 - coverage enforcement must run in pipeline, not only locally
 - release-oriented pipeline stages should preserve the canonical version stamp format `yyyy.MM.dd HH:mm:sss`
 
-## Practical Local Validation
+## Validating The Current User Increment
 
-From the repository root, the most useful checks are:
+Because the current visible product increment is a CLI application rather than a web UI, validation focuses on engine behavior and schema contracts.
+
+To validate the product locally from the repository root:
 
 ```bash
 bash run_app.sh
 bash scripts/run_tests.sh
 ```
 
-Those two commands validate the current product slice in the most direct way:
+These commands validate both the visible surface (the CLI) and the internal correctness (the engine tests):
 
 - `run_app.sh` proves the backend can bootstrap and execute the example workflow
 - `scripts/run_tests.sh` proves the implemented backend and SDK scope still satisfies the enforced coverage contract

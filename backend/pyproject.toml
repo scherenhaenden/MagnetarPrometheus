@@ -37,3 +37,10 @@ pythonpath = [
   "../sdk/python/src",
 ]
 addopts = "--cov=magnetar_prometheus --cov=magnetar_prometheus_sdk --cov-report=term-missing --cov-fail-under=100"
+markers = [
+  "unit: Fast, isolated unit tests.",
+  "integration: Slower tests that combine multiple engine components.",
+  "contract: Tests validating shared SDK schemas and boundaries.",
+  "api: Future placeholder for HTTP/service boundary tests.",
+  "ui: Future placeholder for end-to-end user interface tests."
+]

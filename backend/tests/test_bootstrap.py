@@ -1,6 +1,12 @@
 import pytest
-from unittest.mock import patch, MagicMock
-from magnetar_prometheus.bootstrap import check_and_install_dependencies, BootstrapPolicy, BootstrapResult
+from unittest.mock import patch
+
+from magnetar_prometheus.bootstrap import (
+    BootstrapPolicy,
+    BootstrapResult,
+    bootstrap_runtime,
+    check_and_install_dependencies,
+)
 
 def test_check_dependencies_all_present():
     deps = [{"module": "sys", "package": "sys"}]
@@ -41,3 +47,9 @@ def test_check_dependencies_missing_auto_fail(mock_call):
     assert result.missing == deps
     assert not result.installed
     assert result.failed == deps
+
+@patch("magnetar_prometheus.bootstrap.check_and_install_dependencies")
+def test_bootstrap_runtime_success(mock_check):
+    mock_check.return_value = BootstrapResult(success=True)
+    assert bootstrap_runtime(auto_install=True) is True
+    mock_check.assert_called_once()

@@ -88,6 +88,13 @@ Technologies:
 - If automatic installation is not permitted or fails, the error path must be explicit and actionable.
 - Dependency auto-install behavior must be isolated so it does not contaminate domain logic or shared contracts.
 
+## Versioning Strategy
+
+The repository follows a strict separation between Python package semantic versions and the canonical version stamp:
+
+- Python packages (`backend` and `sdk`) use standard PEP-440 versioning (e.g., `0.1.0`) for internal metadata and standard toolchain compatibility.
+- The canonical release version stamp for MagnetarPrometheus follows the format `yyyy.MM.dd HH:mm:sss`. This stamp is generated during the delivery lifecycle and is meant for runtime reporting, release metadata, and external logging. It acts as the product-level identifier, while the package-level versions are used primarily for local dependency resolution.
+
 ## Delivery Automation Constraints
 
 - CI pipelines should run the standard validation and test scripts.

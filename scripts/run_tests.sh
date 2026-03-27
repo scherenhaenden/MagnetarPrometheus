@@ -14,5 +14,7 @@ fi
 
 source "${VENV_ACTIVATE}"
 
+# Coverage is enforced in pytest configuration so this script can stay focused
+# on providing a stable, repo-relative execution path.
 cd "${ROOT_DIR}/backend"
-PYTHONPATH="${ROOT_DIR}/sdk/python/src:${ROOT_DIR}/backend/src" pytest
+pytest

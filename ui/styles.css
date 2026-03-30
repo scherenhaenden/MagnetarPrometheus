@@ -533,3 +533,52 @@ button:disabled {
     justify-content: flex-end;
     gap: 1rem;
 }
+
+@media (max-width: 480px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        position: static;
+        height: auto;
+        padding: 1rem 0;
+    }
+
+    .sidebar-header {
+        padding: 0 1rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .top-header {
+        height: auto;
+        padding: 1rem;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .view-container {
+        padding: 1rem;
+    }
+
+    .run-console-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .runs-list-panel,
+    .run-details-panel {
+        width: 100%;
+    }
+
+    .run-metadata {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

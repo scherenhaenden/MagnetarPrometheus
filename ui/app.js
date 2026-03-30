@@ -115,6 +115,7 @@ const modalTitle = document.getElementById('run-modal-title');
 let modalTimers = [];
 let lastFocusedElement = null;
 let runDetailsTimer = null;
+let modalKeydownHandler = null;
 
 /**
  * Formats an ISO 8601 date string into a user-friendly locale string.
@@ -148,6 +149,19 @@ const getStatusBadge = (status) => {
 const setElementChildren = (element, ...children) => {
     element.replaceChildren(...children);
 };
+
+/**
+ * Returns the focusable elements inside the modal in DOM order.
+ * The title is included because the dialog moves initial focus there
+ * for announcement purposes even though it is not otherwise interactive.
+ * @returns {HTMLElement[]} Focusable modal descendants.
+ */
+const getModalFocusableElements = () => [
+    modalTitle,
+    ...Array.from(
+        runModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+    ).filter((element) => !element.hasAttribute('disabled'))
+];
 
 /**
  * Navigation / View Router Controller
@@ -348,6 +362,9 @@ const openModal = () => {
     modalTimers.forEach(clearTimeout);
     modalTimers = [];
     lastFocusedElement = document.activeElement;
+    if (modalKeydownHandler !== null) {
+        runModal.removeEventListener('keydown', modalKeydownHandler);
+    }
 
     runModal.classList.add('active');
     const spinner = document.createElement('span');
@@ -355,6 +372,38 @@ const openModal = () => {
     setElementChildren(modalExecutionStatus, spinner, ' Executing: Email Triage Example...');
     modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\n[INFO] Loading dependencies...';
     modalViewRunBtn.disabled = true;
+
+    modalKeydownHandler = (event) => {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            closeModal();
+            return;
+        }
+
+        if (event.key !== 'Tab') {
+            return;
+        }
+
+        const focusableElements = getModalFocusableElements();
+        if (focusableElements.length === 0) {
+            return;
+        }
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement.focus();
+            return;
+        }
+
+        if (!event.shiftKey && document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement.focus();
+        }
+    };
+    runModal.addEventListener('keydown', modalKeydownHandler);
     modalTitle.focus();
 
     // Simulate execution sequence
@@ -384,6 +433,10 @@ const closeModal = () => {
     modalTimers.forEach(clearTimeout);
     modalTimers = [];
     runModal.classList.remove('active');
+    if (modalKeydownHandler !== null) {
+        runModal.removeEventListener('keydown', modalKeydownHandler);
+        modalKeydownHandler = null;
+    }
     modalExecutionStatus.textContent = 'Initializing...';
     modalConsoleOutput.textContent = '';
     modalViewRunBtn.disabled = true;

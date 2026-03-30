@@ -1,7 +1,21 @@
+"""
+Runtime context management for the MagnetarPrometheus workflow engine.
+
+:class:`ContextManager` is responsible for creating fresh
+:class:`~magnetar_prometheus_sdk.models.RunContext` instances and for
+applying each step's result back into the live context as execution progresses.
+"""
+
 from typing import Dict, Any
 from magnetar_prometheus_sdk.models import RunContext, StepResult
 
 class ContextManager:
+    """Creates and mutates :class:`~magnetar_prometheus_sdk.models.RunContext` objects.
+
+    Keeps context-mutation logic out of the engine core so both can be tested
+    in isolation.
+    """
+
     def create(self, workflow_id: str, initial_context: Dict[str, Any]) -> RunContext:
         """Create a RunContext with the specified workflow ID and initial context."""
         ctx = RunContext()

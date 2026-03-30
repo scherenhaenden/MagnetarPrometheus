@@ -45,11 +45,13 @@ const mockWorkflows = [
  * and summary API endpoints would eventually return.
  * @type {Array<Object>}
  */
+const isoHoursAgo = (hoursAgo) => new Date(Date.now() - (hoursAgo * 60 * 60 * 1000)).toISOString();
+
 const mockRuns = [
-    { id: 'run-8f72', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: '2026-04-12T08:30:00Z', duration: '45s' },
-    { id: 'run-3a1b', workflowId: 'wf-002', workflowName: 'Data Processing', status: 'failed', startTime: '2026-04-11T23:00:00Z', duration: '12m' },
-    { id: 'run-9c4d', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: '2026-04-11T08:30:00Z', duration: '42s' },
-    { id: 'run-2e5f', workflowId: 'wf-003', workflowName: 'Weekly Report', status: 'success', startTime: '2026-04-10T09:00:00Z', duration: '3m' },
+    { id: 'run-8f72', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: isoHoursAgo(2), duration: '45s' },
+    { id: 'run-3a1b', workflowId: 'wf-002', workflowName: 'Data Processing', status: 'failed', startTime: isoHoursAgo(10), duration: '12m' },
+    { id: 'run-9c4d', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: isoHoursAgo(26), duration: '42s' },
+    { id: 'run-2e5f', workflowId: 'wf-003', workflowName: 'Weekly Report', status: 'success', startTime: isoHoursAgo(50), duration: '3m' },
 ];
 
 /**

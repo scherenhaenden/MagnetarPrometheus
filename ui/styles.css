@@ -427,7 +427,7 @@ button:disabled {
     padding: 1.5rem;
     flex: 1;
     overflow-y: auto;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
     font-size: 0.875rem;
     line-height: 1.5;
     background-color: #1e1e1e;
@@ -436,7 +436,7 @@ button:disabled {
 .console-output pre {
     margin: 0;
     white-space: pre-wrap;
-    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /*

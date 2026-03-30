@@ -13,6 +13,51 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 17:19 UTC
+**Author:** Codex
+**Entry:** Applied the final PR `#124` navigation resilience polish in `ui/app.js` by replacing the brittle `navItems[2]` Runs-tab navigation with a stable selector targeting `.nav-item[data-target=\"runs-view\"]`. This preserves the synthetic-run flow while decoupling it from sidebar item ordering.
+
+---
+**Timestamp:** 2026-03-30 16:50 UTC
+**Author:** Codex
+**Entry:** Closed the final PR `#124` layout-maintainability thread in `ui/styles.css` by extracting the shared view padding into `--view-padding` and reusing that token in both `.view-container` and the run-console height calculation. This removes the remaining `4rem` layout magic number and keeps the height math coupled to the actual shell padding value.
+
+---
+**Timestamp:** 2026-03-30 16:46 UTC
+**Author:** Codex
+**Entry:** Closed the remaining PR `#124` status-badge maintainability thread in `ui/styles.css` by moving badge background/text colors into `:root` custom properties and wiring the active, success, draft, failed, and running badge variants to those tokens. This keeps the shell's status styling aligned with the rest of the file's token-based theme approach and removes the last intentional hardcoded badge palette values.
+
+---
+**Timestamp:** 2026-03-30 16:26 UTC
+**Author:** Codex
+**Entry:** Completed the remaining PR `#124` modal-accessibility follow-up in `ui/app.js` by adding modal-scoped keyboard handling for `Tab`, `Shift+Tab`, and `Escape`. The shell now traps focus inside the dialog while it is open, avoids stacking duplicate listeners across repeated opens, and restores the pre-modal focus target on close using the same state owner that already manages modal timers and visible status.
+
+---
+**Timestamp:** 2026-03-30 16:18 UTC
+**Author:** Codex
+**Entry:** Fixed the remaining PR `#124` modal CTA mismatch in `ui/app.js` by making the completed simulation produce a synthetic run entry and log payload inside the shell's mock run collections before navigating to the Runs view. This preserves the existing `View Run` copy while ensuring the user actually lands on the run they just watched complete.
+
+---
+**Timestamp:** 2026-03-30 16:11 UTC
+**Author:** Codex
+**Entry:** Corrected the remaining PR `#124` mock-run recency issue in `ui/app.js` by replacing fixed future `startTime` fixtures with timestamps generated relative to the current time. This keeps the dashboard's last-24-hours counters, recent activity list, and runs view internally consistent without introducing defensive filter logic around intentionally bad demo data.
+
+---
+**Timestamp:** 2026-03-30 16:05 UTC
+**Author:** Codex
+**Entry:** Fixed the remaining PR `#124` run-details race in `ui/app.js` by tracking the delayed console-render timer used by `displayRunDetails()`, clearing any previous pending timer before scheduling a new one, and guarding the delayed log write against stale selection state. This keeps rapid run switching from replacing the currently selected run's logs with an older timer callback.
+
+---
+**Timestamp:** 2026-03-30 15:48 UTC
+**Author:** Codex
+**Entry:** Addressed the late PR `#124` security review cluster on `feature/ui-mvp-shell-4754349263308203013` by removing mock-data DOM writes that relied on `innerHTML` in `ui/app.js`. Reworked dashboard activity items, workflow table rows, runs list items, status badges, and run metadata rendering to use explicit DOM node creation and `textContent`-based assembly so the static MVP shell no longer normalizes unsafe rendering patterns that would be risky once real API-backed data arrives.
+
+---
+**Timestamp:** 2026-03-30 15:22 UTC
+**Author:** Codex
+**Entry:** Completed the PR `#124` UI-shell review-fix pass on `feature/ui-mvp-shell-4754349263308203013` with separate commits per resolved review item, then added detailed file-level intent headers to `ui/index.html`, `ui/app.js`, and `ui/styles.css` so future contributors and agents can see why the shell currently remains static HTML, vanilla JavaScript, and plain CSS. The review-fix commits cover modal timer cleanup, real newline rendering, accessible modal semantics, accessible sidebar navigation controls, narrow-screen layout stacking, Stylelint-aligned console styles, and dashboard stats derived from mock data.
+
+---
 **Timestamp:** 2026-03-30 15:07 UTC
 **Author:** Codex
 **Entry:** Updated PR `#128` on top of current `master` by rebasing `feature/cli-ux-flow-13781116585242481492`, then addressing the worthwhile review follow-ups directly on the PR branch instead of creating a separate issue. Added a detailed file-level intent header to `backend/src/magnetar_prometheus/cli.py`, refactored the summary output block to use local variables for readability, and hardened the CLI so invalid workflow definitions exit cleanly with a path-specific stderr message and code `1`. Expanded CLI coverage for invalid workflow content and revalidated with `bash scripts/run_tests.sh`: `68 passed`, `100.00%` coverage.

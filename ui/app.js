@@ -124,12 +124,26 @@ const formatDate = (dateString) => {
 };
 
 /**
- * Generates HTML for a standardized status badge component.
+ * Generates a standardized status badge element.
  * @param {string} status - The status text (e.g., 'active', 'success', 'failed').
- * @returns {string} The raw HTML string for the badge.
+ * @returns {HTMLSpanElement} The badge element.
  */
 const getStatusBadge = (status) => {
-    return `<span class="status-badge ${status}">${status.toUpperCase()}</span>`;
+    const badge = document.createElement('span');
+    badge.className = `status-badge ${status}`;
+    badge.textContent = status.toUpperCase();
+    return badge;
+};
+
+/**
+ * Replaces an element's children with the provided nodes or text.
+ * This keeps the shell on a consistent explicit-DOM pattern instead of
+ * mixing node assembly with HTML string interpolation.
+ * @param {HTMLElement} element - The target element to update.
+ * @param {...(Node|string)} children - The replacement content.
+ */
+const setElementChildren = (element, ...children) => {
+    element.replaceChildren(...children);
 };
 
 /**
@@ -174,13 +188,19 @@ const populateDashboard = () => {
     failed24hCount.textContent = String(recentRuns.filter((run) => run.status === 'failed').length);
     registeredWorkflowsCount.textContent = String(mockWorkflows.length);
 
-    dashboardActivityList.innerHTML = '';
+    dashboardActivityList.replaceChildren();
     mockRuns.slice(0, 3).forEach(run => {
         const li = document.createElement('li');
-        li.innerHTML = `
-            <strong>${run.workflowName}</strong> run ${run.id} finished with status ${getStatusBadge(run.status)}
-            <span class="activity-time">${formatDate(run.startTime)}</span>
-        `;
+        const workflowName = document.createElement('strong');
+        workflowName.textContent = run.workflowName;
+
+        const message = document.createTextNode(` run ${run.id} finished with status `);
+
+        const activityTime = document.createElement('span');
+        activityTime.className = 'activity-time';
+        activityTime.textContent = formatDate(run.startTime);
+
+        li.append(workflowName, message, getStatusBadge(run.status), activityTime);
         dashboardActivityList.appendChild(li);
     });
 };
@@ -190,18 +210,39 @@ const populateDashboard = () => {
  * Populates name, description, status badges, and stub action buttons.
  */
 const populateWorkflows = () => {
-    workflowsTableBody.innerHTML = '';
+    workflowsTableBody.replaceChildren();
     mockWorkflows.forEach(wf => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><strong>${wf.name}</strong><br><small class="text-muted">${wf.id}</small></td>
-            <td>${wf.description}</td>
-            <td>${wf.version}</td>
-            <td>${getStatusBadge(wf.status)}</td>
-            <td>
-                <button class="secondary-btn" onclick="alert('Graph View Not Implemented Yet')">View Graph</button>
-            </td>
-        `;
+
+        const nameCell = document.createElement('td');
+        const nameStrong = document.createElement('strong');
+        nameStrong.textContent = wf.name;
+        const lineBreak = document.createElement('br');
+        const workflowId = document.createElement('small');
+        workflowId.className = 'text-muted';
+        workflowId.textContent = wf.id;
+        nameCell.append(nameStrong, lineBreak, workflowId);
+
+        const descriptionCell = document.createElement('td');
+        descriptionCell.textContent = wf.description;
+
+        const versionCell = document.createElement('td');
+        versionCell.textContent = wf.version;
+
+        const statusCell = document.createElement('td');
+        statusCell.appendChild(getStatusBadge(wf.status));
+
+        const actionsCell = document.createElement('td');
+        const viewGraphButton = document.createElement('button');
+        viewGraphButton.type = 'button';
+        viewGraphButton.className = 'secondary-btn';
+        viewGraphButton.textContent = 'View Graph';
+        viewGraphButton.addEventListener('click', () => {
+            alert('Graph View Not Implemented Yet');
+        });
+        actionsCell.appendChild(viewGraphButton);
+
+        tr.append(nameCell, descriptionCell, versionCell, statusCell, actionsCell);
         workflowsTableBody.appendChild(tr);
     });
 };
@@ -212,19 +253,29 @@ const populateWorkflows = () => {
  * Clicking a run triggers `displayRunDetails` to show its logs and metadata on the right.
  */
 const populateRuns = () => {
-    runsHistoryList.innerHTML = '';
+    runsHistoryList.replaceChildren();
     mockRuns.forEach((run, index) => {
         const li = document.createElement('li');
         li.className = `run-item ${index === 0 ? 'selected' : ''}`;
         li.dataset.runId = run.id;
-        li.innerHTML = `
-            <div class="run-item-header">
-                <span class="run-item-id">${run.id}</span>
-                ${getStatusBadge(run.status)}
-            </div>
-            <div class="run-item-workflow">${run.workflowName}</div>
-            <div class="run-item-time">${formatDate(run.startTime)}</div>
-        `;
+
+        const runItemHeader = document.createElement('div');
+        runItemHeader.className = 'run-item-header';
+
+        const runItemId = document.createElement('span');
+        runItemId.className = 'run-item-id';
+        runItemId.textContent = run.id;
+        runItemHeader.append(runItemId, getStatusBadge(run.status));
+
+        const runItemWorkflow = document.createElement('div');
+        runItemWorkflow.className = 'run-item-workflow';
+        runItemWorkflow.textContent = run.workflowName;
+
+        const runItemTime = document.createElement('div');
+        runItemTime.className = 'run-item-time';
+        runItemTime.textContent = formatDate(run.startTime);
+
+        li.append(runItemHeader, runItemWorkflow, runItemTime);
 
         li.addEventListener('click', () => {
             document.querySelectorAll('.run-item').forEach(el => el.classList.remove('selected'));
@@ -248,11 +299,23 @@ const populateRuns = () => {
  */
 const displayRunDetails = (run) => {
     runDetailsTitle.textContent = `Run: ${run.id} - ${run.workflowName}`;
-    runMetadata.innerHTML = `
-        <div class="metadata-item">Status: <span>${run.status.toUpperCase()}</span></div>
-        <div class="metadata-item">Started: <span>${formatDate(run.startTime)}</span></div>
-        <div class="metadata-item">Duration: <span>${run.duration}</span></div>
-    `;
+    runMetadata.replaceChildren();
+
+    [
+        ['Status', run.status.toUpperCase()],
+        ['Started', formatDate(run.startTime)],
+        ['Duration', run.duration],
+    ].forEach(([label, value]) => {
+        const metadataItem = document.createElement('div');
+        metadataItem.className = 'metadata-item';
+        metadataItem.append(`${label}: `);
+
+        const metadataValue = document.createElement('span');
+        metadataValue.textContent = value;
+        metadataItem.appendChild(metadataValue);
+
+        runMetadata.appendChild(metadataItem);
+    });
 
     // Simulate loading logs
     runConsoleOutput.textContent = 'Fetching logs...';
@@ -274,7 +337,9 @@ const openModal = () => {
     lastFocusedElement = document.activeElement;
 
     runModal.classList.add('active');
-    modalExecutionStatus.innerHTML = '<span class="spinner"></span> Executing: Email Triage Example...';
+    const spinner = document.createElement('span');
+    spinner.className = 'spinner';
+    setElementChildren(modalExecutionStatus, spinner, ' Executing: Email Triage Example...');
     modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\n[INFO] Loading dependencies...';
     modalViewRunBtn.disabled = true;
     modalTitle.focus();
@@ -294,7 +359,10 @@ const openModal = () => {
         modalConsoleOutput.textContent += '\n[INFO] Workflow completed successfully.';
         modalConsoleOutput.textContent += '\n\nResult: {\n  "status": "success",\n  "final_context": {\n    "intent": "general_inquiry"\n  }\n}';
 
-        modalExecutionStatus.innerHTML = '<span style="color: var(--success-color);">✓ Execution Complete</span>';
+        const statusIcon = document.createElement('span');
+        statusIcon.style.color = 'var(--success-color)';
+        statusIcon.textContent = '✓';
+        setElementChildren(modalExecutionStatus, statusIcon, ' Execution Complete');
         modalViewRunBtn.disabled = false;
     }, 3500));
 };

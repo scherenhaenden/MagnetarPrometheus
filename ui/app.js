@@ -114,8 +114,12 @@ const getStatusBadge = (status) => {
 navItems.forEach(item => {
     item.addEventListener('click', () => {
         // Update active nav
-        navItems.forEach(nav => nav.classList.remove('active'));
+        navItems.forEach(nav => {
+            nav.classList.remove('active');
+            nav.removeAttribute('aria-current');
+        });
         item.classList.add('active');
+        item.setAttribute('aria-current', 'page');
 
         // Update view
         const targetViewId = item.getAttribute('data-target');

@@ -1,5 +1,30 @@
 # Logbook of MagnetarPrometheus
 
+<!--
+Why this file exists in this form:
+
+- This file is the canonical reverse-chronological project logbook. It is not a changelog,
+  not a release note file, and not a narrative diary. Its job is to preserve decisions,
+  conflict resolutions, branch reconciliations, governance corrections, and important
+  implementation state transitions in a format that can be scanned quickly later.
+- Entries are intentionally concise and structured because this document is meant to be
+  updated often across many branches and merge events. The stable Timestamp / Author /
+  Entry shape reduces ambiguity during merges and makes historical reconstruction easier
+  for both humans and automation.
+- Reverse chronological order is deliberate. The newest operational truth needs to be at
+  the top so an engineer or agent opening the file can understand the latest state before
+  reading older history that may already have been superseded.
+- References to GitHub issues, pull requests, workflows, and branch names are kept inline
+  because this file acts as the bridge between repository state and repository process.
+  When a branch, PR, or issue drove a change, this file should make that linkage obvious.
+- This file should preserve meaningful operational context, not every tiny edit. The bar
+  for an entry is that it helps explain why the repository looks the way it does, why a
+  conflict was resolved a certain way, or what higher-level work a set of commits served.
+- If this file ever starts to look like a wall of repetitive low-signal notes, the right
+  fix is not to remove structure but to tighten entry discipline so only decisions and
+  notable state changes remain.
+-->
+
 This document is the project logbook. It records decisions, state changes, discoveries, and exceptions in reverse chronological order.
 
 ## Entry Format
@@ -11,6 +36,76 @@ Each entry should use:
 - Entry: concise event description
 
 ## Entries
+
+---
+**Timestamp:** 2026-03-30 18:28 UTC
+**Author:** Codex
+**Entry:** Corrected the repository state after the confusing PR `#143` merge presentation. Pruned stale `origin/*` refs so deleted remote branches no longer appear as if they were still active locally, then codified an explicit merge-history rule in `RULES.md` and `BRANCHING_MODEL.md`: ordinary PRs in MagnetarPrometheus must land on `master` with ancestry-preserving history, and squash merges are not acceptable as normal practice because they obscure what branch work was reviewed and what actually landed. This behavior is now treated as a process failure rather than a cosmetic preference.
+
+---
+**Timestamp:** 2026-03-30 18:12 UTC
+**Author:** Copilot
+**Entry:** Resolved the docstring coverage failure reported against PR `#143` on `fix/issues-110-34-52-47-93-pr-clean`. The automated review flagged coverage at 33.33%, below the required 80% threshold. Ran `interrogate` locally to confirm the actual figure was 30.5% (18/59 documented symbols). Added module, class, and method/function docstrings to all 14 undocumented Python files in `backend/src/`: `bootstrap.py`, `cli.py`, `version.py`, `core/context_manager.py`, `core/engine.py`, `core/evaluator.py`, `core/executor_router.py`, `core/workflow_loader.py`, `core/models/__init__.py`, `executors/base.py`, `executors/python_executor.py`, `modules/email_module/__init__.py`, `modules/email_module/steps.py`, and `registry/step_registry.py`. Docstring coverage now passes at 100.0% (59/59). All 51 existing tests continue to pass at 100% line coverage.
+
+---
+**Timestamp:** 2026-03-30 17:56 UTC
+**Author:** Codex
+**Entry:** Refined PR `#143` after directly reviewing the bot feedback on `fix/issues-110-34-52-47-93-pr-clean`. Kept the strengthened `__main__` assertion in `backend/tests/test_cli.py`, but replaced the manual `compile(...)/exec(...)` path with `runpy.run_path(..., run_name="__main__")` while preserving execution tracing to verify that a fresh `__main__` module really invokes `main()`. This keeps the test stricter than a naive patch-based approach, matches the repository's real execution model more closely, and reduces maintenance overhead without weakening the assertion.
+
+---
+**Timestamp:** 2026-03-30 17:56 UTC
+**Author:** Codex
+**Entry:** Verified that `fix/docs-and-cli-test-110-34-52-47-93` is redundant noise relative to `fix/issues-110-34-52-47-93-pr-clean`. The older branch contains the same issue-fix/header work but also carries an unrelated historical schema commit (`65bb88b`, run-execution schema) that does not belong in PR `#143`, while the clean branch contains the intended issue scope on top of current `master`. The older branch can therefore be deleted safely once the updated clean branch is pushed.
+
+---
+**Timestamp:** 2026-03-30 17:36 UTC
+**Author:** Codex
+**Entry:** Resolved the low-effort documentation and test follow-ups for issues `#110`, `#34`, `#52`, `#47`, and `#93` on `fix/docs-and-cli-test-110-34-52-47-93`. Standardized GitHub capitalization in `BITACORA.md` prose around GitHub Actions workflow references, corrected the `STATUS.md` grammar for the email module manifest note, tightened the historical `task-103` audit wording in `PLAN.md`, capitalized `Bash` and `Python` in the preserved remediation branch plan, and strengthened `backend/tests/test_cli.py` so the `__main__` execution test actually asserts that `main()` was invoked while marking the tiny CLI entrypoint wrapper line in `backend/src/magnetar_prometheus/cli.py` as a coverage-excluded shim.
+
+---
+**Timestamp:** 2026-03-30 17:19 UTC
+**Author:** Codex
+**Entry:** Applied the final PR `#124` navigation resilience polish in `ui/app.js` by replacing the brittle `navItems[2]` Runs-tab navigation with a stable selector targeting `.nav-item[data-target=\"runs-view\"]`. This preserves the synthetic-run flow while decoupling it from sidebar item ordering.
+
+---
+**Timestamp:** 2026-03-30 16:50 UTC
+**Author:** Codex
+**Entry:** Closed the final PR `#124` layout-maintainability thread in `ui/styles.css` by extracting the shared view padding into `--view-padding` and reusing that token in both `.view-container` and the run-console height calculation. This removes the remaining `4rem` layout magic number and keeps the height math coupled to the actual shell padding value.
+
+---
+**Timestamp:** 2026-03-30 16:46 UTC
+**Author:** Codex
+**Entry:** Closed the remaining PR `#124` status-badge maintainability thread in `ui/styles.css` by moving badge background/text colors into `:root` custom properties and wiring the active, success, draft, failed, and running badge variants to those tokens. This keeps the shell's status styling aligned with the rest of the file's token-based theme approach and removes the last intentional hardcoded badge palette values.
+
+---
+**Timestamp:** 2026-03-30 16:26 UTC
+**Author:** Codex
+**Entry:** Completed the remaining PR `#124` modal-accessibility follow-up in `ui/app.js` by adding modal-scoped keyboard handling for `Tab`, `Shift+Tab`, and `Escape`. The shell now traps focus inside the dialog while it is open, avoids stacking duplicate listeners across repeated opens, and restores the pre-modal focus target on close using the same state owner that already manages modal timers and visible status.
+
+---
+**Timestamp:** 2026-03-30 16:18 UTC
+**Author:** Codex
+**Entry:** Fixed the remaining PR `#124` modal CTA mismatch in `ui/app.js` by making the completed simulation produce a synthetic run entry and log payload inside the shell's mock run collections before navigating to the Runs view. This preserves the existing `View Run` copy while ensuring the user actually lands on the run they just watched complete.
+
+---
+**Timestamp:** 2026-03-30 16:11 UTC
+**Author:** Codex
+**Entry:** Corrected the remaining PR `#124` mock-run recency issue in `ui/app.js` by replacing fixed future `startTime` fixtures with timestamps generated relative to the current time. This keeps the dashboard's last-24-hours counters, recent activity list, and runs view internally consistent without introducing defensive filter logic around intentionally bad demo data.
+
+---
+**Timestamp:** 2026-03-30 16:05 UTC
+**Author:** Codex
+**Entry:** Fixed the remaining PR `#124` run-details race in `ui/app.js` by tracking the delayed console-render timer used by `displayRunDetails()`, clearing any previous pending timer before scheduling a new one, and guarding the delayed log write against stale selection state. This keeps rapid run switching from replacing the currently selected run's logs with an older timer callback.
+
+---
+**Timestamp:** 2026-03-30 15:48 UTC
+**Author:** Codex
+**Entry:** Addressed the late PR `#124` security review cluster on `feature/ui-mvp-shell-4754349263308203013` by removing mock-data DOM writes that relied on `innerHTML` in `ui/app.js`. Reworked dashboard activity items, workflow table rows, runs list items, status badges, and run metadata rendering to use explicit DOM node creation and `textContent`-based assembly so the static MVP shell no longer normalizes unsafe rendering patterns that would be risky once real API-backed data arrives.
+
+---
+**Timestamp:** 2026-03-30 15:22 UTC
+**Author:** Codex
+**Entry:** Completed the PR `#124` UI-shell review-fix pass on `feature/ui-mvp-shell-4754349263308203013` with separate commits per resolved review item, then added detailed file-level intent headers to `ui/index.html`, `ui/app.js`, and `ui/styles.css` so future contributors and agents can see why the shell currently remains static HTML, vanilla JavaScript, and plain CSS. The review-fix commits cover modal timer cleanup, real newline rendering, accessible modal semantics, accessible sidebar navigation controls, narrow-screen layout stacking, Stylelint-aligned console styles, and dashboard stats derived from mock data.
 
 ---
 **Timestamp:** 2026-03-30 15:07 UTC
@@ -65,7 +160,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-27 11:56 UTC
 **Author:** Codex
-**Entry:** Resolved the PR 14 workflow conflict in `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
+**Entry:** Resolved the PR 14 workflow conflict in the GitHub Actions workflow `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
 
 ---
 **Timestamp:** 2026-03-27 11:45 UTC
@@ -120,7 +215,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-26 12:05 UTC
 **Author:** Codex
-**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
+**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in the GitHub Actions workflow `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
 
 ---
 **Timestamp:** 2026-03-26 10:58 UTC

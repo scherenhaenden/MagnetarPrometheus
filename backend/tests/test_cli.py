@@ -1,27 +1,55 @@
-import pytest
+"""
+CLI-focused tests for the MagnetarPrometheus proof-of-concept entrypoint.
+
+Why this file exists in this form:
+
+- This file protects the repository's current runnable interface: the lightweight backend
+  CLI. The tests are intentionally focused on observable CLI behavior rather than deep
+  implementation details of the engine or workflow runtime, which are covered elsewhere.
+- The cases are small and direct because this test file needs to verify argument parsing,
+  missing-file failure behavior, invalid-workflow failure behavior, custom workflow
+  execution, summary-mode output, JSON-mode output, and the `__main__` entrypoint wiring
+  without duplicating broader engine tests.
+- The `__main__` execution test is intentionally stricter than a simple "module executes"
+  smoke test. Its job is to verify that the entrypoint wiring really calls `main()`, since
+  that line is easy to break during refactors while still leaving most runtime behavior
+  intact.
+- The `__main__` test uses execution tracing together with `runpy.run_path(...)` because
+  direct patching of an already imported module does not observe the fresh `__main__`
+  module context created by script execution in this repository. This keeps the assertion
+  honest while still using the standard library's path-execution helper instead of manual
+  source compilation.
+- This file should stay biased toward behavior that a CLI user would notice: successful
+  JSON output, clear exit behavior on invalid input, readable summary output, and correct
+  startup wiring.
+- If the CLI later grows substantially more modes, output formats, or service-launch
+  behaviors, this file should probably be split into focused test modules rather than
+  continuing to accumulate unrelated entrypoint concerns.
+"""
+
 import json
+import runpy
 import sys
 from unittest.mock import patch
-from io import StringIO
-from pathlib import Path
+
+import pytest
 
 from magnetar_prometheus.cli import main
 
+
 def test_cli_default_workflow(capsys):
-    # Patch the system arguments to simulate a command line invocation that explicitely requests json format.
-    """Test the CLI execution with the default example workflow."""
+    """Test the CLI execution with the default example workflow as JSON."""
     with patch("sys.argv", ["cli.py", "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
-
-    # Verify that standard output contains a fully serialized JSON string.
-    # We assert on key elements inside the run state to guarantee execution logic is functional.
     output = json.loads(captured.out)
+
     assert output["run"]["workflow_id"] == "email_triage"
     assert output["run"]["status"] == "completed"
     assert output["data"]["ticket_id"] == "TKT-1234"
     assert output["ai"]["decision"] == "create_ticket"
+
 
 def test_cli_missing_workflow():
     """Test that the CLI exits gracefully if a provided workflow file doesn't exist."""
@@ -49,8 +77,6 @@ def test_cli_invalid_workflow_definition(capsys, tmp_path):
 
 
 def test_cli_custom_workflow_argument(capsys, tmp_path):
-
-    # Establish a minimal temporary workflow file content to test correct engine argument parsing behavior
     """Test the CLI with a custom valid workflow file via the --workflow argument."""
     workflow_content = """
 id: test_workflow
@@ -68,28 +94,25 @@ steps:
     workflow_file = tmp_path / "test_workflow.yaml"
     workflow_file.write_text(workflow_content)
 
-    # Invoke the main CLI function with a specifically mocked path to the generated yaml file
-    # and explicit json format for easier testing validation structure.
     with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file), "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
     output = json.loads(captured.out)
 
-    # Validate that the dynamically supplied custom workflow actually successfully fired.
     assert output["run"]["workflow_id"] == "test_workflow"
     assert output["run"]["status"] == "completed"
     assert output["data"]["status"] == "in_review"
 
+
 def test_cli_format_summary(capsys):
-    # Invoke the CLI without format flags to force the default 'summary' flow.
     """Test the CLI defaults to the summary format and prints it correctly."""
     with patch("sys.argv", ["cli.py"]):
         main()
 
     captured = capsys.readouterr()
 
-    # Assert that the captured output stream contains the exact expected UX summary blocks.
+    assert "Executing workflow from" in captured.out
     assert "=== Workflow Execution Summary ===" in captured.out
     assert "Workflow ID: email_triage" in captured.out
     assert "Status: completed" in captured.out
@@ -101,11 +124,25 @@ def test_cli_format_summary(capsys):
 def test_cli_main_execution():
     """Test the __main__ block behavior."""
     from magnetar_prometheus import cli
-    with patch.object(cli, "main") as mock_main:
-        with patch.object(cli, "__name__", "__main__"):
-            # Normally __name__ == "__main__" triggers main() at module load,
-            # but we can't easily trigger the top-level execution block.
-            # Instead, we execute the module script using runpy.
-            import runpy
-            with patch("sys.argv", ["cli.py"]):
-                runpy.run_module("magnetar_prometheus.cli", run_name="__main__")
+
+    main_called = False
+
+    def tracer(frame, event, arg):
+        nonlocal main_called
+        if (
+            event == "call"
+            and frame.f_code.co_name == "main"
+            and frame.f_globals.get("__name__") == "__main__"
+        ):
+            main_called = True
+        return tracer
+
+    previous_trace = sys.gettrace()
+    try:
+        sys.settrace(tracer)
+        with patch("sys.argv", ["cli.py"]):
+            runpy.run_path(cli.__file__, run_name="__main__")
+    finally:
+        sys.settrace(previous_trace)
+
+    assert main_called

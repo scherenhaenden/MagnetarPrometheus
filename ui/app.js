@@ -397,10 +397,23 @@ closeBtn.addEventListener('click', closeModal);
 modalCloseBtn.addEventListener('click', closeModal);
 
 modalViewRunBtn.addEventListener('click', () => {
+    const completedRunId = `run-${Date.now().toString(36).slice(-6)}`;
+    const completedRun = {
+        id: completedRunId,
+        workflowId: 'wf-001',
+        workflowName: 'Email Triage',
+        status: 'success',
+        startTime: new Date().toISOString(),
+        duration: '4s',
+    };
+
+    mockRuns.unshift(completedRun);
+    mockRunDetails[completedRunId] = modalConsoleOutput.textContent;
+
+    populateDashboard();
+    populateRuns();
     closeModal();
-    // Navigate to Runs view
     navItems[2].click();
-    // In a real app, we'd add the new run to the mock data and select it
 });
 
 // Initialize

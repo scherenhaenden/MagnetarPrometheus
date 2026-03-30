@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 16:18 UTC
+**Author:** Codex
+**Entry:** Fixed the remaining PR `#124` modal CTA mismatch in `ui/app.js` by making the completed simulation produce a synthetic run entry and log payload inside the shell's mock run collections before navigating to the Runs view. This preserves the existing `View Run` copy while ensuring the user actually lands on the run they just watched complete.
+
+---
 **Timestamp:** 2026-03-30 16:11 UTC
 **Author:** Codex
 **Entry:** Corrected the remaining PR `#124` mock-run recency issue in `ui/app.js` by replacing fixed future `startTime` fixtures with timestamps generated relative to the current time. This keeps the dashboard's last-24-hours counters, recent activity list, and runs view internally consistent without introducing defensive filter logic around intentionally bad demo data.

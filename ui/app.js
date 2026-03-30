@@ -262,9 +262,7 @@ modalCloseBtn.addEventListener('click', closeModal);
 
 modalViewRunBtn.addEventListener('click', () => {
     closeModal();
-    // Navigate to Runs view
-    navItems[2].click();
-    // In a real app, we'd add the new run to the mock data and select it
+    document.querySelector('.nav-item[data-target="runs-view"]')?.click();
 });
 
 // Initialize

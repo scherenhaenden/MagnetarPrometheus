@@ -233,23 +233,23 @@ const openModal = () => {
 
     runModal.classList.add('active');
     modalExecutionStatus.innerHTML = '<span class="spinner"></span> Executing: Email Triage Example...';
-    modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\\n[INFO] Loading dependencies...';
+    modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\n[INFO] Loading dependencies...';
     modalViewRunBtn.disabled = true;
 
     // Simulate execution sequence
     modalTimers.push(setTimeout(() => {
-        modalConsoleOutput.textContent += '\\n[INFO] Executing step: extract_content';
+        modalConsoleOutput.textContent += '\n[INFO] Executing step: extract_content';
     }, 1000));
 
     modalTimers.push(setTimeout(() => {
-        modalConsoleOutput.textContent += '\\n[INFO] Output: {"subject": "Test", "body": "Hello"}';
-        modalConsoleOutput.textContent += '\\n[INFO] Executing step: classify_intent';
+        modalConsoleOutput.textContent += '\n[INFO] Output: {"subject": "Test", "body": "Hello"}';
+        modalConsoleOutput.textContent += '\n[INFO] Executing step: classify_intent';
     }, 2000));
 
     modalTimers.push(setTimeout(() => {
-        modalConsoleOutput.textContent += '\\n[INFO] Intent classified as: general_inquiry';
-        modalConsoleOutput.textContent += '\\n[INFO] Workflow completed successfully.';
-        modalConsoleOutput.textContent += '\\n\\nResult: {\\n  "status": "success",\\n  "final_context": {\\n    "intent": "general_inquiry"\\n  }\\n}';
+        modalConsoleOutput.textContent += '\n[INFO] Intent classified as: general_inquiry';
+        modalConsoleOutput.textContent += '\n[INFO] Workflow completed successfully.';
+        modalConsoleOutput.textContent += '\n\nResult: {\n  "status": "success",\n  "final_context": {\n    "intent": "general_inquiry"\n  }\n}';
 
         modalExecutionStatus.innerHTML = '<span style="color: var(--success-color);">✓ Execution Complete</span>';
         modalViewRunBtn.disabled = false;

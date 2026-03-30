@@ -1,5 +1,30 @@
 # Logbook of MagnetarPrometheus
 
+<!--
+Why this file exists in this form:
+
+- This file is the canonical reverse-chronological project logbook. It is not a changelog,
+  not a release note file, and not a narrative diary. Its job is to preserve decisions,
+  conflict resolutions, branch reconciliations, governance corrections, and important
+  implementation state transitions in a format that can be scanned quickly later.
+- Entries are intentionally concise and structured because this document is meant to be
+  updated often across many branches and merge events. The stable Timestamp / Author /
+  Entry shape reduces ambiguity during merges and makes historical reconstruction easier
+  for both humans and automation.
+- Reverse chronological order is deliberate. The newest operational truth needs to be at
+  the top so an engineer or agent opening the file can understand the latest state before
+  reading older history that may already have been superseded.
+- References to GitHub issues, pull requests, workflows, and branch names are kept inline
+  because this file acts as the bridge between repository state and repository process.
+  When a branch, PR, or issue drove a change, this file should make that linkage obvious.
+- This file should preserve meaningful operational context, not every tiny edit. The bar
+  for an entry is that it helps explain why the repository looks the way it does, why a
+  conflict was resolved a certain way, or what higher-level work a set of commits served.
+- If this file ever starts to look like a wall of repetitive low-signal notes, the right
+  fix is not to remove structure but to tighten entry discipline so only decisions and
+  notable state changes remain.
+-->
+
 This document is the project logbook. It records decisions, state changes, discoveries, and exceptions in reverse chronological order.
 
 ## Entry Format

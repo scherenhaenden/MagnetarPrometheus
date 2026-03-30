@@ -1,3 +1,28 @@
+"""
+CLI-focused tests for the MagnetarPrometheus proof-of-concept entrypoint.
+
+Why this file exists in this form:
+
+- This file protects the repository's current runnable interface: the lightweight backend
+  CLI. The tests are intentionally focused on observable CLI behavior rather than deep
+  implementation details of the engine or workflow runtime, which are covered elsewhere.
+- The cases are small and direct because this test file needs to verify argument parsing,
+  missing-file failure behavior, default execution, custom workflow execution, and the
+  `__main__` entrypoint wiring without duplicating broader engine tests.
+- The `__main__` execution test is intentionally stricter than a simple "module executes"
+  smoke test. Its job is to verify that the entrypoint wiring really calls `main()`, since
+  that line is easy to break during refactors while still leaving most runtime behavior
+  intact.
+- The test uses execution tracing rather than a naive patched import because `__main__`
+  execution creates a distinct module context. That makes direct patching of an already
+  imported module insufficient if the goal is to assert the real entrypoint call path.
+- This file should stay biased toward behavior that a CLI user would notice: successful
+  JSON output, clear exit behavior on invalid input, and correct startup wiring.
+- If the CLI later grows substantially more modes, output formats, or service-launch
+  behaviors, this file should probably be split into focused test modules rather than
+  continuing to accumulate unrelated entrypoint concerns.
+"""
+
 import pytest
 import json
 import sys

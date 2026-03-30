@@ -1,5 +1,29 @@
 # Plan of MagnetarPrometheus
 
+<!--
+Why this file exists in this form:
+
+- This file is the stable planning ledger for the repository. It tracks milestones, tasks,
+  effort estimates, scoped completion, and preserved historical task states in one place.
+- The task table is intentionally compact and machine-friendly because this file needs to
+  support both human planning discussions and structured cross-checking against issues,
+  branch reviews, and historical remediation passes.
+- Historical rows are preserved instead of deleted because this repository has already gone
+  through branch merges where multiple planning narratives collided. Keeping prior audited
+  states visible prevents "clean-looking" plans from erasing the reasoning behind why the
+  current baseline was judged complete.
+- The distinction between the active baseline and preserved history is deliberate. The top
+  task table is the current source of truth, while the historical sections record what
+  previous branches or audits believed at the time. This helps reviewers understand why a
+  task may appear both "done" in one context and "in_progress" in an older preserved row.
+- Wording in notes matters here because these notes become compressed planning evidence for
+  later issue linkage, branch review, and governance checks. When a note is too verbose or
+  too vague, it weakens the usefulness of the entire planning artifact.
+- If this file eventually becomes too dense, the right direction is to keep the structure
+  and split planning horizons more cleanly, not to remove the preserved context that makes
+  branch history and baseline reasoning auditable.
+-->
+
 This plan captures the project milestones, tasks, estimates, and status. Its structure should remain stable so both humans and tools can track progress consistently.
 
 ## Milestones Overview

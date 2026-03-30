@@ -40,6 +40,14 @@
     --border-color: #dee2e6;
     --sidebar-width: 250px;
     --header-height: 60px;
+    --status-active-bg: #d4edda;
+    --status-active-text: #155724;
+    --status-draft-bg: #e2e3e5;
+    --status-draft-text: #383d41;
+    --status-failed-bg: #f8d7da;
+    --status-failed-text: #721c24;
+    --status-running-bg: #cce5ff;
+    --status-running-text: #004085;
 }
 
 /* Base Styles */
@@ -333,11 +341,11 @@ button:disabled {
     font-weight: 600;
 }
 
-.status-badge.active { background-color: #d4edda; color: #155724; }
-.status-badge.draft { background-color: #e2e3e5; color: #383d41; }
-.status-badge.success { background-color: #d4edda; color: #155724; }
-.status-badge.failed { background-color: #f8d7da; color: #721c24; }
-.status-badge.running { background-color: #cce5ff; color: #004085; }
+.status-badge.active { background-color: var(--status-active-bg); color: var(--status-active-text); }
+.status-badge.draft { background-color: var(--status-draft-bg); color: var(--status-draft-text); }
+.status-badge.success { background-color: var(--status-active-bg); color: var(--status-active-text); }
+.status-badge.failed { background-color: var(--status-failed-bg); color: var(--status-failed-text); }
+.status-badge.running { background-color: var(--status-running-bg); color: var(--status-running-text); }
 
 /*
  * View-Specific Styles: Runs Console

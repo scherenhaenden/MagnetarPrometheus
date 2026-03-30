@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 16:46 UTC
+**Author:** Codex
+**Entry:** Closed the remaining PR `#124` status-badge maintainability thread in `ui/styles.css` by moving badge background/text colors into `:root` custom properties and wiring the active, success, draft, failed, and running badge variants to those tokens. This keeps the shell's status styling aligned with the rest of the file's token-based theme approach and removes the last intentional hardcoded badge palette values.
+
+---
 **Timestamp:** 2026-03-30 16:26 UTC
 **Author:** Codex
 **Entry:** Completed the remaining PR `#124` modal-accessibility follow-up in `ui/app.js` by adding modal-scoped keyboard handling for `Tab`, `Shift+Tab`, and `Escape`. The shell now traps focus inside the dialog while it is open, avoids stacking duplicate listeners across repeated opens, and restores the pre-modal focus target on close using the same state owner that already manages modal timers and visible status.

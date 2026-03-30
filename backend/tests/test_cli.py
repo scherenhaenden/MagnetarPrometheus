@@ -7,8 +7,9 @@ Why this file exists in this form:
   CLI. The tests are intentionally focused on observable CLI behavior rather than deep
   implementation details of the engine or workflow runtime, which are covered elsewhere.
 - The cases are small and direct because this test file needs to verify argument parsing,
-  missing-file failure behavior, default execution, custom workflow execution, and the
-  `__main__` entrypoint wiring without duplicating broader engine tests.
+  missing-file failure behavior, invalid-workflow failure behavior, custom workflow
+  execution, summary-mode output, JSON-mode output, and the `__main__` entrypoint wiring
+  without duplicating broader engine tests.
 - The `__main__` execution test is intentionally stricter than a simple "module executes"
   smoke test. Its job is to verify that the entrypoint wiring really calls `main()`, since
   that line is easy to break during refactors while still leaving most runtime behavior
@@ -19,7 +20,8 @@ Why this file exists in this form:
   honest while still using the standard library's path-execution helper instead of manual
   source compilation.
 - This file should stay biased toward behavior that a CLI user would notice: successful
-  JSON output, clear exit behavior on invalid input, and correct startup wiring.
+  JSON output, clear exit behavior on invalid input, readable summary output, and correct
+  startup wiring.
 - If the CLI later grows substantially more modes, output formats, or service-launch
   behaviors, this file should probably be split into focused test modules rather than
   continuing to accumulate unrelated entrypoint concerns.
@@ -34,19 +36,20 @@ import pytest
 
 from magnetar_prometheus.cli import main
 
+
 def test_cli_default_workflow(capsys):
-    """Test that the CLI runs successfully with the default example workflow."""
-    with patch("sys.argv", ["cli.py"]):
+    """Test the CLI execution with the default example workflow as JSON."""
+    with patch("sys.argv", ["cli.py", "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
-
-    # Check that standard output contains JSON output and successful execution status
     output = json.loads(captured.out)
+
     assert output["run"]["workflow_id"] == "email_triage"
     assert output["run"]["status"] == "completed"
     assert output["data"]["ticket_id"] == "TKT-1234"
     assert output["ai"]["decision"] == "create_ticket"
+
 
 def test_cli_missing_workflow():
     """Test that the CLI exits gracefully if a provided workflow file doesn't exist."""
@@ -56,10 +59,25 @@ def test_cli_missing_workflow():
 
         assert exc_info.value.code == 1
 
-def test_cli_custom_workflow_argument(capsys, tmp_path):
-    """Test providing a custom valid workflow file via the --workflow argument."""
 
-    # Create a temporary minimal workflow to test argument parsing properly
+def test_cli_invalid_workflow_definition(capsys, tmp_path):
+    """Test CLI behavior with an invalid workflow file."""
+    workflow_file = tmp_path / "invalid_workflow.yaml"
+    workflow_file.write_text("- not-a-mapping\n")
+
+    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file)]):
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+
+    captured = capsys.readouterr()
+
+    assert exc_info.value.code == 1
+    assert "Error loading workflow from" in captured.err
+    assert str(workflow_file) in captured.err
+
+
+def test_cli_custom_workflow_argument(capsys, tmp_path):
+    """Test the CLI with a custom valid workflow file via the --workflow argument."""
     workflow_content = """
 id: test_workflow
 name: Test Workflow
@@ -76,7 +94,7 @@ steps:
     workflow_file = tmp_path / "test_workflow.yaml"
     workflow_file.write_text(workflow_content)
 
-    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file)]):
+    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file), "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
@@ -86,9 +104,27 @@ steps:
     assert output["run"]["status"] == "completed"
     assert output["data"]["status"] == "in_review"
 
+
+def test_cli_format_summary(capsys):
+    """Test the CLI defaults to the summary format and prints it correctly."""
+    with patch("sys.argv", ["cli.py"]):
+        main()
+
+    captured = capsys.readouterr()
+
+    assert "Executing workflow from" in captured.out
+    assert "=== Workflow Execution Summary ===" in captured.out
+    assert "Workflow ID: email_triage" in captured.out
+    assert "Status: completed" in captured.out
+    assert "Steps Completed: 4" in captured.out
+    assert "Final Data Keys:" in captured.out
+    assert "Final AI Keys:" in captured.out
+
+
 def test_cli_main_execution():
     """Test the __main__ block behavior."""
     from magnetar_prometheus import cli
+
     main_called = False
 
     def tracer(frame, event, arg):

@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 18:28 UTC
+**Author:** Codex
+**Entry:** Corrected the repository state after the confusing PR `#143` merge presentation. Pruned stale `origin/*` refs so deleted remote branches no longer appear as if they were still active locally, then codified an explicit merge-history rule in `RULES.md` and `BRANCHING_MODEL.md`: ordinary PRs in MagnetarPrometheus must land on `master` with ancestry-preserving history, and squash merges are not acceptable as normal practice because they obscure what branch work was reviewed and what actually landed. This behavior is now treated as a process failure rather than a cosmetic preference.
+
+---
 **Timestamp:** 2026-03-30 18:12 UTC
 **Author:** Copilot
 **Entry:** Resolved the docstring coverage failure reported against PR `#143` on `fix/issues-110-34-52-47-93-pr-clean`. The automated review flagged coverage at 33.33%, below the required 80% threshold. Ran `interrogate` locally to confirm the actual figure was 30.5% (18/59 documented symbols). Added module, class, and method/function docstrings to all 14 undocumented Python files in `backend/src/`: `bootstrap.py`, `cli.py`, `version.py`, `core/context_manager.py`, `core/engine.py`, `core/evaluator.py`, `core/executor_router.py`, `core/workflow_loader.py`, `core/models/__init__.py`, `executors/base.py`, `executors/python_executor.py`, `modules/email_module/__init__.py`, `modules/email_module/steps.py`, and `registry/step_registry.py`. Docstring coverage now passes at 100.0% (59/59). All 51 existing tests continue to pass at 100% line coverage.

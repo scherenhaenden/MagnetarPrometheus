@@ -1,3 +1,30 @@
+"""
+MagnetarPrometheus CLI entrypoint.
+
+Why this file exists in this form:
+
+- This module is the shortest executable path from repository checkout to a real workflow
+  run. The project still centers on a backend proof of concept, so this file is intentionally
+  direct and avoids introducing a heavier application bootstrap layer before the product has
+  earned one.
+- The wiring is kept explicit in one place on purpose. Loader, registry, executor router,
+  context manager, and engine are assembled inline so a contributor can read one file and
+  understand the runnable slice without chasing multiple abstractions.
+- The default workflow path points at the example email workflow because the repository
+  needs one deterministic, low-friction demonstration path that works from a clean checkout.
+  That example is part of the current product slice, not merely test scaffolding.
+- Error handling for the workflow path is user-facing and intentionally minimal. The CLI
+  should fail fast with a clear message when the provided file path is invalid instead of
+  surfacing a confusing lower-level traceback for a basic operator mistake.
+- The actual `if __name__ == "__main__"` wrapper is tiny by design. All meaningful behavior
+  lives in `main()`, while the wrapper exists only to support direct module execution. That
+  is why the wrapper line is excluded from coverage and the real entrypoint behavior is
+  asserted in tests instead.
+- If this file later starts accumulating environment setup, richer output modes, service
+  bootstrapping, or dependency injection concerns, that is likely the point where the CLI
+  should be split into a more formal application layer rather than extended indefinitely.
+"""
+
 import argparse
 import json
 import sys
@@ -13,6 +40,14 @@ from magnetar_prometheus.modules.email_module.steps import register_example_step
 
 
 def main():
+    """Run the MagnetarPrometheus workflow engine from the command line.
+
+    Parses ``--workflow`` to locate a YAML workflow file, assembles the
+    runtime components (loader, registry, executor, router, context manager,
+    engine), executes the workflow, and prints the resulting
+    :class:`~magnetar_prometheus_sdk.models.RunContext` as formatted JSON to
+    stdout.  Exits with status 1 when the requested workflow file is missing.
+    """
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")
 
     # default path to the example workflow relative to the file location
@@ -51,5 +86,5 @@ def main():
     print(json.dumps(result_context, indent=2))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - entrypoint wrapper is asserted indirectly in tests
     main()

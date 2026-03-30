@@ -1,5 +1,30 @@
 # Logbook of MagnetarPrometheus
 
+<!--
+Why this file exists in this form:
+
+- This file is the canonical reverse-chronological project logbook. It is not a changelog,
+  not a release note file, and not a narrative diary. Its job is to preserve decisions,
+  conflict resolutions, branch reconciliations, governance corrections, and important
+  implementation state transitions in a format that can be scanned quickly later.
+- Entries are intentionally concise and structured because this document is meant to be
+  updated often across many branches and merge events. The stable Timestamp / Author /
+  Entry shape reduces ambiguity during merges and makes historical reconstruction easier
+  for both humans and automation.
+- Reverse chronological order is deliberate. The newest operational truth needs to be at
+  the top so an engineer or agent opening the file can understand the latest state before
+  reading older history that may already have been superseded.
+- References to GitHub issues, pull requests, workflows, and branch names are kept inline
+  because this file acts as the bridge between repository state and repository process.
+  When a branch, PR, or issue drove a change, this file should make that linkage obvious.
+- This file should preserve meaningful operational context, not every tiny edit. The bar
+  for an entry is that it helps explain why the repository looks the way it does, why a
+  conflict was resolved a certain way, or what higher-level work a set of commits served.
+- If this file ever starts to look like a wall of repetitive low-signal notes, the right
+  fix is not to remove structure but to tighten entry discipline so only decisions and
+  notable state changes remain.
+-->
+
 This document is the project logbook. It records decisions, state changes, discoveries, and exceptions in reverse chronological order.
 
 ## Entry Format
@@ -11,6 +36,26 @@ Each entry should use:
 - Entry: concise event description
 
 ## Entries
+
+---
+**Timestamp:** 2026-03-30 18:12 UTC
+**Author:** Copilot
+**Entry:** Resolved the docstring coverage failure reported against PR `#143` on `fix/issues-110-34-52-47-93-pr-clean`. The automated review flagged coverage at 33.33%, below the required 80% threshold. Ran `interrogate` locally to confirm the actual figure was 30.5% (18/59 documented symbols). Added module, class, and method/function docstrings to all 14 undocumented Python files in `backend/src/`: `bootstrap.py`, `cli.py`, `version.py`, `core/context_manager.py`, `core/engine.py`, `core/evaluator.py`, `core/executor_router.py`, `core/workflow_loader.py`, `core/models/__init__.py`, `executors/base.py`, `executors/python_executor.py`, `modules/email_module/__init__.py`, `modules/email_module/steps.py`, and `registry/step_registry.py`. Docstring coverage now passes at 100.0% (59/59). All 51 existing tests continue to pass at 100% line coverage.
+
+---
+**Timestamp:** 2026-03-30 17:56 UTC
+**Author:** Codex
+**Entry:** Refined PR `#143` after directly reviewing the bot feedback on `fix/issues-110-34-52-47-93-pr-clean`. Kept the strengthened `__main__` assertion in `backend/tests/test_cli.py`, but replaced the manual `compile(...)/exec(...)` path with `runpy.run_path(..., run_name="__main__")` while preserving execution tracing to verify that a fresh `__main__` module really invokes `main()`. This keeps the test stricter than a naive patch-based approach, matches the repository's real execution model more closely, and reduces maintenance overhead without weakening the assertion.
+
+---
+**Timestamp:** 2026-03-30 17:56 UTC
+**Author:** Codex
+**Entry:** Verified that `fix/docs-and-cli-test-110-34-52-47-93` is redundant noise relative to `fix/issues-110-34-52-47-93-pr-clean`. The older branch contains the same issue-fix/header work but also carries an unrelated historical schema commit (`65bb88b`, run-execution schema) that does not belong in PR `#143`, while the clean branch contains the intended issue scope on top of current `master`. The older branch can therefore be deleted safely once the updated clean branch is pushed.
+
+---
+**Timestamp:** 2026-03-30 17:36 UTC
+**Author:** Codex
+**Entry:** Resolved the low-effort documentation and test follow-ups for issues `#110`, `#34`, `#52`, `#47`, and `#93` on `fix/docs-and-cli-test-110-34-52-47-93`. Standardized GitHub capitalization in `BITACORA.md` prose around GitHub Actions workflow references, corrected the `STATUS.md` grammar for the email module manifest note, tightened the historical `task-103` audit wording in `PLAN.md`, capitalized `Bash` and `Python` in the preserved remediation branch plan, and strengthened `backend/tests/test_cli.py` so the `__main__` execution test actually asserts that `main()` was invoked while marking the tiny CLI entrypoint wrapper line in `backend/src/magnetar_prometheus/cli.py` as a coverage-excluded shim.
 
 ---
 **Timestamp:** 2026-03-30 17:19 UTC
@@ -110,7 +155,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-27 11:56 UTC
 **Author:** Codex
-**Entry:** Resolved the PR 14 workflow conflict in `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
+**Entry:** Resolved the PR 14 workflow conflict in the GitHub Actions workflow `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
 
 ---
 **Timestamp:** 2026-03-27 11:45 UTC
@@ -165,7 +210,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-26 12:05 UTC
 **Author:** Codex
-**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
+**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in the GitHub Actions workflow `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
 
 ---
 **Timestamp:** 2026-03-26 10:58 UTC

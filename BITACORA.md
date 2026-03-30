@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 14:55 UTC
+**Author:** Codex
+**Entry:** Implemented issue `#105` on `fix/issue-105-workflow-loader-yaml-guard` after fast-forwarding local `master` to `origin/master` and branching from the updated base. Hardened `WorkflowLoader` to reject empty or non-mapping YAML roots with a clear filepath-specific `ValueError`, added loader tests for empty/list/scalar YAML inputs, and revalidated with `bash scripts/run_tests.sh`: `69 passed`, `100.00%` coverage.
+
+---
 **Timestamp:** 2026-03-27 16:09 UTC
 **Author:** Codex
 **Entry:** Applied the substantive PR `#126` review fixes on the run-store branch without deleting prior review context or comments. Hardened `LocalJSONRunStore` against path traversal by validating `run_id`-derived file paths, introduced a typed `RunStatus` enum, narrowed exception handling to concrete parse/validation/file-operation failures, wrapped save-time write failures in an explicit runtime error, and expanded tests for invalid statuses, invalid stored records, path traversal rejection, and write failures. Verified with `bash scripts/run_tests.sh`: `64 passed`, `100.00%` coverage.

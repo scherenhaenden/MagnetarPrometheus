@@ -8,13 +8,20 @@ from pathlib import Path
 from magnetar_prometheus.cli import main
 
 def test_cli_default_workflow(capsys):
-    """Test that the CLI runs successfully with the default example workflow."""
-    with patch("sys.argv", ["cli.py"]):
+    """Test that the CLI runs successfully with the default example workflow.
+
+    This function leverages the `--format json` argument to ensure the execution
+    context is predictably structured for deep validation assertions, bypassing the
+    summary UX formatter.
+    """
+    # Patch the system arguments to simulate a command line invocation that explicitely requests json format.
+    with patch("sys.argv", ["cli.py", "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
 
-    # Check that standard output contains JSON output and successful execution status
+    # Verify that standard output contains a fully serialized JSON string.
+    # We assert on key elements inside the run state to guarantee execution logic is functional.
     output = json.loads(captured.out)
     assert output["run"]["workflow_id"] == "email_triage"
     assert output["run"]["status"] == "completed"
@@ -29,10 +36,31 @@ def test_cli_missing_workflow():
 
         assert exc_info.value.code == 1
 
-def test_cli_custom_workflow_argument(capsys, tmp_path):
-    """Test providing a custom valid workflow file via the --workflow argument."""
 
-    # Create a temporary minimal workflow to test argument parsing properly
+def test_cli_invalid_workflow_definition(capsys, tmp_path):
+    """Test that the CLI exits gracefully if the workflow file content is invalid."""
+    workflow_file = tmp_path / "invalid_workflow.yaml"
+    workflow_file.write_text("- not-a-mapping\n")
+
+    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file)]):
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+
+    captured = capsys.readouterr()
+
+    assert exc_info.value.code == 1
+    assert "Error loading workflow from" in captured.err
+    assert str(workflow_file) in captured.err
+
+
+def test_cli_custom_workflow_argument(capsys, tmp_path):
+    """Test providing a custom valid workflow file via the --workflow argument.
+
+    This verifies that the CLI correctly parses and loads external YAML definitions,
+    overriding the default `email_triage` module logic.
+    """
+
+    # Establish a minimal temporary workflow file content to test correct engine argument parsing behavior
     workflow_content = """
 id: test_workflow
 name: Test Workflow
@@ -49,15 +77,40 @@ steps:
     workflow_file = tmp_path / "test_workflow.yaml"
     workflow_file.write_text(workflow_content)
 
-    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file)]):
+    # Invoke the main CLI function with a specifically mocked path to the generated yaml file
+    # and explicit json format for easier testing validation structure.
+    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file), "--format", "json"]):
         main()
 
     captured = capsys.readouterr()
     output = json.loads(captured.out)
 
+    # Validate that the dynamically supplied custom workflow actually successfully fired.
     assert output["run"]["workflow_id"] == "test_workflow"
     assert output["run"]["status"] == "completed"
     assert output["data"]["status"] == "in_review"
+
+def test_cli_format_summary(capsys):
+    """Test that the CLI defaults to the summary format and prints it properly.
+
+    This function verifies the core functionality of the launcher UX improvements,
+    confirming that without explicit user flags, the complex JSON context is hidden
+    in favor of an easy to read, condensed text block.
+    """
+    # Invoke the CLI without format flags to force the default 'summary' flow.
+    with patch("sys.argv", ["cli.py"]):
+        main()
+
+    captured = capsys.readouterr()
+
+    # Assert that the captured output stream contains the exact expected UX summary blocks.
+    assert "=== Workflow Execution Summary ===" in captured.out
+    assert "Workflow ID: email_triage" in captured.out
+    assert "Status: completed" in captured.out
+    assert "Steps Completed: 4" in captured.out
+    assert "Final Data Keys:" in captured.out
+    assert "Final AI Keys:" in captured.out
+
 
 def test_cli_main_execution():
     """Test the __main__ block behavior."""

@@ -83,7 +83,9 @@ const modalCloseBtn = document.getElementById('modal-close-btn');
 const modalViewRunBtn = document.getElementById('modal-view-run-btn');
 const modalExecutionStatus = document.getElementById('modal-execution-status');
 const modalConsoleOutput = document.getElementById('modal-console-output').querySelector('code');
+const modalTitle = document.getElementById('run-modal-title');
 let modalTimers = [];
+let lastFocusedElement = null;
 
 /**
  * Formats an ISO 8601 date string into a user-friendly locale string.
@@ -230,11 +232,13 @@ const displayRunDetails = (run) => {
 const openModal = () => {
     modalTimers.forEach(clearTimeout);
     modalTimers = [];
+    lastFocusedElement = document.activeElement;
 
     runModal.classList.add('active');
     modalExecutionStatus.innerHTML = '<span class="spinner"></span> Executing: Email Triage Example...';
     modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\n[INFO] Loading dependencies...';
     modalViewRunBtn.disabled = true;
+    modalTitle.focus();
 
     // Simulate execution sequence
     modalTimers.push(setTimeout(() => {
@@ -263,6 +267,9 @@ const closeModal = () => {
     modalExecutionStatus.textContent = 'Initializing...';
     modalConsoleOutput.textContent = '';
     modalViewRunBtn.disabled = true;
+    if (lastFocusedElement instanceof HTMLElement) {
+        lastFocusedElement.focus();
+    }
 };
 
 runExampleBtn.addEventListener('click', openModal);

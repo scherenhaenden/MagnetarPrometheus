@@ -154,11 +154,11 @@
         Modal for Run Execution: Simulated popup overlay to demonstrate
         how a user might trigger and watch a workflow execution in real-time.
     -->
-    <div id="run-modal" class="modal">
+    <div id="run-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="run-modal-title">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Executing Example Workflow</h2>
-                <span class="close-btn">&times;</span>
+                <h2 id="run-modal-title" tabindex="-1">Executing Example Workflow</h2>
+                <button type="button" class="close-btn" aria-label="Close dialog">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="execution-status" id="modal-execution-status">

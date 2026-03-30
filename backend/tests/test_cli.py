@@ -8,13 +8,8 @@ from pathlib import Path
 from magnetar_prometheus.cli import main
 
 def test_cli_default_workflow(capsys):
-    """Test that the CLI runs successfully with the default example workflow.
-
-    This function leverages the `--format json` argument to ensure the execution
-    context is predictably structured for deep validation assertions, bypassing the
-    summary UX formatter.
-    """
     # Patch the system arguments to simulate a command line invocation that explicitely requests json format.
+    """Test the CLI execution with the default example workflow."""
     with patch("sys.argv", ["cli.py", "--format", "json"]):
         main()
 
@@ -38,7 +33,7 @@ def test_cli_missing_workflow():
 
 
 def test_cli_invalid_workflow_definition(capsys, tmp_path):
-    """Test that the CLI exits gracefully if the workflow file content is invalid."""
+    """Test CLI behavior with an invalid workflow file."""
     workflow_file = tmp_path / "invalid_workflow.yaml"
     workflow_file.write_text("- not-a-mapping\n")
 
@@ -54,13 +49,9 @@ def test_cli_invalid_workflow_definition(capsys, tmp_path):
 
 
 def test_cli_custom_workflow_argument(capsys, tmp_path):
-    """Test providing a custom valid workflow file via the --workflow argument.
-
-    This verifies that the CLI correctly parses and loads external YAML definitions,
-    overriding the default `email_triage` module logic.
-    """
 
     # Establish a minimal temporary workflow file content to test correct engine argument parsing behavior
+    """Test the CLI with a custom valid workflow file via the --workflow argument."""
     workflow_content = """
 id: test_workflow
 name: Test Workflow
@@ -91,13 +82,8 @@ steps:
     assert output["data"]["status"] == "in_review"
 
 def test_cli_format_summary(capsys):
-    """Test that the CLI defaults to the summary format and prints it properly.
-
-    This function verifies the core functionality of the launcher UX improvements,
-    confirming that without explicit user flags, the complex JSON context is hidden
-    in favor of an easy to read, condensed text block.
-    """
     # Invoke the CLI without format flags to force the default 'summary' flow.
+    """Test the CLI defaults to the summary format and prints it correctly."""
     with patch("sys.argv", ["cli.py"]):
         main()
 

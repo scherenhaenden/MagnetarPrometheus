@@ -40,6 +40,14 @@ from magnetar_prometheus.modules.email_module.steps import register_example_step
 
 
 def main():
+    """Run the MagnetarPrometheus workflow engine from the command line.
+
+    Parses ``--workflow`` to locate a YAML workflow file, assembles the
+    runtime components (loader, registry, executor, router, context manager,
+    engine), executes the workflow, and prints the resulting
+    :class:`~magnetar_prometheus_sdk.models.RunContext` as formatted JSON to
+    stdout.  Exits with status 1 when the requested workflow file is missing.
+    """
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")
 
     # default path to the example workflow relative to the file location

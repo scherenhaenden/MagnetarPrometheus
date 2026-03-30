@@ -1,5 +1,28 @@
 # Rules of MagnetarPrometheus
 
+<!--
+Why this file exists in this form:
+
+- This file is the repository's hard governance layer. It is intentionally stricter than
+  README-style guidance because it defines what contributors, agents, and automation are
+  allowed to treat as normal operating procedure.
+- The rules here are phrased as repository-level constraints rather than personal advice.
+  That distinction matters because this document is meant to survive changes in tools,
+  agents, and maintainers without losing the expected operating model.
+- Branching, planning, status tracking, and documentation rules live together here on
+  purpose. MagnetarPrometheus relies on those artifacts as part of the product-delivery
+  process, so governance is not separate from implementation quality.
+- Merge behavior belongs here because repository history is part of the system's audit
+  surface. If merges destroy ancestry, hide reviewed branch work, or leave ambiguous
+  branch state behind, they create operational confusion even when the resulting code is
+  technically present on `master`.
+- This file should bias toward explicitness over convenience. A contributor should be able
+  to read it and understand not just what is preferred, but what is considered a process
+  failure that must not be normalized.
+- If a workflow exception is ever necessary, the exception must be documented in
+  `BITACORA.md` rather than silently replacing the normal rule with ad hoc behavior.
+-->
+
 These rules codify how MagnetarPrometheus operates under the Magnetar Canonical Project Model. The repository must comply unless a formal exception is documented in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
 
 ## Naming Conventions
@@ -40,6 +63,12 @@ The following files must exist unless an exemption is logged in [BITACORA.md](/h
 - `feature/*` branches may start from `master` or `develop` and should be rebased before merge.
 - `hotfix/*` branches start from `master` and require a follow-up update in [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md).
 - Every pull request must reference impacted tasks and corresponding [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md) entries.
+- Normal pull requests must be merged with ancestry-preserving history. Squash merges are
+  not acceptable for standard feature/fix/chore PRs because they sever the visible link
+  between reviewed branch work and the resulting `master` history.
+- If a squash merge is ever used as an explicit exception, that exception and its reason
+  must be documented in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md)
+  before the history is considered clean again.
 
 ## Allowed Task States
 

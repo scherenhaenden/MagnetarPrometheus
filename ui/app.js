@@ -69,6 +69,10 @@ const navItems = document.querySelectorAll('.nav-item');
 const views = document.querySelectorAll('.view');
 const viewTitle = document.getElementById('current-view-title');
 const dashboardActivityList = document.getElementById('dashboard-activity-list');
+const activeRunsCount = document.getElementById('active-runs-count');
+const completed24hCount = document.getElementById('completed-24h-count');
+const failed24hCount = document.getElementById('failed-24h-count');
+const registeredWorkflowsCount = document.getElementById('registered-workflows-count');
 const workflowsTableBody = document.getElementById('workflows-table-body');
 const runsHistoryList = document.getElementById('runs-history-list');
 const runDetailsTitle = document.getElementById('run-details-title');
@@ -139,6 +143,15 @@ navItems.forEach(item => {
  * Slices the mockRuns array to show only the most recent items.
  */
 const populateDashboard = () => {
+    const now = Date.now();
+    const last24HoursMs = 24 * 60 * 60 * 1000;
+    const recentRuns = mockRuns.filter((run) => now - new Date(run.startTime).getTime() <= last24HoursMs);
+
+    activeRunsCount.textContent = String(mockRuns.filter((run) => run.status === 'running').length);
+    completed24hCount.textContent = String(recentRuns.filter((run) => run.status === 'success').length);
+    failed24hCount.textContent = String(recentRuns.filter((run) => run.status === 'failed').length);
+    registeredWorkflowsCount.textContent = String(mockWorkflows.length);
+
     dashboardActivityList.innerHTML = '';
     mockRuns.slice(0, 3).forEach(run => {
         const li = document.createElement('li');

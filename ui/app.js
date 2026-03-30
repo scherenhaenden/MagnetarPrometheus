@@ -83,6 +83,7 @@ const modalCloseBtn = document.getElementById('modal-close-btn');
 const modalViewRunBtn = document.getElementById('modal-view-run-btn');
 const modalExecutionStatus = document.getElementById('modal-execution-status');
 const modalConsoleOutput = document.getElementById('modal-console-output').querySelector('code');
+let modalTimers = [];
 
 /**
  * Formats an ISO 8601 date string into a user-friendly locale string.
@@ -227,33 +228,41 @@ const displayRunDetails = (run) => {
  * output to demonstrate step-by-step progression and evaluator routing.
  */
 const openModal = () => {
+    modalTimers.forEach(clearTimeout);
+    modalTimers = [];
+
     runModal.classList.add('active');
     modalExecutionStatus.innerHTML = '<span class="spinner"></span> Executing: Email Triage Example...';
     modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\\n[INFO] Loading dependencies...';
     modalViewRunBtn.disabled = true;
 
     // Simulate execution sequence
-    setTimeout(() => {
+    modalTimers.push(setTimeout(() => {
         modalConsoleOutput.textContent += '\\n[INFO] Executing step: extract_content';
-    }, 1000);
+    }, 1000));
 
-    setTimeout(() => {
+    modalTimers.push(setTimeout(() => {
         modalConsoleOutput.textContent += '\\n[INFO] Output: {"subject": "Test", "body": "Hello"}';
         modalConsoleOutput.textContent += '\\n[INFO] Executing step: classify_intent';
-    }, 2000);
+    }, 2000));
 
-    setTimeout(() => {
+    modalTimers.push(setTimeout(() => {
         modalConsoleOutput.textContent += '\\n[INFO] Intent classified as: general_inquiry';
         modalConsoleOutput.textContent += '\\n[INFO] Workflow completed successfully.';
         modalConsoleOutput.textContent += '\\n\\nResult: {\\n  "status": "success",\\n  "final_context": {\\n    "intent": "general_inquiry"\\n  }\\n}';
 
         modalExecutionStatus.innerHTML = '<span style="color: var(--success-color);">✓ Execution Complete</span>';
         modalViewRunBtn.disabled = false;
-    }, 3500);
+    }, 3500));
 };
 
 const closeModal = () => {
+    modalTimers.forEach(clearTimeout);
+    modalTimers = [];
     runModal.classList.remove('active');
+    modalExecutionStatus.textContent = 'Initializing...';
+    modalConsoleOutput.textContent = '';
+    modalViewRunBtn.disabled = true;
 };
 
 runExampleBtn.addEventListener('click', openModal);

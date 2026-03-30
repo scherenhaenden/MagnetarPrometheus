@@ -36,6 +36,23 @@ def test_cli_missing_workflow():
 
         assert exc_info.value.code == 1
 
+
+def test_cli_invalid_workflow_definition(capsys, tmp_path):
+    """Test that the CLI exits gracefully if the workflow file content is invalid."""
+    workflow_file = tmp_path / "invalid_workflow.yaml"
+    workflow_file.write_text("- not-a-mapping\n")
+
+    with patch("sys.argv", ["cli.py", "--workflow", str(workflow_file)]):
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+
+    captured = capsys.readouterr()
+
+    assert exc_info.value.code == 1
+    assert "Error loading workflow from" in captured.err
+    assert str(workflow_file) in captured.err
+
+
 def test_cli_custom_workflow_argument(capsys, tmp_path):
     """Test providing a custom valid workflow file via the --workflow argument.
 

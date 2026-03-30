@@ -38,6 +38,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 17:56 UTC
+**Author:** Codex
+**Entry:** Refined PR `#143` after directly reviewing the bot feedback on `fix/issues-110-34-52-47-93-pr-clean`. Kept the strengthened `__main__` assertion in `backend/tests/test_cli.py`, but replaced the manual `compile(...)/exec(...)` path with `runpy.run_path(..., run_name="__main__")` while preserving execution tracing to verify that a fresh `__main__` module really invokes `main()`. This keeps the test stricter than a naive patch-based approach, matches the repository's real execution model more closely, and reduces maintenance overhead without weakening the assertion.
+
+---
+**Timestamp:** 2026-03-30 17:56 UTC
+**Author:** Codex
+**Entry:** Verified that `fix/docs-and-cli-test-110-34-52-47-93` is redundant noise relative to `fix/issues-110-34-52-47-93-pr-clean`. The older branch contains the same issue-fix/header work but also carries an unrelated historical schema commit (`65bb88b`, run-execution schema) that does not belong in PR `#143`, while the clean branch contains the intended issue scope on top of current `master`. The older branch can therefore be deleted safely once the updated clean branch is pushed.
+
+---
 **Timestamp:** 2026-03-30 17:36 UTC
 **Author:** Codex
 **Entry:** Resolved the low-effort documentation and test follow-ups for issues `#110`, `#34`, `#52`, `#47`, and `#93` on `fix/docs-and-cli-test-110-34-52-47-93`. Standardized GitHub capitalization in `BITACORA.md` prose around GitHub Actions workflow references, corrected the `STATUS.md` grammar for the email module manifest note, tightened the historical `task-103` audit wording in `PLAN.md`, capitalized `Bash` and `Python` in the preserved remediation branch plan, and strengthened `backend/tests/test_cli.py` so the `__main__` execution test actually asserts that `main()` was invoked while marking the tiny CLI entrypoint wrapper line in `backend/src/magnetar_prometheus/cli.py` as a coverage-excluded shim.

@@ -13,9 +13,11 @@ Why this file exists in this form:
   smoke test. Its job is to verify that the entrypoint wiring really calls `main()`, since
   that line is easy to break during refactors while still leaving most runtime behavior
   intact.
-- The test uses execution tracing rather than a naive patched import because `__main__`
-  execution creates a distinct module context. That makes direct patching of an already
-  imported module insufficient if the goal is to assert the real entrypoint call path.
+- The `__main__` test uses execution tracing together with `runpy.run_path(...)` because
+  direct patching of an already imported module does not observe the fresh `__main__`
+  module context created by script execution in this repository. This keeps the assertion
+  honest while still using the standard library's path-execution helper instead of manual
+  source compilation.
 - This file should stay biased toward behavior that a CLI user would notice: successful
   JSON output, clear exit behavior on invalid input, and correct startup wiring.
 - If the CLI later grows substantially more modes, output formats, or service-launch
@@ -23,12 +25,12 @@ Why this file exists in this form:
   continuing to accumulate unrelated entrypoint concerns.
 """
 
-import pytest
 import json
+import runpy
 import sys
 from unittest.mock import patch
-from io import StringIO
-from pathlib import Path
+
+import pytest
 
 from magnetar_prometheus.cli import main
 
@@ -88,7 +90,6 @@ def test_cli_main_execution():
     """Test the __main__ block behavior."""
     from magnetar_prometheus import cli
     main_called = False
-    cli_source = Path(cli.__file__).read_text(encoding="utf-8")
 
     def tracer(frame, event, arg):
         nonlocal main_called
@@ -104,14 +105,7 @@ def test_cli_main_execution():
     try:
         sys.settrace(tracer)
         with patch("sys.argv", ["cli.py"]):
-            exec(
-                compile(cli_source, cli.__file__, "exec"),
-                {
-                    "__name__": "__main__",
-                    "__file__": cli.__file__,
-                    "__package__": "magnetar_prometheus",
-                },
-            )
+            runpy.run_path(cli.__file__, run_name="__main__")
     finally:
         sys.settrace(previous_trace)
 

@@ -1,7 +1,25 @@
 /*
  * UI Shell Stylesheet
- * Contains the foundational CSS for the MVP web dashboard.
- * Designed to be lightweight and responsive without requiring preprocessors like SASS.
+ *
+ * Why this file is structured this way:
+ *
+ * - The stylesheet is plain CSS on purpose so the MVP shell remains runnable without a
+ *   bundler, preprocessor, or framework-specific styling layer.
+ * - The file is grouped by concern: tokens, shared layout, controls, then view-specific
+ *   sections. That organization is deliberate so future contributors can find layout and
+ *   behavior decisions quickly while the UI remains small.
+ * - CSS custom properties are used as lightweight design tokens to keep the shell
+ *   visually coherent without pretending that a full design system already exists.
+ * - Desktop styling intentionally emphasizes the operator-console feel of the product:
+ *   fixed sidebar, strong panels, and dark log surfaces make the shell communicate the
+ *   intended workflow/runtime direction rather than looking like a generic placeholder.
+ * - Responsive overrides are kept here because this shell still needs to remain usable on
+ *   narrow viewports, even though it is not yet a full frontend application.
+ * - Console typography and wrapping rules are explicit because the Runs and modal console
+ *   areas are central to how this shell communicates execution flow to reviewers.
+ *
+ * If this file later grows too many special cases, that likely means the UI has outgrown
+ * a static-shell stylesheet and should move into a fuller frontend styling architecture.
  */
 
 /*

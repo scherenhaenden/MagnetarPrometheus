@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 15:22 UTC
+**Author:** Codex
+**Entry:** Completed the PR `#124` UI-shell review-fix pass on `feature/ui-mvp-shell-4754349263308203013` with separate commits per resolved review item, then added detailed file-level intent headers to `ui/index.html`, `ui/app.js`, and `ui/styles.css` so future contributors and agents can see why the shell currently remains static HTML, vanilla JavaScript, and plain CSS. The review-fix commits cover modal timer cleanup, real newline rendering, accessible modal semantics, accessible sidebar navigation controls, narrow-screen layout stacking, Stylelint-aligned console styles, and dashboard stats derived from mock data.
+
+---
 **Timestamp:** 2026-03-27 16:09 UTC
 **Author:** Codex
 **Entry:** Applied the substantive PR `#126` review fixes on the run-store branch without deleting prior review context or comments. Hardened `LocalJSONRunStore` against path traversal by validating `run_id`-derived file paths, introduced a typed `RunStatus` enum, narrowed exception handling to concrete parse/validation/file-operation failures, wrapped save-time write failures in an explicit runtime error, and expanded tests for invalid statuses, invalid stored records, path traversal rejection, and write failures. Verified with `bash scripts/run_tests.sh`: `64 passed`, `100.00%` coverage.

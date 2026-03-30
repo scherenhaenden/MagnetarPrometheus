@@ -1,3 +1,25 @@
+<!--
+    MagnetarPrometheus MVP UI Shell Markup
+
+    Why this file is structured this way:
+
+    - This HTML is intentionally static and directly openable so the repository can show
+      a visible application surface without introducing a frontend toolchain before the
+      backend service and API layer exist.
+    - The three main views (Dashboard, Workflows, Runs) are represented explicitly in the
+      markup because those are the product concepts the current documentation says users
+      still need to see, even though the data behind them is mocked.
+    - The document uses plain semantic HTML first and lets `app.js` progressively enhance
+      it. That keeps the shell inspectable and easy to migrate later if the project moves
+      to a component-based frontend.
+    - The modal is included in this file to demonstrate the future run-execution
+      experience, not to claim live backend integration already exists. It is a UX target.
+    - Accessibility semantics are made explicit here because even a mock-backed shell
+      should behave like a real interface during review and demo use.
+
+    If this file later looks too manual, that is probably a sign the repository is ready
+    for a real frontend application architecture instead of a static shell.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>

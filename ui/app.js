@@ -1,9 +1,31 @@
 /**
  * MagnetarPrometheus MVP UI Shell Controller
  *
- * This script provides the interactivity for the static HTML shell.
- * It manages view routing, DOM population, and simulates backend interactions.
- * All data is currently mocked; future iterations will replace this with real HTTP API calls.
+ * Why this file exists in this form:
+ *
+ * - This is intentionally a single-file vanilla JavaScript controller because the UI
+ *   in this repository is still a static MVP shell, not a framework-backed frontend
+ *   application. Contributors must be able to open `index.html` directly and still see
+ *   a working interface without a build step.
+ * - The code keeps routing, rendering, mock data, and simulated execution behavior in
+ *   one place on purpose. At this stage, explicitness is more valuable than splitting
+ *   responsibilities across abstractions that the product has not earned yet.
+ * - All data is mocked intentionally. This file is meant to show the expected product
+ *   interaction model before the backend has a persistent service or HTTP API to supply
+ *   real workflows, runs, and logs.
+ * - The modal run simulation uses timers rather than backend calls because the purpose
+ *   is to demonstrate progressive execution feedback in the UI, not to imply real
+ *   runtime integration already exists.
+ * - Accessibility state, focus movement, and active navigation behavior are handled here
+ *   because this script owns the UI state transitions. Keeping those concerns near the
+ *   interaction logic reduces the chance of future regressions where the visual state
+ *   and accessible state drift apart.
+ * - The dashboard counters are derived from the mock arrays instead of being hardcoded
+ *   so the visible shell stays internally consistent during reviews and demos.
+ *
+ * If this file later starts to feel overly manual, that is likely the point where the
+ * project should graduate to a proper frontend application structure with components,
+ * API services, and dedicated test tooling.
  */
 
 /**

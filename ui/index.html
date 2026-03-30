@@ -1,25 +1,3 @@
-<!--
-    MagnetarPrometheus MVP UI Shell Markup
-
-    Why this file is structured this way:
-
-    - This HTML is intentionally static and directly openable so the repository can show
-      a visible application surface without introducing a frontend toolchain before the
-      backend service and API layer exist.
-    - The three main views (Dashboard, Workflows, Runs) are represented explicitly in the
-      markup because those are the product concepts the current documentation says users
-      still need to see, even though the data behind them is mocked.
-    - The document uses plain semantic HTML first and lets `app.js` progressively enhance
-      it. That keeps the shell inspectable and easy to migrate later if the project moves
-      to a component-based frontend.
-    - The modal is included in this file to demonstrate the future run-execution
-      experience, not to claim live backend integration already exists. It is a UX target.
-    - Accessibility semantics are made explicit here because even a mock-backed shell
-      should behave like a real interface during review and demo use.
-
-    If this file later looks too manual, that is probably a sign the repository is ready
-    for a real frontend application architecture instead of a static shell.
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,21 +25,15 @@
                 <span class="version-badge">PoC Shell</span>
             </div>
             <nav class="sidebar-nav">
-                <ul class="nav-list">
-                    <li>
-                        <button type="button" class="nav-item active" data-target="dashboard-view" aria-current="page">
-                            <span class="icon">📊</span> Dashboard
-                        </button>
+                <ul>
+                    <li class="nav-item active" data-target="dashboard-view">
+                        <span class="icon">📊</span> Dashboard
                     </li>
-                    <li>
-                        <button type="button" class="nav-item" data-target="workflows-view">
-                            <span class="icon">🧩</span> Workflows
-                        </button>
+                    <li class="nav-item" data-target="workflows-view">
+                        <span class="icon">🧩</span> Workflows
                     </li>
-                    <li>
-                        <button type="button" class="nav-item" data-target="runs-view">
-                            <span class="icon">▶️</span> Runs
-                        </button>
+                    <li class="nav-item" data-target="runs-view">
+                        <span class="icon">▶️</span> Runs
                     </li>
                 </ul>
             </nav>
@@ -100,19 +72,19 @@
                     <div class="stats-grid">
                         <div class="stat-card">
                             <h3>Active Runs</h3>
-                            <div class="stat-value" id="active-runs-count">0</div>
+                            <div class="stat-value">1</div>
                         </div>
                         <div class="stat-card">
                             <h3>Completed (24h)</h3>
-                            <div class="stat-value" id="completed-24h-count">0</div>
+                            <div class="stat-value">12</div>
                         </div>
                         <div class="stat-card">
                             <h3>Failed (24h)</h3>
-                            <div class="stat-value danger" id="failed-24h-count">0</div>
+                            <div class="stat-value danger">0</div>
                         </div>
                         <div class="stat-card">
                             <h3>Registered Workflows</h3>
-                            <div class="stat-value" id="registered-workflows-count">0</div>
+                            <div class="stat-value">3</div>
                         </div>
                     </div>
                     <div class="recent-activity">
@@ -182,11 +154,11 @@
         Modal for Run Execution: Simulated popup overlay to demonstrate
         how a user might trigger and watch a workflow execution in real-time.
     -->
-    <div id="run-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="run-modal-title">
+    <div id="run-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="run-modal-title" tabindex="-1">Executing Example Workflow</h2>
-                <button type="button" class="close-btn" aria-label="Close dialog">&times;</button>
+                <h2>Executing Example Workflow</h2>
+                <span class="close-btn">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="execution-status" id="modal-execution-status">

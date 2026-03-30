@@ -1,25 +1,7 @@
 /*
  * UI Shell Stylesheet
- *
- * Why this file is structured this way:
- *
- * - The stylesheet is plain CSS on purpose so the MVP shell remains runnable without a
- *   bundler, preprocessor, or framework-specific styling layer.
- * - The file is grouped by concern: tokens, shared layout, controls, then view-specific
- *   sections. That organization is deliberate so future contributors can find layout and
- *   behavior decisions quickly while the UI remains small.
- * - CSS custom properties are used as lightweight design tokens to keep the shell
- *   visually coherent without pretending that a full design system already exists.
- * - Desktop styling intentionally emphasizes the operator-console feel of the product:
- *   fixed sidebar, strong panels, and dark log surfaces make the shell communicate the
- *   intended workflow/runtime direction rather than looking like a generic placeholder.
- * - Responsive overrides are kept here because this shell still needs to remain usable on
- *   narrow viewports, even though it is not yet a full frontend application.
- * - Console typography and wrapping rules are explicit because the Runs and modal console
- *   areas are central to how this shell communicates execution flow to reviewers.
- *
- * If this file later grows too many special cases, that likely means the UI has outgrown
- * a static-shell stylesheet and should move into a fuller frontend styling architecture.
+ * Contains the foundational CSS for the MVP web dashboard.
+ * Designed to be lightweight and responsive without requiring preprocessors like SASS.
  */
 
 /*
@@ -40,15 +22,6 @@
     --border-color: #dee2e6;
     --sidebar-width: 250px;
     --header-height: 60px;
-    --view-padding: 2rem;
-    --status-active-bg: #d4edda;
-    --status-active-text: #155724;
-    --status-draft-bg: #e2e3e5;
-    --status-draft-text: #383d41;
-    --status-failed-bg: #f8d7da;
-    --status-failed-text: #721c24;
-    --status-running-bg: #cce5ff;
-    --status-running-text: #004085;
 }
 
 /* Base Styles */
@@ -120,30 +93,20 @@ a:hover {
     font-weight: bold;
 }
 
-.nav-list {
+.sidebar-nav ul {
     list-style: none;
 }
 
 .nav-item {
-    width: 100%;
     padding: 0.75rem 1.5rem;
+    cursor: pointer;
     transition: background-color 0.2s;
     display: flex;
     align-items: center;
-    border: none;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    text-align: left;
 }
 
 .nav-item:hover {
     background-color: var(--secondary-color);
-}
-
-.nav-item:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: -2px;
 }
 
 .nav-item.active {
@@ -181,7 +144,7 @@ a:hover {
 }
 
 .view-container {
-    padding: var(--view-padding);
+    padding: 2rem;
     flex: 1;
 }
 
@@ -342,11 +305,11 @@ button:disabled {
     font-weight: 600;
 }
 
-.status-badge.active { background-color: var(--status-active-bg); color: var(--status-active-text); }
-.status-badge.draft { background-color: var(--status-draft-bg); color: var(--status-draft-text); }
-.status-badge.success { background-color: var(--status-active-bg); color: var(--status-active-text); }
-.status-badge.failed { background-color: var(--status-failed-bg); color: var(--status-failed-text); }
-.status-badge.running { background-color: var(--status-running-bg); color: var(--status-running-text); }
+.status-badge.active { background-color: #d4edda; color: #155724; }
+.status-badge.draft { background-color: #e2e3e5; color: #383d41; }
+.status-badge.success { background-color: #d4edda; color: #155724; }
+.status-badge.failed { background-color: #f8d7da; color: #721c24; }
+.status-badge.running { background-color: #cce5ff; color: #004085; }
 
 /*
  * View-Specific Styles: Runs Console
@@ -356,7 +319,7 @@ button:disabled {
 .run-console-container {
     display: flex;
     gap: 1.5rem;
-    height: calc(100vh - var(--header-height) - (var(--view-padding) * 2));
+    height: calc(100vh - var(--header-height) - 4rem);
 }
 
 .runs-list-panel {
@@ -454,7 +417,7 @@ button:disabled {
     padding: 1.5rem;
     flex: 1;
     overflow-y: auto;
-    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     font-size: 0.875rem;
     line-height: 1.5;
     background-color: #1e1e1e;
@@ -463,7 +426,7 @@ button:disabled {
 .console-output pre {
     margin: 0;
     white-space: pre-wrap;
-    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 /*
@@ -559,53 +522,4 @@ button:disabled {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-}
-
-@media (max-width: 480px) {
-    .app-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        position: static;
-        height: auto;
-        padding: 1rem 0;
-    }
-
-    .sidebar-header {
-        padding: 0 1rem 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-
-    .top-header {
-        height: auto;
-        padding: 1rem;
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .view-container {
-        padding: 1rem;
-    }
-
-    .run-console-container {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .runs-list-panel,
-    .run-details-panel {
-        width: 100%;
-    }
-
-    .run-metadata {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
 }

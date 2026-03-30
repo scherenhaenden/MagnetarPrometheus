@@ -1,31 +1,9 @@
 /**
  * MagnetarPrometheus MVP UI Shell Controller
  *
- * Why this file exists in this form:
- *
- * - This is intentionally a single-file vanilla JavaScript controller because the UI
- *   in this repository is still a static MVP shell, not a framework-backed frontend
- *   application. Contributors must be able to open `index.html` directly and still see
- *   a working interface without a build step.
- * - The code keeps routing, rendering, mock data, and simulated execution behavior in
- *   one place on purpose. At this stage, explicitness is more valuable than splitting
- *   responsibilities across abstractions that the product has not earned yet.
- * - All data is mocked intentionally. This file is meant to show the expected product
- *   interaction model before the backend has a persistent service or HTTP API to supply
- *   real workflows, runs, and logs.
- * - The modal run simulation uses timers rather than backend calls because the purpose
- *   is to demonstrate progressive execution feedback in the UI, not to imply real
- *   runtime integration already exists.
- * - Accessibility state, focus movement, and active navigation behavior are handled here
- *   because this script owns the UI state transitions. Keeping those concerns near the
- *   interaction logic reduces the chance of future regressions where the visual state
- *   and accessible state drift apart.
- * - The dashboard counters are derived from the mock arrays instead of being hardcoded
- *   so the visible shell stays internally consistent during reviews and demos.
- *
- * If this file later starts to feel overly manual, that is likely the point where the
- * project should graduate to a proper frontend application structure with components,
- * API services, and dedicated test tooling.
+ * This script provides the interactivity for the static HTML shell.
+ * It manages view routing, DOM population, and simulates backend interactions.
+ * All data is currently mocked; future iterations will replace this with real HTTP API calls.
  */
 
 /**
@@ -45,13 +23,11 @@ const mockWorkflows = [
  * and summary API endpoints would eventually return.
  * @type {Array<Object>}
  */
-const isoHoursAgo = (hoursAgo) => new Date(Date.now() - (hoursAgo * 60 * 60 * 1000)).toISOString();
-
 const mockRuns = [
-    { id: 'run-8f72', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: isoHoursAgo(2), duration: '45s' },
-    { id: 'run-3a1b', workflowId: 'wf-002', workflowName: 'Data Processing', status: 'failed', startTime: isoHoursAgo(10), duration: '12m' },
-    { id: 'run-9c4d', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: isoHoursAgo(26), duration: '42s' },
-    { id: 'run-2e5f', workflowId: 'wf-003', workflowName: 'Weekly Report', status: 'success', startTime: isoHoursAgo(50), duration: '3m' },
+    { id: 'run-8f72', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: '2026-04-12T08:30:00Z', duration: '45s' },
+    { id: 'run-3a1b', workflowId: 'wf-002', workflowName: 'Data Processing', status: 'failed', startTime: '2026-04-11T23:00:00Z', duration: '12m' },
+    { id: 'run-9c4d', workflowId: 'wf-001', workflowName: 'Email Triage', status: 'success', startTime: '2026-04-11T08:30:00Z', duration: '42s' },
+    { id: 'run-2e5f', workflowId: 'wf-003', workflowName: 'Weekly Report', status: 'success', startTime: '2026-04-10T09:00:00Z', duration: '3m' },
 ];
 
 /**
@@ -93,10 +69,6 @@ const navItems = document.querySelectorAll('.nav-item');
 const views = document.querySelectorAll('.view');
 const viewTitle = document.getElementById('current-view-title');
 const dashboardActivityList = document.getElementById('dashboard-activity-list');
-const activeRunsCount = document.getElementById('active-runs-count');
-const completed24hCount = document.getElementById('completed-24h-count');
-const failed24hCount = document.getElementById('failed-24h-count');
-const registeredWorkflowsCount = document.getElementById('registered-workflows-count');
 const workflowsTableBody = document.getElementById('workflows-table-body');
 const runsHistoryList = document.getElementById('runs-history-list');
 const runDetailsTitle = document.getElementById('run-details-title');
@@ -111,11 +83,6 @@ const modalCloseBtn = document.getElementById('modal-close-btn');
 const modalViewRunBtn = document.getElementById('modal-view-run-btn');
 const modalExecutionStatus = document.getElementById('modal-execution-status');
 const modalConsoleOutput = document.getElementById('modal-console-output').querySelector('code');
-const modalTitle = document.getElementById('run-modal-title');
-let modalTimers = [];
-let lastFocusedElement = null;
-let runDetailsTimer = null;
-let modalKeydownHandler = null;
 
 /**
  * Formats an ISO 8601 date string into a user-friendly locale string.
@@ -128,40 +95,13 @@ const formatDate = (dateString) => {
 };
 
 /**
- * Generates a standardized status badge element.
+ * Generates HTML for a standardized status badge component.
  * @param {string} status - The status text (e.g., 'active', 'success', 'failed').
- * @returns {HTMLSpanElement} The badge element.
+ * @returns {string} The raw HTML string for the badge.
  */
 const getStatusBadge = (status) => {
-    const badge = document.createElement('span');
-    badge.className = `status-badge ${status}`;
-    badge.textContent = status.toUpperCase();
-    return badge;
+    return `<span class="status-badge ${status}">${status.toUpperCase()}</span>`;
 };
-
-/**
- * Replaces an element's children with the provided nodes or text.
- * This keeps the shell on a consistent explicit-DOM pattern instead of
- * mixing node assembly with HTML string interpolation.
- * @param {HTMLElement} element - The target element to update.
- * @param {...(Node|string)} children - The replacement content.
- */
-const setElementChildren = (element, ...children) => {
-    element.replaceChildren(...children);
-};
-
-/**
- * Returns the focusable elements inside the modal in DOM order.
- * The title is included because the dialog moves initial focus there
- * for announcement purposes even though it is not otherwise interactive.
- * @returns {HTMLElement[]} Focusable modal descendants.
- */
-const getModalFocusableElements = () => [
-    modalTitle,
-    ...Array.from(
-        runModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-    ).filter((element) => !element.hasAttribute('disabled'))
-];
 
 /**
  * Navigation / View Router Controller
@@ -171,12 +111,8 @@ const getModalFocusableElements = () => [
 navItems.forEach(item => {
     item.addEventListener('click', () => {
         // Update active nav
-        navItems.forEach(nav => {
-            nav.classList.remove('active');
-            nav.removeAttribute('aria-current');
-        });
+        navItems.forEach(nav => nav.classList.remove('active'));
         item.classList.add('active');
-        item.setAttribute('aria-current', 'page');
 
         // Update view
         const targetViewId = item.getAttribute('data-target');
@@ -196,28 +132,13 @@ navItems.forEach(item => {
  * Slices the mockRuns array to show only the most recent items.
  */
 const populateDashboard = () => {
-    const now = Date.now();
-    const last24HoursMs = 24 * 60 * 60 * 1000;
-    const recentRuns = mockRuns.filter((run) => now - new Date(run.startTime).getTime() <= last24HoursMs);
-
-    activeRunsCount.textContent = String(mockRuns.filter((run) => run.status === 'running').length);
-    completed24hCount.textContent = String(recentRuns.filter((run) => run.status === 'success').length);
-    failed24hCount.textContent = String(recentRuns.filter((run) => run.status === 'failed').length);
-    registeredWorkflowsCount.textContent = String(mockWorkflows.length);
-
-    dashboardActivityList.replaceChildren();
+    dashboardActivityList.innerHTML = '';
     mockRuns.slice(0, 3).forEach(run => {
         const li = document.createElement('li');
-        const workflowName = document.createElement('strong');
-        workflowName.textContent = run.workflowName;
-
-        const message = document.createTextNode(` run ${run.id} finished with status `);
-
-        const activityTime = document.createElement('span');
-        activityTime.className = 'activity-time';
-        activityTime.textContent = formatDate(run.startTime);
-
-        li.append(workflowName, message, getStatusBadge(run.status), activityTime);
+        li.innerHTML = `
+            <strong>${run.workflowName}</strong> run ${run.id} finished with status ${getStatusBadge(run.status)}
+            <span class="activity-time">${formatDate(run.startTime)}</span>
+        `;
         dashboardActivityList.appendChild(li);
     });
 };
@@ -227,39 +148,18 @@ const populateDashboard = () => {
  * Populates name, description, status badges, and stub action buttons.
  */
 const populateWorkflows = () => {
-    workflowsTableBody.replaceChildren();
+    workflowsTableBody.innerHTML = '';
     mockWorkflows.forEach(wf => {
         const tr = document.createElement('tr');
-
-        const nameCell = document.createElement('td');
-        const nameStrong = document.createElement('strong');
-        nameStrong.textContent = wf.name;
-        const lineBreak = document.createElement('br');
-        const workflowId = document.createElement('small');
-        workflowId.className = 'text-muted';
-        workflowId.textContent = wf.id;
-        nameCell.append(nameStrong, lineBreak, workflowId);
-
-        const descriptionCell = document.createElement('td');
-        descriptionCell.textContent = wf.description;
-
-        const versionCell = document.createElement('td');
-        versionCell.textContent = wf.version;
-
-        const statusCell = document.createElement('td');
-        statusCell.appendChild(getStatusBadge(wf.status));
-
-        const actionsCell = document.createElement('td');
-        const viewGraphButton = document.createElement('button');
-        viewGraphButton.type = 'button';
-        viewGraphButton.className = 'secondary-btn';
-        viewGraphButton.textContent = 'View Graph';
-        viewGraphButton.addEventListener('click', () => {
-            alert('Graph View Not Implemented Yet');
-        });
-        actionsCell.appendChild(viewGraphButton);
-
-        tr.append(nameCell, descriptionCell, versionCell, statusCell, actionsCell);
+        tr.innerHTML = `
+            <td><strong>${wf.name}</strong><br><small class="text-muted">${wf.id}</small></td>
+            <td>${wf.description}</td>
+            <td>${wf.version}</td>
+            <td>${getStatusBadge(wf.status)}</td>
+            <td>
+                <button class="secondary-btn" onclick="alert('Graph View Not Implemented Yet')">View Graph</button>
+            </td>
+        `;
         workflowsTableBody.appendChild(tr);
     });
 };
@@ -270,29 +170,19 @@ const populateWorkflows = () => {
  * Clicking a run triggers `displayRunDetails` to show its logs and metadata on the right.
  */
 const populateRuns = () => {
-    runsHistoryList.replaceChildren();
+    runsHistoryList.innerHTML = '';
     mockRuns.forEach((run, index) => {
         const li = document.createElement('li');
         li.className = `run-item ${index === 0 ? 'selected' : ''}`;
         li.dataset.runId = run.id;
-
-        const runItemHeader = document.createElement('div');
-        runItemHeader.className = 'run-item-header';
-
-        const runItemId = document.createElement('span');
-        runItemId.className = 'run-item-id';
-        runItemId.textContent = run.id;
-        runItemHeader.append(runItemId, getStatusBadge(run.status));
-
-        const runItemWorkflow = document.createElement('div');
-        runItemWorkflow.className = 'run-item-workflow';
-        runItemWorkflow.textContent = run.workflowName;
-
-        const runItemTime = document.createElement('div');
-        runItemTime.className = 'run-item-time';
-        runItemTime.textContent = formatDate(run.startTime);
-
-        li.append(runItemHeader, runItemWorkflow, runItemTime);
+        li.innerHTML = `
+            <div class="run-item-header">
+                <span class="run-item-id">${run.id}</span>
+                ${getStatusBadge(run.status)}
+            </div>
+            <div class="run-item-workflow">${run.workflowName}</div>
+            <div class="run-item-time">${formatDate(run.startTime)}</div>
+        `;
 
         li.addEventListener('click', () => {
             document.querySelectorAll('.run-item').forEach(el => el.classList.remove('selected'));
@@ -315,39 +205,17 @@ const populateRuns = () => {
  * @param {Object} run - The specific run object payload.
  */
 const displayRunDetails = (run) => {
-    if (runDetailsTimer !== null) {
-        clearTimeout(runDetailsTimer);
-    }
-
     runDetailsTitle.textContent = `Run: ${run.id} - ${run.workflowName}`;
-    runMetadata.replaceChildren();
-
-    [
-        ['Status', run.status.toUpperCase()],
-        ['Started', formatDate(run.startTime)],
-        ['Duration', run.duration],
-    ].forEach(([label, value]) => {
-        const metadataItem = document.createElement('div');
-        metadataItem.className = 'metadata-item';
-        metadataItem.append(`${label}: `);
-
-        const metadataValue = document.createElement('span');
-        metadataValue.textContent = value;
-        metadataItem.appendChild(metadataValue);
-
-        runMetadata.appendChild(metadataItem);
-    });
+    runMetadata.innerHTML = `
+        <div class="metadata-item">Status: <span>${run.status.toUpperCase()}</span></div>
+        <div class="metadata-item">Started: <span>${formatDate(run.startTime)}</span></div>
+        <div class="metadata-item">Duration: <span>${run.duration}</span></div>
+    `;
 
     // Simulate loading logs
-    const selectedRunId = run.id;
     runConsoleOutput.textContent = 'Fetching logs...';
-    runDetailsTimer = setTimeout(() => {
-        if (runsHistoryList.querySelector('.run-item.selected')?.dataset.runId !== selectedRunId) {
-            return;
-        }
-
-        runConsoleOutput.textContent = mockRunDetails[selectedRunId] || '[INFO] No logs available for this run.';
-        runDetailsTimer = null;
+    setTimeout(() => {
+        runConsoleOutput.textContent = mockRunDetails[run.id] || '[INFO] No logs available for this run.';
     }, 300);
 };
 
@@ -359,90 +227,33 @@ const displayRunDetails = (run) => {
  * output to demonstrate step-by-step progression and evaluator routing.
  */
 const openModal = () => {
-    modalTimers.forEach(clearTimeout);
-    modalTimers = [];
-    lastFocusedElement = document.activeElement;
-    if (modalKeydownHandler !== null) {
-        runModal.removeEventListener('keydown', modalKeydownHandler);
-    }
-
     runModal.classList.add('active');
-    const spinner = document.createElement('span');
-    spinner.className = 'spinner';
-    setElementChildren(modalExecutionStatus, spinner, ' Executing: Email Triage Example...');
-    modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\n[INFO] Loading dependencies...';
+    modalExecutionStatus.innerHTML = '<span class="spinner"></span> Executing: Email Triage Example...';
+    modalConsoleOutput.textContent = '[INFO] Starting workflow engine...\\n[INFO] Loading dependencies...';
     modalViewRunBtn.disabled = true;
 
-    modalKeydownHandler = (event) => {
-        if (event.key === 'Escape') {
-            event.preventDefault();
-            closeModal();
-            return;
-        }
-
-        if (event.key !== 'Tab') {
-            return;
-        }
-
-        const focusableElements = getModalFocusableElements();
-        if (focusableElements.length === 0) {
-            return;
-        }
-
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (event.shiftKey && document.activeElement === firstElement) {
-            event.preventDefault();
-            lastElement.focus();
-            return;
-        }
-
-        if (!event.shiftKey && document.activeElement === lastElement) {
-            event.preventDefault();
-            firstElement.focus();
-        }
-    };
-    runModal.addEventListener('keydown', modalKeydownHandler);
-    modalTitle.focus();
-
     // Simulate execution sequence
-    modalTimers.push(setTimeout(() => {
-        modalConsoleOutput.textContent += '\n[INFO] Executing step: extract_content';
-    }, 1000));
+    setTimeout(() => {
+        modalConsoleOutput.textContent += '\\n[INFO] Executing step: extract_content';
+    }, 1000);
 
-    modalTimers.push(setTimeout(() => {
-        modalConsoleOutput.textContent += '\n[INFO] Output: {"subject": "Test", "body": "Hello"}';
-        modalConsoleOutput.textContent += '\n[INFO] Executing step: classify_intent';
-    }, 2000));
+    setTimeout(() => {
+        modalConsoleOutput.textContent += '\\n[INFO] Output: {"subject": "Test", "body": "Hello"}';
+        modalConsoleOutput.textContent += '\\n[INFO] Executing step: classify_intent';
+    }, 2000);
 
-    modalTimers.push(setTimeout(() => {
-        modalConsoleOutput.textContent += '\n[INFO] Intent classified as: general_inquiry';
-        modalConsoleOutput.textContent += '\n[INFO] Workflow completed successfully.';
-        modalConsoleOutput.textContent += '\n\nResult: {\n  "status": "success",\n  "final_context": {\n    "intent": "general_inquiry"\n  }\n}';
+    setTimeout(() => {
+        modalConsoleOutput.textContent += '\\n[INFO] Intent classified as: general_inquiry';
+        modalConsoleOutput.textContent += '\\n[INFO] Workflow completed successfully.';
+        modalConsoleOutput.textContent += '\\n\\nResult: {\\n  "status": "success",\\n  "final_context": {\\n    "intent": "general_inquiry"\\n  }\\n}';
 
-        const statusIcon = document.createElement('span');
-        statusIcon.style.color = 'var(--success-color)';
-        statusIcon.textContent = '✓';
-        setElementChildren(modalExecutionStatus, statusIcon, ' Execution Complete');
+        modalExecutionStatus.innerHTML = '<span style="color: var(--success-color);">✓ Execution Complete</span>';
         modalViewRunBtn.disabled = false;
-    }, 3500));
+    }, 3500);
 };
 
 const closeModal = () => {
-    modalTimers.forEach(clearTimeout);
-    modalTimers = [];
     runModal.classList.remove('active');
-    if (modalKeydownHandler !== null) {
-        runModal.removeEventListener('keydown', modalKeydownHandler);
-        modalKeydownHandler = null;
-    }
-    modalExecutionStatus.textContent = 'Initializing...';
-    modalConsoleOutput.textContent = '';
-    modalViewRunBtn.disabled = true;
-    if (lastFocusedElement instanceof HTMLElement) {
-        lastFocusedElement.focus();
-    }
 };
 
 runExampleBtn.addEventListener('click', openModal);
@@ -450,23 +261,10 @@ closeBtn.addEventListener('click', closeModal);
 modalCloseBtn.addEventListener('click', closeModal);
 
 modalViewRunBtn.addEventListener('click', () => {
-    const completedRunId = `run-${Date.now().toString(36).slice(-6)}`;
-    const completedRun = {
-        id: completedRunId,
-        workflowId: 'wf-001',
-        workflowName: 'Email Triage',
-        status: 'success',
-        startTime: new Date().toISOString(),
-        duration: '4s',
-    };
-
-    mockRuns.unshift(completedRun);
-    mockRunDetails[completedRunId] = modalConsoleOutput.textContent;
-
-    populateDashboard();
-    populateRuns();
     closeModal();
+    // Navigate to Runs view
     navItems[2].click();
+    // In a real app, we'd add the new run to the mock data and select it
 });
 
 // Initialize

@@ -14,7 +14,7 @@
 - The repository must provide runnable scripts for startup, bootstrap, and test execution flows.
 - The Python runtime must detect missing required libraries during startup.
 - The Python runtime must install missing libraries dynamically when execution policy permits it, or fail with explicit remediation guidance when it does not.
-- The project must use timestamp-based versioning in the format `yyyy.MM.dd HH:mm:ss.SSS`.
+- The project must use timestamp-based versioning in the format `yyyy.MM.dd HH:mm:sss`.
 - The repository must provide automated pipelines for testing, validation, and release flows.
 
 ### Should-Have

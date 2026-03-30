@@ -46,6 +46,15 @@ from magnetar_prometheus.modules.email_module.steps import register_example_step
 
 
 def main():
+    """Run the MagnetarPrometheus Backend CLI workflow.
+    
+    This function sets up the command-line interface for the MagnetarPrometheus
+    backend, allowing users to specify a workflow YAML file and output format. It
+    validates the existence of the specified workflow file, loads it using the
+    WorkflowLoader, and initializes the execution environment with a step registry
+    and an executor. The workflow is then executed, and the results are displayed
+    in the requested format, either as a summary or raw JSON.
+    """
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")
 
     # default path to the example workflow relative to the file location

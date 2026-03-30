@@ -12,7 +12,7 @@ Make the canonical timestamp versioning rule more explicit in the codebase and d
 - Updated the governance files (`BITACORA.md`, `PLAN.md`, `STATUS.md`) to log these deliberate improvements.
 
 ## Methods
-- Inspected the current context of `release.yml`, the scripts directories, test suites, and project configurations using bash utilities (`grep`, `cat`, etc.).
-- Developed bash and python code aligned with existing style and framework (pytest).
+- Inspected the current context of `release.yml`, the scripts directories, test suites, and project configurations using Bash utilities (`grep`, `cat`, etc.).
+- Developed Bash and Python code aligned with existing style and framework (pytest).
 - Safely applied structural changes with diffing, and ran end-to-end testing script (`scripts/run_tests.sh`) to verify code correctness and 100% coverage constraints.
 - Iteratively improved documentation to match codebase state cleanly and transparently.

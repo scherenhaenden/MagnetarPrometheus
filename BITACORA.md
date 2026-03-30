@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 17:36 UTC
+**Author:** Codex
+**Entry:** Resolved the low-effort documentation and test follow-ups for issues `#110`, `#34`, `#52`, `#47`, and `#93` on `fix/docs-and-cli-test-110-34-52-47-93`. Standardized GitHub capitalization in `BITACORA.md` prose around GitHub Actions workflow references, corrected the `STATUS.md` grammar for the email module manifest note, tightened the historical `task-103` audit wording in `PLAN.md`, capitalized `Bash` and `Python` in the preserved remediation branch plan, and strengthened `backend/tests/test_cli.py` so the `__main__` execution test actually asserts that `main()` was invoked while marking the tiny CLI entrypoint wrapper line in `backend/src/magnetar_prometheus/cli.py` as a coverage-excluded shim.
+
+---
 **Timestamp:** 2026-03-30 17:19 UTC
 **Author:** Codex
 **Entry:** Applied the final PR `#124` navigation resilience polish in `ui/app.js` by replacing the brittle `navItems[2]` Runs-tab navigation with a stable selector targeting `.nav-item[data-target=\"runs-view\"]`. This preserves the synthetic-run flow while decoupling it from sidebar item ordering.
@@ -110,7 +115,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-27 11:56 UTC
 **Author:** Codex
-**Entry:** Resolved the PR 14 workflow conflict in `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
+**Entry:** Resolved the PR 14 workflow conflict in the GitHub Actions workflow `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
 
 ---
 **Timestamp:** 2026-03-27 11:45 UTC
@@ -165,7 +170,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-26 12:05 UTC
 **Author:** Codex
-**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
+**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in the GitHub Actions workflow `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
 
 ---
 **Timestamp:** 2026-03-26 10:58 UTC

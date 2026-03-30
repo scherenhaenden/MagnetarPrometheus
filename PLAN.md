@@ -52,7 +52,7 @@ These rows are preserved from the merged branch so no prior planning state is de
 
 | Historical Task ID | Original Task ID | Milestone | Title | Owner | Effort (pts) | Weight (%) | Historical State | Historical Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `task-103-history-20260326-governance-audit` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but are oriented mainly around backend needs and not yet shaped for UI graph editing. |
+| `task-103-history-20260326-governance-audit` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but need refinement for UI graph editing. |
 | `task-104-history-20260326-governance-audit` | `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `in_review` | Based on `PocPlan.md`. Workflow loader and engine loop are mostly done, execute a narrow sample workflow, and now include the `email_module` restructuring. |
 | `task-105-history-20260326-governance-audit` | `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | GitHub issue: #7. Must stay aligned with canonical workflow schema. |
 | `task-103-history-20260326-runtime-remediation` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `done` | GitHub issue: #1. Includes Python runtime models and shared schema boundary. |

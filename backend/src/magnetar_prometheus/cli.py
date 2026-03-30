@@ -51,5 +51,5 @@ def main():
     print(json.dumps(result_context, indent=2))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - entrypoint wrapper is asserted indirectly in tests
     main()

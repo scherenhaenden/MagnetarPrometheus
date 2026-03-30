@@ -62,11 +62,32 @@ steps:
 def test_cli_main_execution():
     """Test the __main__ block behavior."""
     from magnetar_prometheus import cli
-    with patch.object(cli, "main") as mock_main:
-        with patch.object(cli, "__name__", "__main__"):
-            # Normally __name__ == "__main__" triggers main() at module load,
-            # but we can't easily trigger the top-level execution block.
-            # Instead, we execute the module script using runpy.
-            import runpy
-            with patch("sys.argv", ["cli.py"]):
-                runpy.run_module("magnetar_prometheus.cli", run_name="__main__")
+    main_called = False
+    cli_source = Path(cli.__file__).read_text(encoding="utf-8")
+
+    def tracer(frame, event, arg):
+        nonlocal main_called
+        if (
+            event == "call"
+            and frame.f_code.co_name == "main"
+            and frame.f_globals.get("__name__") == "__main__"
+        ):
+            main_called = True
+        return tracer
+
+    previous_trace = sys.gettrace()
+    try:
+        sys.settrace(tracer)
+        with patch("sys.argv", ["cli.py"]):
+            exec(
+                compile(cli_source, cli.__file__, "exec"),
+                {
+                    "__name__": "__main__",
+                    "__file__": cli.__file__,
+                    "__package__": "magnetar_prometheus",
+                },
+            )
+    finally:
+        sys.settrace(previous_trace)
+
+    assert main_called

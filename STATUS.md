@@ -91,7 +91,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - Conditional routing through the evaluator path.
 - Step registration and Python executor routing.
 - Structured context/result output for completed runs.
-- Example email-triage module with manifest, workflow, and step handlers.
+- Example email-triage module with a manifest, workflow, and step handlers.
 - Runtime bootstrap with dependency checking and policy-driven install behavior.
 - Local scripts for bootstrap, run, and test flows.
 - Canonical version-stamp generation for release metadata.

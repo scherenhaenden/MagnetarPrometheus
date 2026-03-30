@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-03-30 16:05 UTC
+**Author:** Codex
+**Entry:** Fixed the remaining PR `#124` run-details race in `ui/app.js` by tracking the delayed console-render timer used by `displayRunDetails()`, clearing any previous pending timer before scheduling a new one, and guarding the delayed log write against stale selection state. This keeps rapid run switching from replacing the currently selected run's logs with an older timer callback.
+
+---
 **Timestamp:** 2026-03-30 15:48 UTC
 **Author:** Codex
 **Entry:** Addressed the late PR `#124` security review cluster on `feature/ui-mvp-shell-4754349263308203013` by removing mock-data DOM writes that relied on `innerHTML` in `ui/app.js`. Reworked dashboard activity items, workflow table rows, runs list items, status badges, and run metadata rendering to use explicit DOM node creation and `textContent`-based assembly so the static MVP shell no longer normalizes unsafe rendering patterns that would be risky once real API-backed data arrives.

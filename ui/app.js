@@ -112,6 +112,7 @@ const modalConsoleOutput = document.getElementById('modal-console-output').query
 const modalTitle = document.getElementById('run-modal-title');
 let modalTimers = [];
 let lastFocusedElement = null;
+let runDetailsTimer = null;
 
 /**
  * Formats an ISO 8601 date string into a user-friendly locale string.
@@ -298,6 +299,10 @@ const populateRuns = () => {
  * @param {Object} run - The specific run object payload.
  */
 const displayRunDetails = (run) => {
+    if (runDetailsTimer !== null) {
+        clearTimeout(runDetailsTimer);
+    }
+
     runDetailsTitle.textContent = `Run: ${run.id} - ${run.workflowName}`;
     runMetadata.replaceChildren();
 
@@ -318,9 +323,15 @@ const displayRunDetails = (run) => {
     });
 
     // Simulate loading logs
+    const selectedRunId = run.id;
     runConsoleOutput.textContent = 'Fetching logs...';
-    setTimeout(() => {
-        runConsoleOutput.textContent = mockRunDetails[run.id] || '[INFO] No logs available for this run.';
+    runDetailsTimer = setTimeout(() => {
+        if (runsHistoryList.querySelector('.run-item.selected')?.dataset.runId !== selectedRunId) {
+            return;
+        }
+
+        runConsoleOutput.textContent = mockRunDetails[selectedRunId] || '[INFO] No logs available for this run.';
+        runDetailsTimer = null;
     }, 300);
 };
 

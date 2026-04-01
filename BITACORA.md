@@ -295,3 +295,8 @@ This logbook should not be rewritten retroactively. Corrections must be made by 
 **Timestamp:** 2026-04-01 13:54 UTC
 **Author:** Codex
 **Entry:** Addressed the remaining PR #145 summary-rendering robustness review. Hardened `backend/src/magnetar_prometheus/cli.py::_print_summary` to tolerate partial run contexts by using safe accessors and fallback values instead of direct indexing, and added an explicit in-code review-follow-up comment describing why the defensive handling is required. Added `backend/tests/test_cli.py::test_cli_summary_tolerates_partial_context` and revalidated with `bash scripts/run_tests.sh`.
+
+---
+**Timestamp:** 2026-04-01 14:05 UTC
+**Author:** Codex
+**Entry:** Aligned the `backend/src/magnetar_prometheus/cli.py::main` docstring with the implemented CLI exit semantics so the documentation now explicitly states that the command also exits with status `1` when workflow execution completes with `run.status == "failed"`.

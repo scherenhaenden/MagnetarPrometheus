@@ -77,8 +77,9 @@ def main():
     status, completed-step count, and the top-level data and AI keys. JSON mode
     prints the full execution context returned by the engine.
 
-    The command exits with status ``1`` when the workflow file does not exist or
-    when the workflow definition cannot be loaded into a valid runtime model.
+    The command exits with status ``1`` when the workflow file does not exist,
+    when the workflow definition cannot be loaded into a valid runtime model,
+    or when execution ends with ``run.status == "failed"``.
     Argument-parsing failures continue to use argparse's default exit behavior.
     """
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")

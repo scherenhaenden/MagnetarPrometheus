@@ -56,7 +56,7 @@ For the current proof of concept, acceptance should be read as “the backend sl
 
 - CI must execute the standard test and validation path on every relevant change
 - coverage enforcement must run in pipeline, not only locally
-- release-oriented pipeline stages should preserve the canonical version stamp format `yyyy.MM.dd HH:mm:ss.SSS`
+- release-oriented pipeline stages should preserve the canonical version stamp format `yyyy.MM.dd HH:mm:sss`
 
 ## Practical Local Validation
 

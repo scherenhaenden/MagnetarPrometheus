@@ -66,3 +66,14 @@ def test_load_workflow_accepts_mapping_subclasses(tmp_path):
     assert wf.id == "custom_mapping_workflow"
     assert wf.name == "Custom Mapping Workflow"
     assert wf.start_step == "start"
+
+
+
+def test_load_workflow_rejects_empty_mapping_yaml(tmp_path):
+    p = tmp_path / "empty_mapping.yaml"
+    p.write_text("{}\n")
+
+    loader = WorkflowLoader()
+
+    with pytest.raises(ValueError, match=r"empty_mapping\.yaml.*empty YAML mapping"):
+        loader.load_workflow(str(p))

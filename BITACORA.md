@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 14:23 UTC
+**Author:** Codex
+**Entry:** Addressed the remaining PR `#140` loader review thread by rejecting empty YAML mappings in `WorkflowLoader` with a filepath-specific `ValueError` before schema validation. Added a dedicated loader test for `{}` input so the branch now covers non-mapping roots, mapping subclasses, and empty mappings explicitly.
+
+---
 **Timestamp:** 2026-04-01 14:21 UTC
 **Author:** Codex
 **Entry:** Addressed the first remaining PR `#140` review thread on `fix/issue-105-workflow-loader-yaml-guard` by broadening the YAML-root type guard in `WorkflowLoader` from `dict` to `collections.abc.Mapping`. Added a focused loader test that patches `yaml.safe_load(...)` to return a mapping subclass so the acceptance behavior stays covered if parser implementations change.

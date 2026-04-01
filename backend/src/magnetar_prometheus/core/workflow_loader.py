@@ -27,7 +27,7 @@ class WorkflowLoader:
         Raises:
             FileNotFoundError: When *filepath* does not exist.
             yaml.YAMLError: When the file contains invalid YAML.
-            ValueError: When the YAML root is not a mapping type.
+            ValueError: When the YAML root is not a mapping type or is empty.
             pydantic.ValidationError: When the parsed data does not conform to
                 the :class:`~magnetar_prometheus_sdk.models.Workflow` schema.
         """
@@ -39,5 +39,12 @@ class WorkflowLoader:
         if not isinstance(data, Mapping):
             raise ValueError(
                 f"Workflow definition in '{filepath}' must be a YAML mapping."
+            )
+
+        # Empty mappings are still invalid workflows; surface that as a loader-
+        # level error instead of a less specific downstream schema failure.
+        if not data:
+            raise ValueError(
+                f"Workflow definition in '{filepath}' cannot be an empty YAML mapping."
             )
         return Workflow.model_validate(data)

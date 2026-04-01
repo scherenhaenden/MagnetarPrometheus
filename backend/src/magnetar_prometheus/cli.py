@@ -44,13 +44,25 @@ from magnetar_prometheus.modules.email_module.steps import register_example_step
 
 def _print_summary(workflow_path: Path, result_context: dict) -> None:
     """Render a human-scannable execution summary."""
+    # Review follow-up: summary rendering must tolerate partial engine output so the
+    # CLI still reports failures cleanly instead of crashing on missing keys.
+    run_info = result_context.get("run") or {}
+    history = result_context.get("history") or []
+    data = result_context.get("data") or {}
+    ai = result_context.get("ai") or {}
+
+    workflow_id = run_info.get("workflow_id", "unknown")
+    status = run_info.get("status", "unknown")
+    data_keys = data.keys() if isinstance(data, dict) else []
+    ai_keys = ai.keys() if isinstance(ai, dict) else []
+
     print(f"Executing workflow from {workflow_path}")
     print("=== Workflow Execution Summary ===")
-    print(f"Workflow ID: {result_context['run']['workflow_id']}")
-    print(f"Status: {result_context['run']['status']}")
-    print(f"Steps Executed: {len(result_context['history'])}")
-    print(f"Final Data Keys: {', '.join(sorted(result_context['data'].keys()))}")
-    print(f"Final AI Keys: {', '.join(sorted(result_context['ai'].keys()))}")
+    print(f"Workflow ID: {workflow_id}")
+    print(f"Status: {status}")
+    print(f"Steps Executed: {len(history)}")
+    print(f"Final Data Keys: {', '.join(sorted(data_keys))}")
+    print(f"Final AI Keys: {', '.join(sorted(ai_keys))}")
 
 
 def main():

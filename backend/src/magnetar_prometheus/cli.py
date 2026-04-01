@@ -13,9 +13,10 @@ Why this file exists in this form:
 - The default workflow path points at the example email workflow because the repository
   needs one deterministic, low-friction demonstration path that works from a clean checkout.
   That example is part of the current product slice, not merely test scaffolding.
-- Error handling for the workflow path is user-facing and intentionally minimal. The CLI
-  should fail fast with a clear message when the provided file path is invalid instead of
-  surfacing a confusing lower-level traceback for a basic operator mistake.
+- Error handling for both workflow loading and API startup is intentionally normalized to
+  concise operator-facing stderr messages. A caller should not need to parse Python
+  tracebacks just to understand that a file is invalid or that a requested port is already in
+  use.
 - The actual `if __name__ == "__main__"` wrapper is tiny by design. All meaningful behavior
   lives in `main()`, while the wrapper exists only to support direct module execution. That
   is why the wrapper line is excluded from coverage and the real entrypoint behavior is
@@ -28,25 +29,32 @@ Why this file exists in this form:
 import argparse
 import json
 import sys
+from pathlib import Path
 
 import yaml
 from pydantic import ValidationError
-from pathlib import Path
 
-from magnetar_prometheus.core.workflow_loader import WorkflowLoader
-from magnetar_prometheus.core.executor_router import ExecutorRouter
+from magnetar_prometheus.api.server import run_server
 from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.engine import Engine
-from magnetar_prometheus.registry.step_registry import StepRegistry
+from magnetar_prometheus.core.executor_router import ExecutorRouter
+from magnetar_prometheus.core.workflow_loader import WorkflowLoader
 from magnetar_prometheus.executors.python_executor import PythonExecutor
 from magnetar_prometheus.modules.email_module.steps import register_example_steps
-from magnetar_prometheus.api.server import run_server
+from magnetar_prometheus.registry.step_registry import StepRegistry
 
 
 def _print_summary(workflow_path: Path, result_context: dict) -> None:
-    """Render a human-scannable execution summary."""
-    # Review follow-up: summary rendering must tolerate partial engine output so the
-    # CLI still reports failures cleanly instead of crashing on missing keys.
+    """Render a human-scannable execution summary.
+
+    The summary mode is intentionally conservative: it should still print something useful even
+    if the engine returns a partial context during a failure path. That behavior matters because
+    operators frequently run the CLI directly from a terminal, and a second crash inside the
+    renderer would hide the original workflow failure behind a formatting bug.
+    """
+    # Review hardening preserved during the merge: summary rendering must tolerate partial
+    # engine output so the CLI still reports failures cleanly instead of crashing on missing
+    # keys while trying to display the result.
     run_info = result_context.get("run") or {}
     history = result_context.get("history") or []
     data = result_context.get("data") or {}
@@ -69,23 +77,23 @@ def _print_summary(workflow_path: Path, result_context: dict) -> None:
 def main():
     """Run the MagnetarPrometheus workflow engine from the command line.
 
-    Parses ``--workflow`` and ``--format``, assembles the current proof-of-
-    concept runtime components inline, executes the workflow, and renders either
-    a human-scannable terminal summary or the full JSON execution context.
+    This entrypoint supports two operator-facing modes.
 
-    ``--format`` supports ``summary`` and ``json``. Summary mode is the default
-    operator-facing output and reports the workflow path, workflow id, final
-    status, completed-step count, and the top-level data and AI keys. JSON mode
-    prints the full execution context returned by the engine.
+    1. One-shot workflow execution, where the CLI loads a workflow file, assembles the current
+       proof-of-concept runtime in process, executes the workflow, and prints either a compact
+       terminal summary or the full JSON context.
+    2. Minimal local API mode, where `--api` starts the lightweight HTTP server instead of
+       running a single workflow invocation.
 
-    The command exits with status ``1`` when the workflow file does not exist,
-    when the workflow definition cannot be loaded into a valid runtime model,
-    or when execution ends with ``run.status == "failed"``.
-    Argument-parsing failures continue to use argparse's default exit behavior.
+    `--format` supports `summary` and `json`. Summary mode is the default human-facing output.
+    The command exits with status `1` when the workflow file is missing, when the workflow
+    definition cannot be loaded into a valid runtime model, when API startup fails, or when the
+    workflow executes to a terminal `failed` status.
     """
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")
 
-    # default path to the example workflow relative to the file location
+    # Keep the example workflow as the default target so a clean checkout has one obvious,
+    # deterministic execution path without requiring the operator to discover file locations.
     default_workflow_path = (
         Path(__file__).parent / "modules" / "email_module" / "email_triage.yaml"
     )
@@ -94,35 +102,38 @@ def main():
         "--workflow",
         type=Path,
         default=default_workflow_path,
-        help="Path to the workflow YAML file."
+        help="Path to the workflow YAML file.",
     )
     parser.add_argument(
         "--format",
         choices=("summary", "json"),
         default="summary",
-        help="Output format for execution results."
+        help="Output format for execution results.",
     )
-
     parser.add_argument(
         "--api",
         action="store_true",
-        help="Start the local API server instead of running a one-shot workflow."
+        help="Start the local API server instead of running a one-shot workflow.",
     )
-
     parser.add_argument(
         "--port",
         type=int,
         default=8000,
-        help="Port to run the API server on (defaults to 8000)."
+        help="Port to run the API server on (defaults to 8000).",
     )
 
     args = parser.parse_args()
 
-    # Intercept standard single-workflow execution mode. If the --api flag
-    # is provided, we boot the long-running HTTP server rather than running
-    # the workflow directly. This introduces a continuously running backend boundary.
+    # The `--api` path is a deliberate short-circuit: once the operator asks for server mode,
+    # the CLI must not continue into workflow loading or execution. Startup failures are
+    # normalized here so they follow the same stderr + exit-code contract as the rest of the
+    # command-line interface.
     if args.api:
-        run_server(port=args.port)
+        try:
+            run_server(port=args.port)
+        except (OSError, OverflowError) as exc:
+            print(f"Error starting API server on port {args.port}: {exc}", file=sys.stderr)
+            sys.exit(1)
         return
 
     workflow_path = args.workflow
@@ -148,7 +159,7 @@ def main():
 
     executor = PythonExecutor(registry)
     router = ExecutorRouter()
-    router.register('python', executor)
+    router.register("python", executor)
 
     cm = ContextManager()
     engine = Engine(router, cm)

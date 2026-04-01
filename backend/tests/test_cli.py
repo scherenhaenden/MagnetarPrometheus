@@ -8,8 +8,8 @@ Why this file exists in this form:
   implementation details of the engine or workflow runtime, which are covered elsewhere.
 - The cases are small and direct because this test file needs to verify argument parsing,
   missing-file failure behavior, invalid-workflow failure behavior, custom workflow
-  execution, summary-mode output, JSON-mode output, and the `__main__` entrypoint wiring
-  without duplicating broader engine tests.
+  execution, summary-mode output, JSON-mode output, API-mode short-circuiting, and the
+  `__main__` entrypoint wiring without duplicating broader engine tests.
 - The `__main__` execution test is intentionally stricter than a simple "module executes"
   smoke test. Its job is to verify that the entrypoint wiring really calls `main()`, since
   that line is easy to break during refactors while still leaving most runtime behavior
@@ -20,8 +20,8 @@ Why this file exists in this form:
   honest while still using the standard library's path-execution helper instead of manual
   source compilation.
 - This file should stay biased toward behavior that a CLI user would notice: successful
-  JSON output, clear exit behavior on invalid input, readable summary output, and correct
-  startup wiring.
+  JSON output, clear exit behavior on invalid input, readable summary output, correct API
+  startup delegation, and correct startup wiring.
 - If the CLI later grows substantially more modes, output formats, or service-launch
   behaviors, this file should probably be split into focused test modules rather than
   continuing to accumulate unrelated entrypoint concerns.
@@ -163,15 +163,8 @@ def test_cli_summary_tolerates_partial_context(capsys):
 
 
 def test_cli_main_execution():
-    """Test that executing the CLI module as ``__main__`` still reaches ``main()``.
-
-    This protects the tiny top-level entrypoint wrapper in ``cli.py``. The wrapper is easy
-    to break accidentally during refactors because it only exists for direct script/module
-    execution, not for the ordinary imported test path. The test therefore executes the file
-    as a fresh ``__main__`` module instead of merely calling ``main()`` directly.
-    """
+    """Test that executing the CLI module as `__main__` still reaches `main()`."""
     from magnetar_prometheus import cli
-
 
     main_called = False
 
@@ -187,10 +180,9 @@ def test_cli_main_execution():
 
     previous_trace = sys.gettrace()
     try:
-        # This traces the freshly executed __main__ module rather than the already-imported
-        # test module object, which is the only reliable way to prove the entrypoint wrapper
-        # still invokes main() after refactors. A simple patch on cli.main would not observe
-        # the new module namespace created by runpy.run_path(..., run_name="__main__").
+        # Trace the freshly executed `__main__` module rather than the already-imported test
+        # module object. That is the only reliable way to prove the tiny entrypoint wrapper
+        # still invokes `main()` after refactors.
         sys.settrace(tracer)
         with patch("sys.argv", ["cli.py"]):
             runpy.run_path(cli.__file__, run_name="__main__")
@@ -200,19 +192,37 @@ def test_cli_main_execution():
     assert main_called
 
 
-@patch("magnetar_prometheus.cli.run_server")
-def test_cli_api_flag(mock_run_server):
-    """Test that ``--api`` switches the CLI into long-running server mode.
+def test_cli_api_startup_failure(capsys):
+    """Test that API startup failures are normalized to stderr plus exit code 1.
 
-    The normal CLI path is a one-shot workflow execution. This branch adds an alternate mode
-    where operators can start the minimal HTTP server instead. The test asserts that the CLI
-    does not continue into workflow-loading/execution code when ``--api`` is present, and
-    instead delegates immediately to ``run_server`` with the requested port.
+    The CLI deliberately treats server bind/startup problems like other operator-facing CLI
+    errors: the user should receive a concise stderr message and a non-zero exit code rather
+    than a raw traceback from the lower-level HTTP server implementation.
     """
-    # The API mode is the distinguishing behavior of this branch: the CLI should short-circuit
-    # one-shot workflow execution and delegate to the long-running HTTP server entrypoint with
-    # the operator-supplied port. This assertion protects that intercept path directly.
+    with patch("magnetar_prometheus.cli.run_server", side_effect=OSError("port busy")):
+        with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+
+    captured = capsys.readouterr()
+
+    assert exc_info.value.code == 1
+    assert "Error starting API server on port 9000" in captured.err
+    assert "port busy" in captured.err
+
+
+@patch("magnetar_prometheus.cli.WorkflowLoader.load_workflow")
+@patch("magnetar_prometheus.cli.run_server")
+def test_cli_api_flag(mock_run_server, mock_load_workflow):
+    """Test that `--api` switches the CLI into long-running server mode.
+
+    This assertion does two jobs deliberately. It proves the CLI delegates to `run_server`
+    with the requested port, and it proves the non-API workflow path is not entered at all.
+    That second assertion matters because a missing `return` after the API branch would still
+    allow the test to look superficially correct unless we also guard against workflow loading.
+    """
     with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
         main()
 
     mock_run_server.assert_called_once_with(port=9000)
+    mock_load_workflow.assert_not_called()

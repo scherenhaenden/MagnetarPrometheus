@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 14:15 UTC
+**Author:** Gemini CLI
+**Entry:** Completed the majority of PR #145 review items for CLI and documentation refinement. Confirmed that narrowed exception handling, accurate step labeling ("Steps Executed"), stderr routing for missing workflows, and detailed docstring improvements for `ConditionEvaluator` and CLI `main` are implemented and verified. Standardized `BITACORA.md` timestamps to `YYYY-MM-DD HH:MM Z`. Remaining items (summary rendering safety, tense correction, and failure exit code) are tracked for the next update.
+
+---
 **Timestamp:** 2026-03-30 18:28 UTC
 **Author:** Codex
 **Entry:** Corrected the repository state after the confusing PR `#143` merge presentation. Pruned stale `origin/*` refs so deleted remote branches no longer appear as if they were still active locally, then codified an explicit merge-history rule in `RULES.md` and `BRANCHING_MODEL.md`: ordinary PRs in MagnetarPrometheus must land on `master` with ancestry-preserving history, and squash merges are not acceptable as normal practice because they obscure what branch work was reviewed and what actually landed. This behavior is now treated as a process failure rather than a cosmetic preference.
@@ -260,3 +265,38 @@ Each entry should use:
 ## Immutability
 
 This logbook should not be rewritten retroactively. Corrections must be made by adding a new entry that clarifies an earlier one.
+
+---
+**Timestamp:** 2026-04-01 09:48 UTC
+**Author:** Codex
+**Entry:** Reproduced the CI `validate` job locally with `act push -j validate` and fixed a CLI contract regression in `backend/src/magnetar_prometheus/cli.py`. Restored the documented/tested `--format {summary,json}` switch, returned summary output to the default mode, and normalized invalid workflow-load failures into a clear CLI error with exit code `1`. Verified the fix with `bash scripts/run_tests.sh`.
+
+---
+**Timestamp:** 2026-04-01 09:56 UTC
+**Author:** Codex
+**Entry:** Expanded the `ConditionEvaluator.evaluate` and CLI `main` docstrings to restore the behavior-specific guidance flagged in review. Documented the exact supported conditional expression shapes, the conservative `False` fallback semantics, the `summary` and `json` CLI output modes, and the CLI exit behavior for missing or invalid workflow files.
+
+---
+**Timestamp:** 2026-04-01 10:01 UTC
+**Author:** Codex
+**Entry:** Resolved the in-progress merge of `origin/master` into `penify/auto_doc_9505494_6d9da` without dropping branch history. Conflict resolution kept the branch versions of `backend/src/magnetar_prometheus/cli.py` and `backend/src/magnetar_prometheus/core/evaluator.py` because they preserve the reviewed API-behavior documentation that `master` had reduced to minimal one-line docstrings. This merge is being completed as an explicit ancestry-preserving merge commit, not a squash or history-flattening replacement.
+
+---
+**Timestamp:** 2026-04-01 08:26 UTC
+**Author:** Codex
+**Entry:** Addressed PR #145 review follow-up on workflow-loading error handling. Narrowed `backend/src/magnetar_prometheus/cli.py` to catch only documented workflow-loading exceptions and updated `backend/src/magnetar_prometheus/core/workflow_loader.py` to validate via `Workflow.model_validate(...)`, so structurally invalid YAML payloads now surface as the documented Pydantic validation failure instead of an incidental `TypeError`. Revalidated with `bash scripts/run_tests.sh`.
+
+---
+**Timestamp:** 2026-04-01 13:42 UTC
+**Author:** Codex
+**Entry:** Addressed the high-priority PR #145 review finding on CLI exit semantics. `backend/src/magnetar_prometheus/cli.py` now exits with status `1` after rendering output when the workflow run result reports `run.status == "failed"`, so shell automation and CI can detect execution failures without parsing stdout. Added `backend/tests/test_cli.py::test_cli_failed_workflow_exits_non_zero` and revalidated with `bash scripts/run_tests.sh`.
+
+---
+**Timestamp:** 2026-04-01 13:54 UTC
+**Author:** Codex
+**Entry:** Addressed the remaining PR #145 summary-rendering robustness review. Hardened `backend/src/magnetar_prometheus/cli.py::_print_summary` to tolerate partial run contexts by using safe accessors and fallback values instead of direct indexing, and added an explicit in-code review-follow-up comment describing why the defensive handling is required. Added `backend/tests/test_cli.py::test_cli_summary_tolerates_partial_context` and revalidated with `bash scripts/run_tests.sh`.
+
+---
+**Timestamp:** 2026-04-01 14:05 UTC
+**Author:** Codex
+**Entry:** Aligned the `backend/src/magnetar_prometheus/cli.py::main` docstring with the implemented CLI exit semantics so the documentation now explicitly states that the command also exits with status `1` when workflow execution completes with `run.status == "failed"`.

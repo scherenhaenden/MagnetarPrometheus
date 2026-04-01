@@ -29,4 +29,4 @@ class WorkflowLoader:
         """
         with open(filepath, "r") as f:
             data = yaml.safe_load(f)
-        return Workflow(**data)
+        return Workflow.model_validate(data)

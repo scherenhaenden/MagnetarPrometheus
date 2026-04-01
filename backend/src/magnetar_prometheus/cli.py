@@ -28,6 +28,9 @@ Why this file exists in this form:
 import argparse
 import json
 import sys
+
+import yaml
+from pydantic import ValidationError
 from pathlib import Path
 
 from magnetar_prometheus.core.workflow_loader import WorkflowLoader
@@ -39,8 +42,46 @@ from magnetar_prometheus.executors.python_executor import PythonExecutor
 from magnetar_prometheus.modules.email_module.steps import register_example_steps
 
 
+def _print_summary(workflow_path: Path, result_context: dict) -> None:
+    """Render a human-scannable execution summary."""
+    # Review follow-up: summary rendering must tolerate partial engine output so the
+    # CLI still reports failures cleanly instead of crashing on missing keys.
+    run_info = result_context.get("run") or {}
+    history = result_context.get("history") or []
+    data = result_context.get("data") or {}
+    ai = result_context.get("ai") or {}
+
+    workflow_id = run_info.get("workflow_id", "unknown")
+    status = run_info.get("status", "unknown")
+    data_keys = data.keys() if isinstance(data, dict) else []
+    ai_keys = ai.keys() if isinstance(ai, dict) else []
+
+    print(f"Executing workflow from {workflow_path}")
+    print("=== Workflow Execution Summary ===")
+    print(f"Workflow ID: {workflow_id}")
+    print(f"Status: {status}")
+    print(f"Steps Executed: {len(history)}")
+    print(f"Final Data Keys: {', '.join(sorted(data_keys))}")
+    print(f"Final AI Keys: {', '.join(sorted(ai_keys))}")
+
+
 def main():
-    """Run the MagnetarPrometheus workflow engine from the command line."""
+    """Run the MagnetarPrometheus workflow engine from the command line.
+
+    Parses ``--workflow`` and ``--format``, assembles the current proof-of-
+    concept runtime components inline, executes the workflow, and renders either
+    a human-scannable terminal summary or the full JSON execution context.
+
+    ``--format`` supports ``summary`` and ``json``. Summary mode is the default
+    operator-facing output and reports the workflow path, workflow id, final
+    status, completed-step count, and the top-level data and AI keys. JSON mode
+    prints the full execution context returned by the engine.
+
+    The command exits with status ``1`` when the workflow file does not exist,
+    when the workflow definition cannot be loaded into a valid runtime model,
+    or when execution ends with ``run.status == "failed"``.
+    Argument-parsing failures continue to use argparse's default exit behavior.
+    """
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")
 
     # default path to the example workflow relative to the file location
@@ -54,6 +95,12 @@ def main():
         default=default_workflow_path,
         help="Path to the workflow YAML file."
     )
+    parser.add_argument(
+        "--format",
+        choices=("summary", "json"),
+        default="summary",
+        help="Output format for execution results."
+    )
 
     args = parser.parse_args()
 
@@ -63,7 +110,11 @@ def main():
         sys.exit(1)
 
     loader = WorkflowLoader()
-    wf = loader.load_workflow(str(workflow_path))
+    try:
+        wf = loader.load_workflow(str(workflow_path))
+    except (OSError, UnicodeDecodeError, yaml.YAMLError, ValidationError) as exc:
+        print(f"Error loading workflow from {workflow_path}: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     registry = StepRegistry()
     register_example_steps(registry)
@@ -76,7 +127,13 @@ def main():
     engine = Engine(router, cm)
 
     result_context = engine.run(wf)
-    print(json.dumps(result_context, indent=2))
+    if args.format == "json":
+        print(json.dumps(result_context, indent=2))
+    else:
+        _print_summary(workflow_path, result_context)
+
+    if result_context.get("run", {}).get("status") == "failed":
+        sys.exit(1)
 
 
 if __name__ == "__main__":  # pragma: no cover - entrypoint wrapper is asserted indirectly in tests

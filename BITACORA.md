@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 16:43 UTC
+**Author:** Codex
+**Entry:** Addressed the first PR `#120` model-review pass on `feature/run-job-schema-models-5527624013875748583` by typing `created_at` and `completed_at` as `datetime` objects in the SDK `Run*` models instead of plain strings. Updated the model docstrings and tests so the Python contract now validates and normalizes RFC3339 timestamps at the SDK boundary rather than deferring that parsing burden to every caller.
+
+---
 **Timestamp:** 2026-04-01 16:24 UTC
 **Author:** Codex
 **Entry:** Addressed the second PR `#119` schema-review pass by tightening the run/execution contract details in `sdk/schemas/run-execution-schema.md`. Added explicit runtime-mapping notes for current `history` and `errors` shapes, documented why per-step `history.status` intentionally stays narrower than the run lifecycle enum, restored `output` to history entries for traceability, changed duration/count fields to integers, and explained why `RunResultEnvelope` duplicates `run_id`, `workflow_id`, and `status` at the top level for client convenience.

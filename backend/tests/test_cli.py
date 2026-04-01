@@ -116,7 +116,48 @@ def test_cli_format_summary(capsys):
     assert "=== Workflow Execution Summary ===" in captured.out
     assert "Workflow ID: email_triage" in captured.out
     assert "Status: completed" in captured.out
-    assert "Steps Completed: 4" in captured.out
+    assert "Steps Executed: 4" in captured.out
+    assert "Final Data Keys:" in captured.out
+    assert "Final AI Keys:" in captured.out
+
+
+def test_cli_failed_workflow_exits_non_zero(capsys):
+    """Test the CLI returns exit code 1 when workflow execution fails."""
+    failed_context = {
+        "run": {"workflow_id": "email_triage", "status": "failed"},
+        "input": {},
+        "data": {},
+        "ai": {},
+        "history": [],
+        "errors": [{"message": "boom"}],
+    }
+
+    with patch("magnetar_prometheus.cli.Engine.run", return_value=failed_context):
+        with patch("sys.argv", ["cli.py", "--format", "json"]):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+
+    captured = capsys.readouterr()
+
+    assert exc_info.value.code == 1
+    assert json.loads(captured.out)["run"]["status"] == "failed"
+
+
+def test_cli_summary_tolerates_partial_context(capsys):
+    """Test the CLI summary path degrades gracefully on partial engine output."""
+    partial_context = {"run": {"status": "failed"}}
+
+    with patch("magnetar_prometheus.cli.Engine.run", return_value=partial_context):
+        with patch("sys.argv", ["cli.py"]):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+
+    captured = capsys.readouterr()
+
+    assert exc_info.value.code == 1
+    assert "Workflow ID: unknown" in captured.out
+    assert "Status: failed" in captured.out
+    assert "Steps Executed: 0" in captured.out
     assert "Final Data Keys:" in captured.out
     assert "Final AI Keys:" in captured.out
 

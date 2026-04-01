@@ -1,5 +1,29 @@
 # Status of MagnetarPrometheus
 
+<!--
+Why this file exists in this form:
+
+- This file describes the current product reality, not the aspirational roadmap. It is
+  intentionally written in direct present-tense language so readers can distinguish what
+  exists today from what is still planned.
+- The document keeps a strong separation between "what is real", "what is not real yet",
+  and "what a user can or cannot do". That separation is deliberate because this repository
+  contains a working backend proof of concept while still missing major product surfaces
+  such as a persistent service, API, and full interactive UI.
+- The wording is intentionally conservative. This file should undersell rather than
+  oversell the implemented state so contributors, reviewers, and future agents do not
+  accidentally treat an internal proof-of-concept slice as a finished product layer.
+- The examples and command references are included because this file is meant to orient a
+  reader quickly toward the runnable slice of the system. If a command, workflow, or user
+  capability is mentioned here, it should reflect actual repository behavior.
+- This file is different from PLAN.md on purpose. PLAN.md tracks scoped task completion and
+  preserved historical states; STATUS.md explains the lived product state that a user or
+  contributor would experience right now.
+- If this file ever drifts away from the codebase, it becomes actively harmful because it
+  can mislead planning, reviews, and issue triage. That is why even small phrasing fixes
+  matter when they change how the current repository state is interpreted.
+-->
+
 ## Executive Summary
 
 MagnetarPrometheus currently has a working backend proof of concept, not a finished end-user application.
@@ -91,7 +115,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - Conditional routing through the evaluator path.
 - Step registration and Python executor routing.
 - Structured context/result output for completed runs.
-- Example email-triage module with manifest, workflow, and step handlers.
+- Example email-triage module with a manifest, workflow, and step handlers.
 - Runtime bootstrap with dependency checking and policy-driven install behavior.
 - Local scripts for bootstrap, run, and test flows.
 - Canonical version-stamp generation for release metadata.

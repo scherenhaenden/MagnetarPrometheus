@@ -6,6 +6,7 @@ Initial expected contents:
 
 - workflow definition schema
 - node and edge graph schema for visual editing
+- run and execution schema (jobs, runs, execution inspection)
 - module manifest schema
 - validation and versioning notes
 

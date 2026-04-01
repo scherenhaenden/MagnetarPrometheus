@@ -121,6 +121,28 @@ def test_cli_format_summary(capsys):
     assert "Final AI Keys:" in captured.out
 
 
+def test_cli_failed_workflow_exits_non_zero(capsys):
+    """Test the CLI returns exit code 1 when workflow execution fails."""
+    failed_context = {
+        "run": {"workflow_id": "email_triage", "status": "failed"},
+        "input": {},
+        "data": {},
+        "ai": {},
+        "history": [],
+        "errors": [{"message": "boom"}],
+    }
+
+    with patch("magnetar_prometheus.cli.Engine.run", return_value=failed_context):
+        with patch("sys.argv", ["cli.py", "--format", "json"]):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+
+    captured = capsys.readouterr()
+
+    assert exc_info.value.code == 1
+    assert json.loads(captured.out)["run"]["status"] == "failed"
+
+
 def test_cli_main_execution():
     """Test the __main__ block behavior."""
     from magnetar_prometheus import cli

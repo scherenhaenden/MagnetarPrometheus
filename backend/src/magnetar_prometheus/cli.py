@@ -116,9 +116,11 @@ def main():
     result_context = engine.run(wf)
     if args.format == "json":
         print(json.dumps(result_context, indent=2))
-        return
+    else:
+        _print_summary(workflow_path, result_context)
 
-    _print_summary(workflow_path, result_context)
+    if result_context.get("run", {}).get("status") == "failed":
+        sys.exit(1)
 
 
 if __name__ == "__main__":  # pragma: no cover - entrypoint wrapper is asserted indirectly in tests

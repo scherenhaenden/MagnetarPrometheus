@@ -65,7 +65,7 @@ definitions:
 
 ### 3.3 RunContext Schema (Maps to `RunContext`)
 
-The `RunContext` represents the state of the workflow at any given point in time. This is the core object passed between steps.
+The `RunContext` represents the current state of the workflow and is the core object passed between steps.
 
 ```yaml
 definitions:
@@ -81,7 +81,12 @@ definitions:
           status: { $ref: "#/definitions/RunStatus" }
           current_step: { type: string, description: "ID of the currently executing or last executed step" }
           start_time: { type: string, format: "date-time" }
-          end_time: { type: string, format: "date-time", description: "Null if still running" }
+          end_time:
+            oneOf:
+              - type: string
+                format: "date-time"
+              - type: "null"
+            description: "Null if still running"
       input:
         type: object
         description: "Read-only input data provided at job submission"

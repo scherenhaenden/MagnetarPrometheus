@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 14:28 UTC
+**Author:** Codex
+**Entry:** Applied the worthwhile optional PR `#140` schema-doc follow-ups in `sdk/schemas/run-execution-schema.md`: tightened the `RunContext` prose to remove redundant wording and aligned `run.end_time` with its documented semantics by allowing `null` as well as RFC3339 timestamps. Intentionally did not add broad `required` arrays across the conceptual schema because the current document still carries defaulted option fields and should not overstate client obligations that the runtime does not yet enforce.
+
+---
 **Timestamp:** 2026-04-01 14:23 UTC
 **Author:** Codex
 **Entry:** Addressed the remaining PR `#140` loader review thread by rejecting empty YAML mappings in `WorkflowLoader` with a filepath-specific `ValueError` before schema validation. Added a dedicated loader test for `{}` input so the branch now covers non-mapping roots, mapping subclasses, and empty mappings explicitly.

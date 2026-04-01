@@ -275,3 +275,8 @@ This logbook should not be rewritten retroactively. Corrections must be made by 
 **Timestamp:** 2026-04-01 10:01 UTC
 **Author:** Codex
 **Entry:** Resolved the in-progress merge of `origin/master` into `penify/auto_doc_9505494_6d9da` without dropping branch history. Conflict resolution kept the branch versions of `backend/src/magnetar_prometheus/cli.py` and `backend/src/magnetar_prometheus/core/evaluator.py` because they preserve the reviewed API-behavior documentation that `master` had reduced to minimal one-line docstrings. This merge is being completed as an explicit ancestry-preserving merge commit, not a squash or history-flattening replacement.
+
+---
+**Timestamp:** 2026-04-01 08:26 UTC
+**Author:** Codex
+**Entry:** Addressed PR #145 review follow-up on workflow-loading error handling. Narrowed `backend/src/magnetar_prometheus/cli.py` to catch only documented workflow-loading exceptions and updated `backend/src/magnetar_prometheus/core/workflow_loader.py` to validate via `Workflow.model_validate(...)`, so structurally invalid YAML payloads now surface as the documented Pydantic validation failure instead of an incidental `TypeError`. Revalidated with `bash scripts/run_tests.sh`.

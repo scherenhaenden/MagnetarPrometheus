@@ -28,6 +28,9 @@ Why this file exists in this form:
 import argparse
 import json
 import sys
+
+import yaml
+from pydantic import ValidationError
 from pathlib import Path
 
 from magnetar_prometheus.core.workflow_loader import WorkflowLoader
@@ -96,7 +99,7 @@ def main():
     loader = WorkflowLoader()
     try:
         wf = loader.load_workflow(str(workflow_path))
-    except Exception as exc:
+    except (FileNotFoundError, yaml.YAMLError, ValidationError) as exc:
         print(f"Error loading workflow from {workflow_path}: {exc}", file=sys.stderr)
         sys.exit(1)
 

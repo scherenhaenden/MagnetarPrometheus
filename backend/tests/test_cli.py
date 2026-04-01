@@ -116,7 +116,7 @@ def test_cli_format_summary(capsys):
     assert "=== Workflow Execution Summary ===" in captured.out
     assert "Workflow ID: email_triage" in captured.out
     assert "Status: completed" in captured.out
-    assert "Steps Completed: 4" in captured.out
+    assert "Steps Executed: 4" in captured.out
     assert "Final Data Keys:" in captured.out
     assert "Final AI Keys:" in captured.out
 

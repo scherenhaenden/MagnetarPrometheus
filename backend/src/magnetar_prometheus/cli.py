@@ -48,7 +48,7 @@ def _print_summary(workflow_path: Path, result_context: dict) -> None:
     print("=== Workflow Execution Summary ===")
     print(f"Workflow ID: {result_context['run']['workflow_id']}")
     print(f"Status: {result_context['run']['status']}")
-    print(f"Steps Completed: {len(result_context['history'])}")
+    print(f"Steps Executed: {len(result_context['history'])}")
     print(f"Final Data Keys: {', '.join(sorted(result_context['data'].keys()))}")
     print(f"Final AI Keys: {', '.join(sorted(result_context['ai'].keys()))}")
 

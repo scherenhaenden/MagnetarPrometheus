@@ -53,11 +53,18 @@ def _print_summary(workflow_path: Path, result_context: dict) -> None:
 def main():
     """Run the MagnetarPrometheus workflow engine from the command line.
 
-    Parses the workflow path and output format, assembles the current proof-of-
+    Parses ``--workflow`` and ``--format``, assembles the current proof-of-
     concept runtime components inline, executes the workflow, and renders either
-    a human-scannable terminal summary or the full JSON execution context. Exits
-    with status 1 when the workflow path is missing or the workflow definition
-    cannot be loaded into a valid runtime model.
+    a human-scannable terminal summary or the full JSON execution context.
+
+    ``--format`` supports ``summary`` and ``json``. Summary mode is the default
+    operator-facing output and reports the workflow path, workflow id, final
+    status, completed-step count, and the top-level data and AI keys. JSON mode
+    prints the full execution context returned by the engine.
+
+    The command exits with status ``1`` when the workflow file does not exist or
+    when the workflow definition cannot be loaded into a valid runtime model.
+    Argument-parsing failures continue to use argparse's default exit behavior.
     """
     parser = argparse.ArgumentParser(description="MagnetarPrometheus Backend CLI")
 

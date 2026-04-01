@@ -16,17 +16,31 @@ class ConditionEvaluator:
     def evaluate(self, expression: str, context: Dict[str, Any]) -> bool:
         """Evaluate a simple equality expression against the run context.
 
-        Supports the form ``<context_path> == '<string_literal>'``.  Returns
-        ``False`` for any expression that does not match a supported pattern or
-        whose left-hand-side path cannot be resolved.
+        Supports equality checks in the form
+        ``<context_path> == '<string_literal>'`` or
+        ``<context_path> == "<string_literal>"``.
+
+        The right-hand side must be a quoted string literal. The left-hand side
+        must resolve through :meth:`_resolve_context_path`, which currently
+        accepts only the supported ``context['ai']`` and ``context["ai"]``
+        lookup forms implemented for the PoC:
+
+        - ``context['ai'].get('<key>')``
+        - ``context["ai"].get("<key>")``
+        - ``context['ai']['<key>']``
+        - ``context["ai"]["<key>"]``
+
+        This evaluator is intentionally conservative. Unsupported operators,
+        unquoted literals, unresolved context paths, and non-matching
+        expressions all evaluate to ``False`` instead of raising.
 
         Args:
             expression: The condition string from the workflow definition.
             context: The current run context dictionary.
 
         Returns:
-            ``True`` when the expression resolves to a truthy equality match,
-            ``False`` otherwise.
+            ``True`` when the supported equality expression resolves to a
+            matching value, ``False`` otherwise.
         """
         expr = expression.strip()
 

@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: magnetar-prometheus
+Version: 0.1.0
+Summary: Backend runtime for the MagnetarPrometheus workflow orchestration platform.
+Requires-Python: >=3.11
+Requires-Dist: pydantic>=2.0
+Requires-Dist: PyYAML>=6.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"

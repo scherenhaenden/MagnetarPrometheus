@@ -39,6 +39,17 @@ from magnetar_prometheus.executors.python_executor import PythonExecutor
 from magnetar_prometheus.modules.email_module.steps import register_example_steps
 
 
+def _print_summary(workflow_path: Path, result_context: dict) -> None:
+    """Render a human-scannable execution summary."""
+    print(f"Executing workflow from {workflow_path}")
+    print("=== Workflow Execution Summary ===")
+    print(f"Workflow ID: {result_context['run']['workflow_id']}")
+    print(f"Status: {result_context['run']['status']}")
+    print(f"Steps Completed: {len(result_context['history'])}")
+    print(f"Final Data Keys: {', '.join(sorted(result_context['data'].keys()))}")
+    print(f"Final AI Keys: {', '.join(sorted(result_context['ai'].keys()))}")
+
+
 def main():
     """Run the MagnetarPrometheus workflow engine from the command line.
 
@@ -61,6 +72,12 @@ def main():
         default=default_workflow_path,
         help="Path to the workflow YAML file."
     )
+    parser.add_argument(
+        "--format",
+        choices=("summary", "json"),
+        default="summary",
+        help="Output format for execution results."
+    )
 
     args = parser.parse_args()
 
@@ -70,7 +87,11 @@ def main():
         sys.exit(1)
 
     loader = WorkflowLoader()
-    wf = loader.load_workflow(str(workflow_path))
+    try:
+        wf = loader.load_workflow(str(workflow_path))
+    except Exception as exc:
+        print(f"Error loading workflow from {workflow_path}: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     registry = StepRegistry()
     register_example_steps(registry)
@@ -83,7 +104,11 @@ def main():
     engine = Engine(router, cm)
 
     result_context = engine.run(wf)
-    print(json.dumps(result_context, indent=2))
+    if args.format == "json":
+        print(json.dumps(result_context, indent=2))
+        return
+
+    _print_summary(workflow_path, result_context)
 
 
 if __name__ == "__main__":  # pragma: no cover - entrypoint wrapper is asserted indirectly in tests

@@ -116,13 +116,29 @@ def main():
         help="Port to run the API server on (defaults to 8000)."
     )
 
+    # The --host argument lets operators explicitly opt into a broader binding.
+    # The default is the loopback address so the unauthenticated /run-example endpoint
+    # is not reachable from the network unless the operator makes that choice consciously.
+    # This mirrors the run_server() default and keeps the two surfaces consistent.
+    parser.add_argument(
+        "--host",
+        type=str,
+        default="127.0.0.1",
+        help=(
+            "Network interface to bind the API server to "
+            "(defaults to 127.0.0.1 for local-only access). "
+            "Pass 0.0.0.0 to bind on all interfaces."
+        ),
+    )
+
     args = parser.parse_args()
 
     # Intercept standard single-workflow execution mode. If the --api flag
     # is provided, we boot the long-running HTTP server rather than running
-    # the workflow directly. This introduces a continuously running backend boundary.
+    # the workflow directly. Both port and host are forwarded so the operator
+    # remains in full control of the binding without needing to edit source.
     if args.api:
-        run_server(port=args.port)
+        run_server(port=args.port, host=args.host)
         return
 
     workflow_path = args.workflow

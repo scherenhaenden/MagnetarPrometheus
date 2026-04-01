@@ -207,12 +207,30 @@ def test_cli_api_flag(mock_run_server):
     The normal CLI path is a one-shot workflow execution. This branch adds an alternate mode
     where operators can start the minimal HTTP server instead. The test asserts that the CLI
     does not continue into workflow-loading/execution code when ``--api`` is present, and
-    instead delegates immediately to ``run_server`` with the requested port.
+    instead delegates immediately to ``run_server`` with the requested port and the default
+    loopback host.  The host assertion is the primary guard against the all-interfaces
+    regression that motivated this change.
     """
     # The API mode is the distinguishing behavior of this branch: the CLI should short-circuit
     # one-shot workflow execution and delegate to the long-running HTTP server entrypoint with
-    # the operator-supplied port. This assertion protects that intercept path directly.
+    # the operator-supplied port and the default loopback host.
     with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
         main()
 
-    mock_run_server.assert_called_once_with(port=9000)
+    mock_run_server.assert_called_once_with(port=9000, host="127.0.0.1")
+
+
+@patch("magnetar_prometheus.cli.run_server")
+def test_cli_api_flag_custom_host(mock_run_server):
+    """Test that ``--host`` is forwarded to ``run_server`` when provided explicitly.
+
+    The default loopback path is already covered by ``test_cli_api_flag``.  This test
+    documents the opt-in path for broader bindings so that any future refactor that
+    drops the ``--host`` argument or fails to forward it is caught immediately.
+    """
+    # Explicitly supplying --host verifies the full forwarding path from argument parsing
+    # through to the run_server call without any intermediate hard-coding.
+    with patch("sys.argv", ["cli.py", "--api", "--port", "9000", "--host", "0.0.0.0"]):
+        main()
+
+    mock_run_server.assert_called_once_with(port=9000, host="0.0.0.0")

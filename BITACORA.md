@@ -270,3 +270,8 @@ This logbook should not be rewritten retroactively. Corrections must be made by 
 **Timestamp:** 2026.04.01 09:56:17184 CEST
 **Author:** Codex
 **Entry:** Expanded the `ConditionEvaluator.evaluate` and CLI `main` docstrings to restore the behavior-specific guidance flagged in review. Documented the exact supported conditional expression shapes, the conservative `False` fallback semantics, the `summary` and `json` CLI output modes, and the CLI exit behavior for missing or invalid workflow files.
+
+---
+**Timestamp:** 2026.04.01 10:01:43764 CEST
+**Author:** Codex
+**Entry:** Resolved the in-progress merge of `origin/master` into `penify/auto_doc_9505494_6d9da` without dropping branch history. Conflict resolution kept the branch versions of `backend/src/magnetar_prometheus/cli.py` and `backend/src/magnetar_prometheus/core/evaluator.py` because they preserve the reviewed API-behavior documentation that `master` had reduced to minimal one-line docstrings. This merge is being completed as an explicit ancestry-preserving merge commit, not a squash or history-flattening replacement.

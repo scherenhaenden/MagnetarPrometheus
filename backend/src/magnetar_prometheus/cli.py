@@ -112,7 +112,13 @@ def main():
     loader = WorkflowLoader()
     try:
         wf = loader.load_workflow(str(workflow_path))
-    except (OSError, UnicodeDecodeError, yaml.YAMLError, ValidationError) as exc:
+    except (
+        OSError,
+        UnicodeDecodeError,
+        yaml.YAMLError,
+        ValidationError,
+        ValueError,
+    ) as exc:
         print(f"Error loading workflow from {workflow_path}: {exc}", file=sys.stderr)
         sys.exit(1)
 

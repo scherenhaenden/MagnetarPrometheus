@@ -38,6 +38,26 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 14:28 UTC
+**Author:** Codex
+**Entry:** Applied the worthwhile optional PR `#140` schema-doc follow-ups in `sdk/schemas/run-execution-schema.md`: tightened the `RunContext` prose to remove redundant wording and aligned `run.end_time` with its documented semantics by allowing `null` as well as RFC3339 timestamps. Intentionally did not add broad `required` arrays across the conceptual schema because the current document still carries defaulted option fields and should not overstate client obligations that the runtime does not yet enforce.
+
+---
+**Timestamp:** 2026-04-01 14:23 UTC
+**Author:** Codex
+**Entry:** Addressed the remaining PR `#140` loader review thread by rejecting empty YAML mappings in `WorkflowLoader` with a filepath-specific `ValueError` before schema validation. Added a dedicated loader test for `{}` input so the branch now covers non-mapping roots, mapping subclasses, and empty mappings explicitly.
+
+---
+**Timestamp:** 2026-04-01 14:21 UTC
+**Author:** Codex
+**Entry:** Addressed the first remaining PR `#140` review thread on `fix/issue-105-workflow-loader-yaml-guard` by broadening the YAML-root type guard in `WorkflowLoader` from `dict` to `collections.abc.Mapping`. Added a focused loader test that patches `yaml.safe_load(...)` to return a mapping subclass so the acceptance behavior stays covered if parser implementations change.
+
+---
+**Timestamp:** 2026-04-01 14:16 UTC
+**Author:** Codex
+**Entry:** Resolved the merge of `origin/feature/run-execution-schema-14984419196851415430` into `fix/issue-105-workflow-loader-yaml-guard` while preserving both histories. Kept the issue `#105` branch contract that non-mapping YAML roots raise a filepath-specific `ValueError`, adopted `Workflow.model_validate(...)` for schema validation after that guard, and updated the CLI loader error handling so this branch still exits cleanly on invalid workflow definitions. Revalidated the merged branch with `bash scripts/run_tests.sh`: `58 passed`, `100.00%` coverage.
+
+---
 **Timestamp:** 2026-04-01 14:15 UTC
 **Author:** Gemini CLI
 **Entry:** Completed the majority of PR #145 review items for CLI and documentation refinement. Confirmed that narrowed exception handling, accurate step labeling ("Steps Executed"), stderr routing for missing workflows, and detailed docstring improvements for `ConditionEvaluator` and CLI `main` are implemented and verified. Standardized `BITACORA.md` timestamps to `YYYY-MM-DD HH:MM Z`. Remaining items (summary rendering safety, tense correction, and failure exit code) are tracked for the next update.
@@ -70,7 +90,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-30 17:19 UTC
 **Author:** Codex
-**Entry:** Applied the final PR `#124` navigation resilience polish in `ui/app.js` by replacing the brittle `navItems[2]` Runs-tab navigation with a stable selector targeting `.nav-item[data-target=\"runs-view\"]`. This preserves the synthetic-run flow while decoupling it from sidebar item ordering.
+**Entry:** Applied the final PR `#124` navigation resilience polish in `ui/app.js` by replacing the brittle `navItems[2]` Runs-tab navigation with a stable selector targeting `.nav-item[data-target="runs-view"]`. This preserves the synthetic-run flow while decoupling it from sidebar item ordering.
 
 ---
 **Timestamp:** 2026-03-30 16:50 UTC
@@ -116,6 +136,11 @@ Each entry should use:
 **Timestamp:** 2026-03-30 15:07 UTC
 **Author:** Codex
 **Entry:** Updated PR `#128` on top of current `master` by rebasing `feature/cli-ux-flow-13781116585242481492`, then addressing the worthwhile review follow-ups directly on the PR branch instead of creating a separate issue. Added a detailed file-level intent header to `backend/src/magnetar_prometheus/cli.py`, refactored the summary output block to use local variables for readability, and hardened the CLI so invalid workflow definitions exit cleanly with a path-specific stderr message and code `1`. Expanded CLI coverage for invalid workflow content and revalidated with `bash scripts/run_tests.sh`: `68 passed`, `100.00%` coverage.
+
+---
+**Timestamp:** 2026-03-30 14:55 UTC
+**Author:** Codex
+**Entry:** Implemented issue `#105` on `fix/issue-105-workflow-loader-yaml-guard` after fast-forwarding local `master` to `origin/master` and branching from the updated base. Hardened `WorkflowLoader` to reject empty or non-mapping YAML roots with a clear filepath-specific `ValueError`, added loader tests for empty/list/scalar YAML inputs, and revalidated with `bash scripts/run_tests.sh`: `69 passed`, `100.00%` coverage.
 
 ---
 **Timestamp:** 2026-03-27 16:09 UTC

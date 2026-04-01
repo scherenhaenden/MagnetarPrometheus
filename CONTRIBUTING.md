@@ -15,7 +15,7 @@ Open the repository root in your IDE. For Python work, treat `backend/` as the P
 7. If GitHub project operations are active, create or link a GitHub issue for the work and use a GitHub discussion for larger product or architecture questions.
 8. If an issue is created from a code review, preserve the review evidence in the issue body, including concrete code examples, proposed diffs, and exact file references when available.
 9. Prefer increments that give the user something new to run, inspect, or validate by the end of the round.
-10. Parallel work must be divided by disjoint write ownership.
+10. Parallel work must be divided by disjoint write ownership so contributors do not collide in the same surface.
 
 ## Pull Request Expectations
 

@@ -1,12 +1,3 @@
-"""
-Workflow orchestration engine for MagnetarPrometheus.
-
-:class:`Engine` drives serial workflow execution: it resolves each step,
-delegates execution to the appropriate executor, accumulates results into the
-run context, and determines the next step until the workflow reaches a terminal
-state.
-"""
-
 from typing import Dict, Any
 from magnetar_prometheus_sdk.models import Workflow, StepResult, ConditionalRouting
 from magnetar_prometheus.core.executor_router import ExecutorRouter
@@ -14,25 +5,7 @@ from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.evaluator import ConditionEvaluator
 
 class Engine:
-    """Serial workflow execution engine.
-
-    Loads a :class:`~magnetar_prometheus_sdk.models.Workflow`, iterates its
-    steps in order, routes each step to the correct executor via
-    :class:`ExecutorRouter`, and tracks state through
-    :class:`ContextManager`.
-    """
-
     def __init__(self, executor_router: ExecutorRouter, context_manager: ContextManager):
-        """Initialise the engine with its routing and context dependencies.
-
-        Args:
-            executor_router: Maps executor type names to concrete
-                :class:`~magnetar_prometheus.executors.base.BaseExecutor`
-                instances.
-            context_manager: Responsible for creating and mutating the
-                :class:`~magnetar_prometheus_sdk.models.RunContext` during a
-                run.
-        """
         self.executor_router = executor_router
         self.context_manager = context_manager
         self.evaluator = ConditionEvaluator()

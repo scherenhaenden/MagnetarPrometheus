@@ -1,12 +1,3 @@
-"""
-Version helpers for the MagnetarPrometheus backend.
-
-Provides :func:`get_canonical_version_stamp` which returns the project's
-canonical timestamp-based version in ``yyyy.MM.dd HH:mm:ss.SSS`` format,
-reading from a release artifact when one exists and falling back to the
-current UTC time otherwise.
-"""
-
 import os
 import datetime
 from typing import Optional

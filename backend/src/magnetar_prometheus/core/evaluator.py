@@ -1,11 +1,3 @@
-"""
-Condition evaluator for MagnetarPrometheus workflow branching.
-
-:class:`ConditionEvaluator` inspects string expressions produced by workflow
-YAML definitions and resolves them against the live run context without
-resorting to ``eval()``.
-"""
-
 from typing import Dict, Any, Optional
 
 class ConditionEvaluator:
@@ -14,34 +6,6 @@ class ConditionEvaluator:
     """
 
     def evaluate(self, expression: str, context: Dict[str, Any]) -> bool:
-        """Evaluate a simple equality expression against the run context.
-
-        Supports equality checks in the form
-        ``<context_path> == '<string_literal>'`` or
-        ``<context_path> == "<string_literal>"``.
-
-        The right-hand side must be a quoted string literal. The left-hand side
-        must resolve through :meth:`_resolve_context_path`, which currently
-        accepts only the supported ``context['ai']`` and ``context["ai"]``
-        lookup forms implemented for the PoC:
-
-        - ``context['ai'].get('<key>')``
-        - ``context["ai"].get("<key>")``
-        - ``context['ai']['<key>']``
-        - ``context["ai"]["<key>"]``
-
-        This evaluator is intentionally conservative. Unsupported operators,
-        unquoted literals, unresolved context paths, and non-matching
-        expressions all evaluate to ``False`` instead of raising.
-
-        Args:
-            expression: The condition string from the workflow definition.
-            context: The current run context dictionary.
-
-        Returns:
-            ``True`` when the supported equality expression resolves to a
-            matching value, ``False`` otherwise.
-        """
         expr = expression.strip()
 
         if "==" in expr:

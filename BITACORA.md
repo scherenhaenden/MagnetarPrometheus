@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 16:18 UTC
+**Author:** Codex
+**Entry:** Addressed the first PR `#119` review pass on `feature/run-execution-schema-14984419196851415430` by clarifying that `sdk/schemas/run-execution-schema.md` describes the target external run/execution contract rather than claiming a one-to-one mapping with the current in-process engine output. Marked `pending`, `paused`, and `cancelled` as reserved/planned states, and annotated the run-result envelope and future interaction sections so consumers do not mistake planned API behavior for current engine guarantees.
+
+---
 **Timestamp:** 2026-04-01 16:05 UTC
 **Author:** Codex
 **Entry:** Resolved the merge of `master` into `feature/run-execution-schema-14984419196851415430` by keeping this branch's run-execution schema work in `sdk/schemas/run-execution-schema.md` while also carrying forward the newer CLI, workflow-loader, version-helper, and API-server hardening that already exists on `master`. The reconciliation preserves the schema branch's intent without reopening older runtime bugs or discarding later review-driven safety/test coverage improvements.

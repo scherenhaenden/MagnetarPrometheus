@@ -66,9 +66,15 @@ definitions:
       - cancelled    # Reserved/planned: execution aborted by user request
 ```
 
-### 3.3 RunContext Schema (Maps to `RunContext`)
+### 3.3 RunContext Schema (Target Contract With Runtime Mapping Notes)
 
 The `RunContext` represents the current state of the workflow and is the core object passed between steps.
+
+Compatibility notes for current runtime consumers:
+
+- The in-process engine currently guarantees `run.workflow_id` and `run.status`, but does not yet populate every future-facing metadata field in this target contract (`run.id`, `run.current_step`, `run.start_time`, `run.end_time`) in a durable API-ready way.
+- Current runtime `history` entries are emitted as `{step, success, output, error_code, error_message}`. An adapter layer should map those internal records into the target external shape documented below, especially `step -> step_id` and `success -> status`.
+- Current runtime `errors` entries are emitted as `{step, error_code, error_message}`. An adapter layer should map those internal records into the target external shape documented below, especially `step -> step_id` and `error_message -> message`.
 
 ```yaml
 definitions:
@@ -106,8 +112,16 @@ definitions:
           type: object
           properties:
             step_id: { type: string }
-            status: { type: string, enum: ["success", "failed"] }
-            duration_ms: { type: number }
+            status:
+              type: string
+              enum: ["success", "failed"]
+              description: "Per-step outcome, intentionally narrower than the run-level lifecycle enum"
+            output:
+              type: object
+              description: "Per-step output payload retained for traceability and debugging"
+            error_code: { type: string }
+            error_message: { type: string }
+            duration_ms: { type: integer }
             timestamp: { type: string, format: "date-time" }
       errors:
         type: array
@@ -117,12 +131,16 @@ definitions:
           properties:
             step_id: { type: string }
             error_code: { type: string }
-            message: { type: string }
+            message:
+              type: string
+              description: "External contract field; current runtime emits `error_message` and should map it here"
 ```
 
 ### 3.4 RunResult Envelope Schema
 
 When a client queries the final result of a workflow execution through a future API layer, that API can wrap the engine output in a `RunResult Envelope`. The current in-process engine returns the `RunContext` directly, so this envelope should be read as an external-service contract rather than a claim about the exact return shape of `Engine.run(...)` today.
+
+The top-level `run_id`, `workflow_id`, and `status` fields are intentionally duplicated from `final_context.run.*` for client convenience. API consumers can inspect the envelope header without traversing the full nested context object, while still treating `final_context` as the authoritative detailed payload.
 
 ```yaml
 definitions:
@@ -142,8 +160,8 @@ definitions:
         type: object
         description: "A high-level overview of the execution"
         properties:
-          total_steps_executed: { type: number }
-          total_duration_ms: { type: number }
+          total_steps_executed: { type: integer }
+          total_duration_ms: { type: integer }
           has_errors: { type: boolean }
 ```
 

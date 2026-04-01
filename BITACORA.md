@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 14:21 UTC
+**Author:** Codex
+**Entry:** Addressed the first remaining PR `#140` review thread on `fix/issue-105-workflow-loader-yaml-guard` by broadening the YAML-root type guard in `WorkflowLoader` from `dict` to `collections.abc.Mapping`. Added a focused loader test that patches `yaml.safe_load(...)` to return a mapping subclass so the acceptance behavior stays covered if parser implementations change.
+
+---
 **Timestamp:** 2026-04-01 14:16 UTC
 **Author:** Codex
 **Entry:** Resolved the merge of `origin/feature/run-execution-schema-14984419196851415430` into `fix/issue-105-workflow-loader-yaml-guard` while preserving both histories. Kept the issue `#105` branch contract that non-mapping YAML roots raise a filepath-specific `ValueError`, adopted `Workflow.model_validate(...)` for schema validation after that guard, and updated the CLI loader error handling so this branch still exits cleanly on invalid workflow definitions. Revalidated the merged branch with `bash scripts/run_tests.sh`: `58 passed`, `100.00%` coverage.

@@ -155,35 +155,20 @@ class RunListingItem(BaseModel):
     )
 
 
-class RunSummary(BaseModel):
+class RunSummary(RunListingItem):
     """
     A detailed view of a single run containing its final state and context results.
 
+    This model intentionally extends `RunListingItem` instead of re-declaring the shared
+    listing fields. That keeps the SDK contract honest about the relationship between the
+    lightweight list view and the detailed inspect view: the summary is the listing shape plus
+    deeper completion/error data.
+
     Attributes:
-        run_id (str): The unique execution identifier.
-        workflow_id (str): The ID of the executed workflow.
-        status (RunStatus): The final or current state of this run.
-        created_at (datetime): The validated creation timestamp.
-        completed_at (Optional[datetime]): The validated completion timestamp if execution finished.
-        tags (List[str]): Categorization labels for this run.
         final_context (Optional[RunContext]): The aggregated state context generated throughout the workflow execution.
         error_message (Optional[str]): Any global or top-level error messages encountered during failure.
     """
 
-    run_id: str = Field(
-        description="The unique identifier generated for this specific execution"
-    )
-    workflow_id: str = Field(description="The ID of the workflow being executed")
-    status: RunStatus = Field(description="The current status of the run")
-    created_at: datetime = Field(description="Timestamp when the run was requested")
-    completed_at: Optional[datetime] = Field(
-        default=None,
-        description="Timestamp when the run reached a terminal state; null if active",
-    )
-    tags: List[str] = Field(
-        default_factory=list,
-        description="List of tags for searching and categorizing the run",
-    )
     final_context: Optional[RunContext] = Field(
         default=None,
         description="The aggregated state of the workflow upon completion.",

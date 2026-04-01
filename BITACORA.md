@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 16:47 UTC
+**Author:** Codex
+**Entry:** Addressed the second PR `#120` model-review pass by making `RunSummary` inherit from `RunListingItem` in the SDK models. This removes repeated field declarations while making the contract relationship explicit: the detailed run view is the listing shape plus final-context and error details. Added a focused assertion in the SDK tests so that inheritance remains intentional and covered.
+
+---
 **Timestamp:** 2026-04-01 16:43 UTC
 **Author:** Codex
 **Entry:** Addressed the first PR `#120` model-review pass on `feature/run-job-schema-models-5527624013875748583` by typing `created_at` and `completed_at` as `datetime` objects in the SDK `Run*` models instead of plain strings. Updated the model docstrings and tests so the Python contract now validates and normalizes RFC3339 timestamps at the SDK boundary rather than deferring that parsing burden to every caller.

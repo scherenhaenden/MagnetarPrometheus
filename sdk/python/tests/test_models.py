@@ -133,5 +133,6 @@ def test_run_summary_defaults():
     assert summary.created_at == datetime(2023, 1, 1, 0, 0, tzinfo=timezone.utc)
     assert summary.completed_at is None
     assert summary.tags == []
+    assert isinstance(summary, RunListingItem)
     assert summary.final_context is None
     assert summary.error_message is None

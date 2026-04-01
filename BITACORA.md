@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 18:00 UTC
+**Author:** Codex
+**Entry:** Addressed the last schema-local PR `#120` review fix by adding a dedicated shared-definitions section to `sdk/schemas/run-job-schema.md`. The document now carries resolvable local definitions for `RunStatus` and an abbreviated `RunContext`, so the internal `$ref` targets used by `RunResponse`, `RunListingItem`, and `RunSummary` no longer point at missing definitions while still directing readers to `run-execution-schema.md` for the fuller execution-context contract.
+
+---
 **Timestamp:** 2026-04-01 17:55 UTC
 **Author:** Codex
 **Entry:** Addressed the first remaining PR `#120` schema-doc follow-up by making `completed_at` explicitly nullable in the `RunListingItem` and `RunSummary` schema examples, matching the documented "null if active" lifecycle semantics. Also cleaned up the awkward `deep-inspect` wording so the run-summary section reads more clearly without changing the contract shape.

@@ -21,6 +21,39 @@ A "Run" or "Job" captures the execution lifecycle of a workflow.
 
 ## 3. Schema Definitions
 
+### 3.0 Shared Definitions
+
+The examples below reuse a small local `definitions` block so `$ref` consumers can resolve the shared names directly from this document.
+`RunContext` remains the same conceptual object defined in more detail in `run-execution-schema.md`; the local definition here is intentionally lightweight because this document focuses on the run/job envelope models that reference that context.
+
+```yaml
+definitions:
+  RunStatus:
+    type: string
+    enum:
+      - pending
+      - running
+      - completed
+      - failed
+      - cancelled
+  RunContext:
+    type: object
+    description: "Abbreviated local reference for the detailed run context defined in run-execution-schema.md"
+    properties:
+      run:
+        type: object
+      input:
+        type: object
+      data:
+        type: object
+      ai:
+        type: object
+      history:
+        type: array
+      errors:
+        type: array
+```
+
 ### 3.1 RunStatus
 
 An enumeration describing the current lifecycle phase of a run.

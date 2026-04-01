@@ -163,8 +163,15 @@ def test_cli_summary_tolerates_partial_context(capsys):
 
 
 def test_cli_main_execution():
-    """Test the __main__ block behavior."""
+    """Test that executing the CLI module as ``__main__`` still reaches ``main()``.
+
+    This protects the tiny top-level entrypoint wrapper in ``cli.py``. The wrapper is easy
+    to break accidentally during refactors because it only exists for direct script/module
+    execution, not for the ordinary imported test path. The test therefore executes the file
+    as a fresh ``__main__`` module instead of merely calling ``main()`` directly.
+    """
     from magnetar_prometheus import cli
+
 
     main_called = False
 
@@ -180,6 +187,10 @@ def test_cli_main_execution():
 
     previous_trace = sys.gettrace()
     try:
+        # This traces the freshly executed __main__ module rather than the already-imported
+        # test module object, which is the only reliable way to prove the entrypoint wrapper
+        # still invokes main() after refactors. A simple patch on cli.main would not observe
+        # the new module namespace created by runpy.run_path(..., run_name="__main__").
         sys.settrace(tracer)
         with patch("sys.argv", ["cli.py"]):
             runpy.run_path(cli.__file__, run_name="__main__")
@@ -187,3 +198,21 @@ def test_cli_main_execution():
         sys.settrace(previous_trace)
 
     assert main_called
+
+
+@patch("magnetar_prometheus.cli.run_server")
+def test_cli_api_flag(mock_run_server):
+    """Test that ``--api`` switches the CLI into long-running server mode.
+
+    The normal CLI path is a one-shot workflow execution. This branch adds an alternate mode
+    where operators can start the minimal HTTP server instead. The test asserts that the CLI
+    does not continue into workflow-loading/execution code when ``--api`` is present, and
+    instead delegates immediately to ``run_server`` with the requested port.
+    """
+    # The API mode is the distinguishing behavior of this branch: the CLI should short-circuit
+    # one-shot workflow execution and delegate to the long-running HTTP server entrypoint with
+    # the operator-supplied port. This assertion protects that intercept path directly.
+    with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
+        main()
+
+    mock_run_server.assert_called_once_with(port=9000)

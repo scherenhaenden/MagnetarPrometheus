@@ -40,6 +40,7 @@ from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.registry.step_registry import StepRegistry
 from magnetar_prometheus.executors.python_executor import PythonExecutor
 from magnetar_prometheus.modules.email_module.steps import register_example_steps
+from magnetar_prometheus.api.server import run_server
 
 
 def _print_summary(workflow_path: Path, result_context: dict) -> None:
@@ -102,7 +103,27 @@ def main():
         help="Output format for execution results."
     )
 
+    parser.add_argument(
+        "--api",
+        action="store_true",
+        help="Start the local API server instead of running a one-shot workflow."
+    )
+
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Port to run the API server on (defaults to 8000)."
+    )
+
     args = parser.parse_args()
+
+    # Intercept standard single-workflow execution mode. If the --api flag
+    # is provided, we boot the long-running HTTP server rather than running
+    # the workflow directly. This introduces a continuously running backend boundary.
+    if args.api:
+        run_server(port=args.port)
+        return
 
     workflow_path = args.workflow
     if not workflow_path.is_file():

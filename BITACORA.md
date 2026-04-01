@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 16:50 UTC
+**Author:** Codex
+**Entry:** Addressed the third PR `#120` schema-doc review pass by aligning `sdk/schemas/run-job-schema.md` with the Python `Run*` models for `tags`. Added the missing `description` and `default: []` metadata to the `RunListingItem` and `RunSummary` schema blocks so the contract documentation matches the SDK model behavior and stays internally consistent with `RunSubmissionRequest`.
+
+---
 **Timestamp:** 2026-04-01 16:47 UTC
 **Author:** Codex
 **Entry:** Addressed the second PR `#120` model-review pass by making `RunSummary` inherit from `RunListingItem` in the SDK models. This removes repeated field declarations while making the contract relationship explicit: the detailed run view is the listing shape plus final-context and error details. Added a focused assertion in the SDK tests so that inheritance remains intentional and covered.

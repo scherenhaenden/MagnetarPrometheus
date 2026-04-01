@@ -116,6 +116,8 @@ properties:
     type: array
     items:
       type: string
+    description: "Optional list of tags for searching and categorizing the run"
+    default: []
 required:
   - run_id
   - workflow_id
@@ -146,6 +148,8 @@ properties:
     type: array
     items:
       type: string
+    description: "Optional list of tags for searching and categorizing the run"
+    default: []
   final_context:
     $ref: "#/definitions/RunContext"
     description: "The aggregated state of the workflow upon completion. (See runtime schema for RunContext definition)"

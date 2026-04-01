@@ -109,8 +109,10 @@ properties:
     type: string
     format: date-time
   completed_at:
-    type: string
-    format: date-time
+    oneOf:
+      - type: string
+        format: date-time
+      - type: "null"
     description: "Timestamp when the run reached a terminal state; null if active"
   tags:
     type: array
@@ -127,7 +129,7 @@ required:
 
 ### 3.5 RunSummary
 
-The detailed, deep-inspect structure of a single run. Includes the final execution context and any error outputs.
+The detailed inspection structure of a single run. Includes the final execution context and any error outputs.
 
 ```yaml
 type: object
@@ -142,8 +144,10 @@ properties:
     type: string
     format: date-time
   completed_at:
-    type: string
-    format: date-time
+    oneOf:
+      - type: string
+        format: date-time
+      - type: "null"
   tags:
     type: array
     items:

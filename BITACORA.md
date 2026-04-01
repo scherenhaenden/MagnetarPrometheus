@@ -153,12 +153,6 @@ Each entry should use:
 **Entry:** Closed the remaining implementation gaps for issues `#2`, `#3`, and `#4` on a follow-up branch by making the canonical version stamp portable and explicit as `yyyy.MM.dd HH:mm:ss.SSS`, validating and locating `release-version.txt` deterministically from the backend, shifting bootstrap dependency installation to the package declarations in `backend/pyproject.toml` and `sdk/python/pyproject.toml`, and hardening the CI/release workflows with dependency-path-aware caching, timeout control, artifact upload, and non-empty version-stamp validation.
 
 ---
----
-**Timestamp:** 2026-04-01 16:05 UTC
-**Author:** Codex
-**Entry:** Resolved the merge of `master` into `feature/run-execution-schema-14984419196851415430` by keeping this branch's run-execution schema work in `sdk/schemas/run-execution-schema.md` while also carrying forward the newer CLI, workflow-loader, version-helper, and API-server hardening that already exists on `master`. The reconciliation preserves the schema branch's intent without reopening older runtime bugs or discarding later review-driven safety/test coverage improvements.
-
----
 **Timestamp:** 2026-03-27 14:18 UTC
 **Author:** Codex
 **Entry:** Updated the top-level governance and contribution docs to make the delivery model explicit: MagnetarPrometheus should be advanced in user-incremental slices so that each work round leaves something new runnable, visible, or testable. This was added to `README.md`, `RULES.md`, `WIP_GUIDELINES.md`, `CONTRIBUTING.md`, `PLAN.md`, and `STATUS.md`.

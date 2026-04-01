@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-01 15:18 UTC
+**Author:** Codex
+**Entry:** Addressed the remaining PR `#123` API-server review threads on `feature/minimal-api-server-110130192739416379` after the `master` merge. Refactored the minimal HTTP server so the example workflow runtime is assembled once at server startup and reused across requests, replaced raw exception leakage and `print`-style server output with `logging` plus stable client-facing 500 payloads, and rewrote the HTTP error assertions in `backend/tests/test_api_server.py` to the more idiomatic `pytest.raises(...)` style. Revalidated with `bash scripts/run_tests.sh`: `70 passed`, `100.00%` coverage.
+
+---
 **Timestamp:** 2026-04-01 15:07 UTC
 **Author:** Codex
 **Entry:** Resolved the active merge on `feature/minimal-api-server-110130192739416379` by preserving the branch's API-server CLI path and its `--api/--port` regression coverage while also keeping `master`'s richer module documentation and the stricter `__main__` entrypoint assertion in `backend/tests/test_cli.py`. The reconciliation keeps the minimal HTTP server feature visible on this branch without discarding the later review-driven test hardening that landed on `master`.

@@ -1,29 +1,5 @@
 # Status of MagnetarPrometheus
 
-<!--
-Why this file exists in this form:
-
-- This file describes the current product reality, not the aspirational roadmap. It is
-  intentionally written in direct present-tense language so readers can distinguish what
-  exists today from what is still planned.
-- The document keeps a strong separation between "what is real", "what is not real yet",
-  and "what a user can or cannot do". That separation is deliberate because this repository
-  contains a working backend proof of concept while still missing major product surfaces
-  such as a persistent service, API, and full interactive UI.
-- The wording is intentionally conservative. This file should undersell rather than
-  oversell the implemented state so contributors, reviewers, and future agents do not
-  accidentally treat an internal proof-of-concept slice as a finished product layer.
-- The examples and command references are included because this file is meant to orient a
-  reader quickly toward the runnable slice of the system. If a command, workflow, or user
-  capability is mentioned here, it should reflect actual repository behavior.
-- This file is different from PLAN.md on purpose. PLAN.md tracks scoped task completion and
-  preserved historical states; STATUS.md explains the lived product state that a user or
-  contributor would experience right now.
-- If this file ever drifts away from the codebase, it becomes actively harmful because it
-  can mislead planning, reviews, and issue triage. That is why even small phrasing fixes
-  matter when they change how the current repository state is interpreted.
--->
-
 ## Executive Summary
 
 MagnetarPrometheus currently has a working backend proof of concept, not a finished end-user application.
@@ -89,7 +65,7 @@ That means the current user experience is batch-style CLI execution, not an inte
 
 ## Progress Summary
 
-The tracked planning baseline is marked complete for the currently defined `44 / 44` effort points, but that does not mean the overall product vision is complete. It means the currently scoped foundation/runtime/schema milestones are complete.
+The tracked planning baseline is marked complete for the currently defined `44 / 44` effort points, but that does not mean the overall product vision is complete. It means the currently scoped foundation/runtime/schema milestones are complete. A new planning baseline (`ms-04`, `ms-05`) is now established to move from the completed CLI PoC to a visible app surface.
 
 - Active scoped completion: `100%` (`44 / 44` effort points)
 - Historical governance-audit view preserved: `84%` prompt-scope completion, `19 / 44` effort points fully completed at that time
@@ -107,6 +83,10 @@ The tracked planning baseline is marked complete for the currently defined `44 /
   Meaning: a backend runtime can execute a sample workflow through the CLI.
 - `ms-03` Visual Model Baseline: Completed
   Meaning: the shared graph/schema boundary is defined, not that a workflow editor already exists.
+- `ms-04` Service API & Persistence: Planned
+  Meaning: a long-running backend service can accept job submissions via an HTTP API, queue runs, and write persistent run history.
+- `ms-05` Minimal Web UI: Planned
+  Meaning: a user-facing web UI can fetch and display run history and workflow details.
 
 ## Implemented Capabilities
 
@@ -115,7 +95,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - Conditional routing through the evaluator path.
 - Step registration and Python executor routing.
 - Structured context/result output for completed runs.
-- Example email-triage module with a manifest, workflow, and step handlers.
+- Example email-triage module with manifest, workflow, and step handlers.
 - Runtime bootstrap with dependency checking and policy-driven install behavior.
 - Local scripts for bootstrap, run, and test flows.
 - Canonical version-stamp generation for release metadata.
@@ -132,8 +112,8 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 
 ## Immediate Delivery Focus
 
-- Introduce a visible application surface, likely a minimal local web UI or API-backed operator view.
-- Add a long-running execution surface instead of only one-shot CLI execution.
+- Begin execution on the HTTP API and minimal Web UI slices to introduce a visible application surface.
+- Deliver a long-running execution surface instead of only one-shot CLI execution.
 - Make workflow submission, inspection, and result viewing understandable without reading source code.
 - Keep the UI graph schema aligned with runtime semantics while the first actual UI slice is built.
 - Keep work user-incremental so each round gives the user one more thing to test directly.

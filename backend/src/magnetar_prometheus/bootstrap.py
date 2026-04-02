@@ -1,10 +1,3 @@
-"""
-Bootstrap utilities for the MagnetarPrometheus backend runtime.
-
-Provides dependency detection and optional auto-installation so the CLI can
-report missing packages clearly and install them when policy permits.
-"""
-
 import importlib
 import subprocess
 import sys
@@ -13,27 +6,10 @@ from typing import List, Dict, Optional
 
 @dataclass
 class BootstrapPolicy:
-    """Controls how missing dependencies are handled at startup.
-
-    Attributes:
-        auto_install: When True, missing packages are installed via pip
-            automatically. When False, the caller receives a failure result
-            and must handle installation itself.
-    """
     auto_install: bool = False
 
 @dataclass
 class BootstrapResult:
-    """Records the outcome of a dependency-check pass.
-
-    Attributes:
-        success: True when all required dependencies are available after the
-            check (and optional install) completes.
-        missing: Dependencies that were not importable before the check.
-        installed: Dependencies that were successfully installed during this
-            run.
-        failed: Dependencies whose installation was attempted but failed.
-    """
     success: bool
     missing: List[Dict[str, str]] = field(default_factory=list)
     installed: List[Dict[str, str]] = field(default_factory=list)

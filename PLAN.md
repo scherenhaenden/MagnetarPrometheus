@@ -1,29 +1,5 @@
 # Plan of MagnetarPrometheus
 
-<!--
-Why this file exists in this form:
-
-- This file is the stable planning ledger for the repository. It tracks milestones, tasks,
-  effort estimates, scoped completion, and preserved historical task states in one place.
-- The task table is intentionally compact and machine-friendly because this file needs to
-  support both human planning discussions and structured cross-checking against issues,
-  branch reviews, and historical remediation passes.
-- Historical rows are preserved instead of deleted because this repository has already gone
-  through branch merges where multiple planning narratives collided. Keeping prior audited
-  states visible prevents "clean-looking" plans from erasing the reasoning behind why the
-  current baseline was judged complete.
-- The distinction between the active baseline and preserved history is deliberate. The top
-  task table is the current source of truth, while the historical sections record what
-  previous branches or audits believed at the time. This helps reviewers understand why a
-  task may appear both "done" in one context and "in_progress" in an older preserved row.
-- Wording in notes matters here because these notes become compressed planning evidence for
-  later issue linkage, branch review, and governance checks. When a note is too verbose or
-  too vague, it weakens the usefulness of the entire planning artifact.
-- If this file eventually becomes too dense, the right direction is to keep the structure
-  and split planning horizons more cleanly, not to remove the preserved context that makes
-  branch history and baseline reasoning auditable.
--->
-
 This plan captures the project milestones, tasks, estimates, and status. Its structure should remain stable so both humans and tools can track progress consistently.
 
 ## Milestones Overview
@@ -33,10 +9,14 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 | `ms-01` | Foundation Setup | 2026-04-02 | Establish repository structure, governance files, and backend/sdk/ui boundaries. | Governance documents exist, project schema exists, and subproject layout is committed. |
 | `ms-02` | Core Runtime PoC | 2026-04-12 | Build the first serial workflow engine with models, loader, executor routing, and mock module flow. | A sample workflow runs end-to-end and produces structured context output. |
 | `ms-03` | Visual Model Baseline | 2026-04-26 | Define workflow graph schema and UI/editor integration boundary. | Shared schema supports visual nodes and edges, and UI scaffolding can render/edit a sample workflow graph. |
+| `ms-04` | Service API & Persistence | 2026-05-10 | Introduce a long-running backend service that accepts job submissions and records persistent run history. | A long-running backend service can accept job submissions via an HTTP API, queue runs, and write persistent run history. |
+| `ms-05` | Minimal Web UI | 2026-05-24 | Build the first user-facing web interface for interacting with the workflow platform. | A user-facing web UI can fetch and display run history and workflow details. |
 
 ## How To Read This Plan
 
 This plan tracks the currently scoped baseline, not the full long-term product ambition.
+
+Day-specific execution planning should live in `DAY_PLAN.md`, not in this file. `PLAN.md` is for milestones, backlog scope, and durable project-level state.
 
 That distinction matters because the repo now contains a runnable backend slice, but not yet:
 
@@ -69,6 +49,9 @@ Execution strategy for upcoming slices:
 | `task-109` | `ms-02` | Enforce 100 percent automated test coverage for core and shared contracts | Edward + AI | 5 | 24 | `done` | GitHub issue: #4. Coverage target is strict and should be automated in the test run path. |
 | `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `done` | GitHub issue: #3. The canonical format is explicitly integrated in backend via a version helper and distinguished from semantic versions. |
 | `task-111` | `ms-02` | Create CI pipelines for testing, validation, and release flows | Edward + AI | 5 | 24 | `done` | GitHub issue: #2. CI test workflow exists and release metadata automation has been added. |
+| `task-112` | `ms-01` | Define Bitacora retention and archival flow | Edward + AI | 3 | 14 | `planned` | Move `BITACORA.md` entries older than 2 days into durable GitHub surfaces such as Discussions and the wiki so the repo logbook stays current and scannable. |
+| `task-113` | `ms-04` | Implement HTTP API and local persistence for job submission | Unassigned | 5 | 24 | `planned` | User increment: A user can start a backend service, submit workflow runs via HTTP rather than CLI, and inspect run outcomes. |
+| `task-114` | `ms-05` | Develop a minimal web UI for observing workflows | Unassigned | 5 | 24 | `planned` | User increment: A user can open a browser and view persistent run history and job statuses without reading raw JSON. |
 
 ## Preserved Historical Task Records
 
@@ -76,7 +59,7 @@ These rows are preserved from the merged branch so no prior planning state is de
 
 | Historical Task ID | Original Task ID | Milestone | Title | Owner | Effort (pts) | Weight (%) | Historical State | Historical Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `task-103-history-20260326-governance-audit` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but need refinement for UI graph editing. |
+| `task-103-history-20260326-governance-audit` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but are oriented mainly around backend needs and not yet shaped for UI graph editing. |
 | `task-104-history-20260326-governance-audit` | `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `in_review` | Based on `PocPlan.md`. Workflow loader and engine loop are mostly done, execute a narrow sample workflow, and now include the `email_module` restructuring. |
 | `task-105-history-20260326-governance-audit` | `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | GitHub issue: #7. Must stay aligned with canonical workflow schema. |
 | `task-103-history-20260326-runtime-remediation` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `done` | GitHub issue: #1. Includes Python runtime models and shared schema boundary. |
@@ -120,11 +103,9 @@ These notes preserve exact branch-specific wording that would otherwise be lost 
 
 These items are not contradicted by the current `done` state. They simply belong to the next planning baseline rather than the current one.
 
-- Build a long-running backend service or API around the engine.
-- Create a first visible UI for running and inspecting workflows.
-- Define how jobs/runs are submitted, queued, persisted, and observed.
 - Turn the visual graph schema into an actual editable UI surface.
 - Clarify the future module lifecycle: discovery, registration, packaging, and execution policies.
+- Define a retention policy for `BITACORA.md` so entries older than 2 days are summarized and moved into GitHub Discussions and the repository wiki instead of accumulating indefinitely in the repo root logbook.
 
 ## State Definitions
 

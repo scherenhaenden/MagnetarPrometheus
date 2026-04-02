@@ -55,7 +55,8 @@ Allowed progression is normally:
 - `planned` to `ready`
 - `ready` to `in_progress`
 - `in_progress` to `in_review`
-- `in_review` to `done` (Note: "done" means the specific task slice is complete; it must not be used to imply a finished product experience when only an internal slice is complete)
+- `in_review` to `done`
+- Note: `done` means the specific task slice is complete. It must not be used to imply a finished product experience when only an internal slice is complete.
 - any active state to `blocked` when a tracked blocker is present
 
 ## Work-In-Progress Constraints

@@ -18,6 +18,11 @@ Each entry should use:
 **Entry:** Merged current `master` into `chore/governance-user-incremental-16392512902076639900` before finishing the PR `#121` review pass. Preserved the branch's governance additions around disjoint write ownership, user-visible versus internal-only reporting, and the meaning of `done`, while also keeping the newer repository-wide documentation standards that later landed on `master`.
 
 ---
+**Timestamp:** 2026-04-02 13:55 CEST
+**Author:** Codex
+**Entry:** Addressed the first remaining PR `#121` governance-doc review item by splitting the `RULES.md` `in_review` to `done` transition note into a short main bullet plus a separate clarification line. This keeps the rule visible while making the caution about internal-only completion easier to scan during reviews.
+
+---
 **Timestamp:** 2026-04-02 12:15 CEST
 **Author:** Gemini CLI
 **Entry:** Completed PR `#122` on branch `feature/example-workflows-16281624406611618711` by adding `linear_module` and `error_module`, their workflow definitions, and their step implementations, and by verifying 100 percent test coverage for the new module scope.

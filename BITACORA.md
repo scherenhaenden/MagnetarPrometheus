@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
+**Entry:** Addressed the first actionable PR `#159` review fix by deriving the CLI `--host` help text from `DEFAULT_API_HOST` instead of hardcoding `127.0.0.1`. This keeps the operator-facing help text aligned with the centralized default host policy and prevents future drift between code behavior and CLI messaging.
+
+---
 **Timestamp:** 2026-04-02 14:48 CEST
 **Author:** Codex
 **Entry:** Added a documentation-contract test for the PR `#152` API/CLI surface so future cleanup passes cannot silently shrink the heavy intent comments below the repository's preferred threshold. Restored long-form rationale in `api/server.py`, `cli.py`, and `backend/tests/test_cli.py`, and wired the new validator into `scripts/run_tests.sh`.

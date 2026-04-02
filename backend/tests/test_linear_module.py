@@ -15,6 +15,12 @@ def test_start_linear():
     assert res.success is True
     assert res.output["data"]["status"] == "started"
 
+def test_start_linear_rejects_invalid_inputs():
+    """Tests that the first linear step rejects malformed context/config values."""
+    res = start_linear([], {})
+    assert res.success is False
+    assert res.error_message == "Invalid context or config"
+
 def test_process_linear():
     """
     Tests the final processing step of the linear workflow.
@@ -25,6 +31,12 @@ def test_process_linear():
     res = process_linear({}, {})
     assert res.success is True
     assert res.output["data"]["status"] == "processed"
+
+def test_process_linear_rejects_invalid_inputs():
+    """Tests that the processing step rejects malformed context/config values."""
+    res = process_linear({}, [])
+    assert res.success is False
+    assert res.error_message == "Invalid context or config"
 
 def test_register_linear_steps():
     """

@@ -16,7 +16,8 @@ version: 1.0.0
 start_step: start_error
 
 settings:
-  # Instructs the engine to cease execution immediately if an error occurs.
+  # Informational only for this example: the current engine already halts on
+  # failed StepResult values regardless of this metadata.
   stop_on_unhandled_error: true
 
 steps:

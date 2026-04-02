@@ -19,11 +19,13 @@ from magnetar_prometheus.modules.email_module.steps import (
 from magnetar_prometheus.registry.step_registry import StepRegistry
 
 def test_fetch_emails():
+    """Verify that the email example returns a deterministic mock email payload."""
     res = fetch_emails({}, {})
     assert res.success is True
     assert "emails" in res.output["data"]
 
 def test_extract_email_data():
+    """Verify that extraction fails without emails and succeeds with the first subject."""
     res1 = extract_email_data({}, {})
     assert res1.success is False
 
@@ -33,6 +35,7 @@ def test_extract_email_data():
     assert res2.output["data"]["extracted"] == "Test"
 
 def test_ai_classify():
+    """Verify that the example classifier routes urgent text differently from other text."""
     ctx1 = {"data": {"extracted": "urgent issue"}}
     res1 = ai_classify(ctx1, {})
     assert res1.success is True
@@ -44,16 +47,19 @@ def test_ai_classify():
     assert res2.output["ai"]["decision"] == "manual_review"
 
 def test_create_ticket():
+    """Verify that the example ticket step returns a stable synthetic ticket id."""
     res = create_ticket({}, {})
     assert res.success is True
     assert "ticket_id" in res.output["data"]
 
 def test_manual_review():
+    """Verify that the manual-review example step reports an in-review status."""
     res = manual_review({}, {})
     assert res.success is True
     assert "status" in res.output["data"]
 
 def test_register_example_steps():
+    """Verify that email-only registration stays local to the email example module."""
     registry = StepRegistry()
     register_example_steps(registry)
     assert registry.get_handler("email.fetch") == fetch_emails
@@ -64,6 +70,7 @@ def test_register_example_steps():
 
 
 def test_register_all_example_steps():
+    """Verify that application-level example registration exposes every bundled example."""
     registry = StepRegistry()
     register_all_example_steps(registry)
     assert registry.get_handler("email.fetch") == fetch_emails

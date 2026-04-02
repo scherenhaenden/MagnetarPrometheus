@@ -16,7 +16,8 @@ Open the repository root in your IDE. For Python work, treat `backend/` as the P
 8. If an issue is created from a code review, preserve the review evidence in the issue body, including concrete code examples, proposed diffs, and exact file references when available.
 9. Prefer increments that give the user something new to run, inspect, or validate by the end of the round.
 10. When touching a Python source file, Python test file, or executable workflow/config file, add or preserve a substantial top-of-file intent header that explains what the file does, why it exists, and why the implementation is organized in its current way.
-11. Treat 80 percent docstring coverage as the minimum acceptable floor and 100 percent for touched scope as the preferred target.
+11. Document touched public functions, methods, and test cases with intent-first docstrings instead of leaving behavior implicit.
+12. Treat 80 percent docstring coverage as the minimum acceptable floor and 100 percent for touched scope as the preferred target.
 
 ## Pull Request Expectations
 

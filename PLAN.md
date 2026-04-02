@@ -14,6 +14,8 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 
 This plan tracks the currently scoped baseline, not the full long-term product ambition.
 
+Day-specific execution planning should live in `DAY_PLAN.md`, not in this file. `PLAN.md` is for milestones, backlog scope, and durable project-level state.
+
 That distinction matters because the repo now contains a runnable backend slice, but not yet:
 
 - a long-running runtime service

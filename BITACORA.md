@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 11:07 CEST
+**Author:** Codex
+**Entry:** Created a dedicated root-level `DAY_PLAN.md` for the 2026-04-02 execution slice focused on making MagnetarPrometheus more user-visible. Kept `PLAN.md` at milestone/backlog level by adding an explicit note that day-specific execution planning belongs in `DAY_PLAN.md`, not in the durable project plan.
+
+---
 **Timestamp:** 2026-04-01 18:00 UTC
 **Author:** Codex
 **Entry:** Addressed the last schema-local PR `#120` review fix by adding a dedicated shared-definitions section to `sdk/schemas/run-job-schema.md`. The document now carries resolvable local definitions for `RunStatus` and an abbreviated `RunContext`, so the internal `$ref` targets used by `RunResponse`, `RunListingItem`, and `RunSummary` no longer point at missing definitions while still directing readers to `run-execution-schema.md` for the fuller execution-context contract.

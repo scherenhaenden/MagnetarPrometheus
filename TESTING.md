@@ -4,6 +4,11 @@
 
 The current automated test suite validates the backend proof-of-concept slice very aggressively, but it does not validate a finished end-user product because that product surface does not exist yet.
 
+For a few touched operational files, the backend pytest suite now also enforces a narrow
+documentation contract. That check exists because docstring coverage alone was not enough to
+stop intent comments from being trimmed below the repository's preferred "explain the why,
+how, what, and keep-it-this-way constraint" threshold.
+
 What is covered well today:
 
 - workflow model validation

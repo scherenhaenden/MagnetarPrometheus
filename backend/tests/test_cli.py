@@ -216,8 +216,15 @@ def test_cli_api_startup_failure(capsys):
 def test_cli_api_flag(mock_run_server, mock_load_workflow):
     """Test that `--api` switches the CLI into long-running server mode.
 
-    The test covers both delegation to `run_server` and the required short-circuit that keeps
-    the normal workflow-loading path from running in API mode.
+    This test deliberately protects multiple policy boundaries at once:
+
+    - the CLI must delegate to `run_server` when `--api` is present
+    - the safe loopback default must be forwarded explicitly at the call boundary
+    - the normal workflow-loading path must not run at all in API mode
+
+    The docstring stays long on purpose because this is exactly the kind of test that looks
+    "too wordy" to a cleanup pass and then quietly loses the context for why the extra
+    assertions are there. The branch is protecting a mode boundary, not just a mock call.
     """
     with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
         main()
@@ -230,8 +237,13 @@ def test_cli_api_flag(mock_run_server, mock_load_workflow):
 def test_cli_api_flag_custom_host(mock_run_server):
     """Test that ``--host`` is forwarded to ``run_server`` when provided explicitly.
 
-    The default loopback path is already covered by ``test_cli_api_flag``. This case protects
-    the explicit opt-in path for broader bindings.
+    The default loopback path is already covered by ``test_cli_api_flag``. This companion case
+    protects the opposite boundary: users are allowed to opt into a broader bind, but only
+    when they request it explicitly.
+
+    This should remain documented in detail because it is easy for a future simplification to
+    preserve the default-host path while accidentally dropping the explicit-host forwarding
+    behavior and thereby collapsing operator intent back to the default.
     """
     with patch("sys.argv", ["cli.py", "--api", "--port", "9000", "--host", "0.0.0.0"]):
         main()

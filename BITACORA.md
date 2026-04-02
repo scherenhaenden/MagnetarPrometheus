@@ -13,6 +13,31 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 15:11 CEST
+**Author:** Codex
+**Entry:** Addressed the fourth actionable PR `#159` review fix by replacing the `parents[2]` repository-root assumption in `backend/tests/test_documentation_contract.py` with an upward search for stable repo markers (`BITACORA.md` and `backend/pyproject.toml`). The documentation-contract test is now less brittle if the test package layout moves later.
+
+---
+**Timestamp:** 2026-04-02 15:10 CEST
+**Author:** Codex
+**Entry:** Addressed the third actionable PR `#159` review fix by extending `backend/tests/test_documentation_contract.py` to protect the long policy comment above `DEFAULT_API_HOST` in `api/server.py`. The branch now treats that explanatory comment block as part of the enforced documentation contract instead of leaving it unguarded.
+
+---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
+**Entry:** Addressed the second actionable PR `#159` review fix by making `backend/tests/test_documentation_contract.py` target the specific CLI API-mode test docstrings through AST parsing instead of searching the entire file text. The documentation-contract guard remains strict, but it is now tied to the exact tests whose policy explanations it is meant to protect.
+
+---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
+**Entry:** Addressed the first actionable PR `#159` review fix by deriving the CLI `--host` help text from `DEFAULT_API_HOST` instead of hardcoding `127.0.0.1`. This keeps the operator-facing help text aligned with the centralized default host policy and prevents future drift between code behavior and CLI messaging.
+
+---
+**Timestamp:** 2026-04-02 14:48 CEST
+**Author:** Codex
+**Entry:** Added a documentation-contract test for the PR `#152` API/CLI surface so future cleanup passes cannot silently shrink the heavy intent comments below the repository's preferred threshold. Restored long-form rationale in `api/server.py`, `cli.py`, and `backend/tests/test_cli.py`, and wired the new validator into `scripts/run_tests.sh`.
+
+---
 **Timestamp:** 2026-04-02 14:48 CEST
 **Author:** Codex
 **Entry:** Addressed the remaining PR `#152` cleanup feedback by centralizing the default API loopback host in `api/server.py` and reusing it from the CLI, then trimming a few overly repetitive comments/docstrings in the CLI, API server, and CLI tests without weakening the documented security intent.

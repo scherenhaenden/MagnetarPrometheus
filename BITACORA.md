@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 14:18 CEST
+**Author:** Codex
+**Entry:** Addressed the substantive PR `#127` review finding by removing `branches/feature/planning-product-surface/plan.md`, which was only a branch-local achievement artifact. The durable planning state remains in `PLAN.md`, `STATUS.md`, and `ARCHITECTURE.md` rather than in a feature-branch documentation path.
+
+---
 **Timestamp:** 2026-04-02 14:16 CEST
 **Author:** Codex
 **Entry:** Resolved the `master` merge on `feature/planning-product-surface-7059919661031247844` by preserving the newer Bitacora-retention planning task from `master` as `task-112`, renumbering the product-surface planning tasks to `task-113` and `task-114`, and restoring strict reverse-chronological ordering at the top of the logbook.

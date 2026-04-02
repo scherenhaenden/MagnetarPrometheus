@@ -1,29 +1,5 @@
 # Plan of MagnetarPrometheus
 
-<!--
-Why this file exists in this form:
-
-- This file is the stable planning ledger for the repository. It tracks milestones, tasks,
-  effort estimates, scoped completion, and preserved historical task states in one place.
-- The task table is intentionally compact and machine-friendly because this file needs to
-  support both human planning discussions and structured cross-checking against issues,
-  branch reviews, and historical remediation passes.
-- Historical rows are preserved instead of deleted because this repository has already gone
-  through branch merges where multiple planning narratives collided. Keeping prior audited
-  states visible prevents "clean-looking" plans from erasing the reasoning behind why the
-  current baseline was judged complete.
-- The distinction between the active baseline and preserved history is deliberate. The top
-  task table is the current source of truth, while the historical sections record what
-  previous branches or audits believed at the time. This helps reviewers understand why a
-  task may appear both "done" in one context and "in_progress" in an older preserved row.
-- Wording in notes matters here because these notes become compressed planning evidence for
-  later issue linkage, branch review, and governance checks. When a note is too verbose or
-  too vague, it weakens the usefulness of the entire planning artifact.
-- If this file eventually becomes too dense, the right direction is to keep the structure
-  and split planning horizons more cleanly, not to remove the preserved context that makes
-  branch history and baseline reasoning auditable.
--->
-
 This plan captures the project milestones, tasks, estimates, and status. Its structure should remain stable so both humans and tools can track progress consistently.
 
 ## Milestones Overview
@@ -37,6 +13,8 @@ This plan captures the project milestones, tasks, estimates, and status. Its str
 ## How To Read This Plan
 
 This plan tracks the currently scoped baseline, not the full long-term product ambition.
+
+Day-specific execution planning should live in `DAY_PLAN.md`, not in this file. `PLAN.md` is for milestones, backlog scope, and durable project-level state.
 
 That distinction matters because the repo now contains a runnable backend slice, but not yet:
 
@@ -76,7 +54,7 @@ These rows are preserved from the merged branch so no prior planning state is de
 
 | Historical Task ID | Original Task ID | Milestone | Title | Owner | Effort (pts) | Weight (%) | Historical State | Historical Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `task-103-history-20260326-governance-audit` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but need refinement for UI graph editing. |
+| `task-103-history-20260326-governance-audit` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `in_progress` | GitHub issue: #1. Models exist but are oriented mainly around backend needs and not yet shaped for UI graph editing. |
 | `task-104-history-20260326-governance-audit` | `task-104` | `ms-02` | Implement workflow loader and serial engine loop | Edward | 5 | 24 | `in_review` | Based on `PocPlan.md`. Workflow loader and engine loop are mostly done, execute a narrow sample workflow, and now include the `email_module` restructuring. |
 | `task-105-history-20260326-governance-audit` | `task-105` | `ms-03` | Design UI graph model for drag-and-drop workflows | Edward | 5 | 24 | `planned` | GitHub issue: #7. Must stay aligned with canonical workflow schema. |
 | `task-103-history-20260326-runtime-remediation` | `task-103` | `ms-02` | Define runtime domain models and workflow schema contracts | Edward | 5 | 24 | `done` | GitHub issue: #1. Includes Python runtime models and shared schema boundary. |

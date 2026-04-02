@@ -34,7 +34,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
-from magnetar_prometheus.api.server import run_server
+from magnetar_prometheus.api.server import DEFAULT_API_HOST, run_server
 from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.core.executor_router import ExecutorRouter
@@ -52,9 +52,7 @@ def _print_summary(workflow_path: Path, result_context: dict) -> None:
     operators frequently run the CLI directly from a terminal, and a second crash inside the
     renderer would hide the original workflow failure behind a formatting bug.
     """
-    # Review hardening preserved during the merge: summary rendering must tolerate partial
-    # engine output so the CLI still reports failures cleanly instead of crashing on missing
-    # keys while trying to display the result.
+    # Tolerate partial engine output so summary rendering never hides the original failure.
     run_info = result_context.get("run") or {}
     history = result_context.get("history") or []
     data = result_context.get("data") or {}
@@ -122,6 +120,18 @@ def main():
         help="Port to run the API server on (defaults to 8000).",
     )
 
+    # Reuse the server default so local-only binding stays the safe path by default.
+    parser.add_argument(
+        "--host",
+        type=str,
+        default=DEFAULT_API_HOST,
+        help=(
+            "Network interface to bind the API server to "
+            "(defaults to 127.0.0.1 for local-only access). "
+            "Pass 0.0.0.0 to bind on all interfaces."
+        ),
+    )
+
     args = parser.parse_args()
 
     # The `--api` path is a deliberate short-circuit: once the operator asks for server mode,
@@ -130,7 +140,7 @@ def main():
     # command-line interface.
     if args.api:
         try:
-            run_server(port=args.port)
+            run_server(port=args.port, host=args.host)
         except (OSError, OverflowError) as exc:
             print(f"Error starting API server on port {args.port}: {exc}", file=sys.stderr)
             sys.exit(1)

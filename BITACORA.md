@@ -13,6 +13,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 14:48 CEST
+**Author:** Codex
+**Entry:** Addressed the remaining PR `#152` cleanup feedback by centralizing the default API loopback host in `api/server.py` and reusing it from the CLI, then trimming a few overly repetitive comments/docstrings in the CLI, API server, and CLI tests without weakening the documented security intent.
+
+---
+**Timestamp:** 2026-04-02 14:41 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `copilot/fix-api-server-loopback-binding` by reconciling the CLI API-mode changes. The merged result keeps the branch's loopback-by-default and explicit `--host` forwarding while preserving the newer `master` startup-failure normalization and workflow-short-circuit test coverage.
+
+---
 **Timestamp:** 2026-04-02 14:18 CEST
 **Author:** Codex
 **Entry:** Addressed the substantive PR `#127` review finding by removing `branches/feature/planning-product-surface/plan.md`, which was only a branch-local achievement artifact. The durable planning state remains in `PLAN.md`, `STATUS.md`, and `ARCHITECTURE.md` rather than in a feature-branch documentation path.

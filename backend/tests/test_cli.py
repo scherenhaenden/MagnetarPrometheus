@@ -216,13 +216,24 @@ def test_cli_api_startup_failure(capsys):
 def test_cli_api_flag(mock_run_server, mock_load_workflow):
     """Test that `--api` switches the CLI into long-running server mode.
 
-    This assertion does two jobs deliberately. It proves the CLI delegates to `run_server`
-    with the requested port, and it proves the non-API workflow path is not entered at all.
-    That second assertion matters because a missing `return` after the API branch would still
-    allow the test to look superficially correct unless we also guard against workflow loading.
+    The test covers both delegation to `run_server` and the required short-circuit that keeps
+    the normal workflow-loading path from running in API mode.
     """
     with patch("sys.argv", ["cli.py", "--api", "--port", "9000"]):
         main()
 
-    mock_run_server.assert_called_once_with(port=9000)
+    mock_run_server.assert_called_once_with(port=9000, host="127.0.0.1")
     mock_load_workflow.assert_not_called()
+
+
+@patch("magnetar_prometheus.cli.run_server")
+def test_cli_api_flag_custom_host(mock_run_server):
+    """Test that ``--host`` is forwarded to ``run_server`` when provided explicitly.
+
+    The default loopback path is already covered by ``test_cli_api_flag``. This case protects
+    the explicit opt-in path for broader bindings.
+    """
+    with patch("sys.argv", ["cli.py", "--api", "--port", "9000", "--host", "0.0.0.0"]):
+        main()
+
+    mock_run_server.assert_called_once_with(port=9000, host="0.0.0.0")

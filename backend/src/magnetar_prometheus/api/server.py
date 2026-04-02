@@ -37,6 +37,7 @@ from magnetar_prometheus.modules.example_registry import register_all_example_st
 from magnetar_prometheus.registry.step_registry import StepRegistry
 
 logger = logging.getLogger(__name__)
+DEFAULT_API_HOST = "127.0.0.1"
 
 
 def _resolve_example_workflow_path() -> Path:
@@ -191,16 +192,19 @@ class MagnetarAPIHandler(BaseHTTPRequestHandler):
             self._send_json_response(500, {"error": "Internal server error."})
 
 
-def run_server(port: int = 8000) -> None:
+def run_server(port: int = 8000, host: str = DEFAULT_API_HOST) -> None:
     """Start the minimal local MagnetarPrometheus API server.
 
-    The server binds on all interfaces because this slice is meant to be easy to run from a
-    local checkout without additional configuration. Shutdown handling is explicit so Ctrl+C
-    releases the socket cleanly and the test suite can assert the server lifecycle behavior.
+    The loopback default keeps the unauthenticated ``/run-example`` endpoint local unless
+    the caller explicitly chooses a broader binding.
+
+    Args:
+        port: TCP port to listen on. Defaults to ``8000``.
+        host: Network interface to bind to. Defaults to ``DEFAULT_API_HOST``.
     """
-    server_address = ("", port)
+    server_address = (host, port)
     httpd = MagnetarAPIServer(server_address, MagnetarAPIHandler)
-    logger.info("Starting Magnetar API on port %s", port)
+    logger.info("Starting Magnetar API on %s:%s", host, port)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

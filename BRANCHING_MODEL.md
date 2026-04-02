@@ -18,4 +18,3 @@ MagnetarPrometheus uses a lightweight GitFlow-style model.
 - Feature and fix branches should be rebased before merge.
 - Pull requests should reference task IDs and documentation updates.
 - Documentation-sensitive changes must update the canonical governance files when applicable.
-

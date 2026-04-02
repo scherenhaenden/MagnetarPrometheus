@@ -132,6 +132,33 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - Risk: users expect an app surface when only a CLI execution slice exists
   Mitigation: state plainly in the docs that the current deliverable is a backend proof of concept, not a finished interactive product.
 
+## CI and Release Automation
+
+The repository has active GitHub Actions automation under `.github/workflows/`.
+
+### CI Workflow (`ci.yml`)
+
+Triggers on every push to `master`/`main` and on every pull request targeting those branches.
+
+Steps enforced:
+1. **Bootstrap validation** — runs `scripts/bootstrap_python.sh` to verify a clean environment can be prepared.
+2. **Backend run-path validation** — runs `scripts/run_backend.sh` (no extra arguments) to verify the example workflow loads and executes end to end.
+3. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope and enforces 100% code coverage via the threshold in `backend/pyproject.toml`.
+
+### Release Metadata Workflow (`release.yml`)
+
+Triggers on push to `master`, on `release-*` tags, or manually via `workflow_dispatch`.
+
+- Generates a canonical version stamp in the format `yyyy.MM.dd HH:mm:sss`.
+- Uploads `release-version.txt` as a GitHub Actions artifact.
+- Does NOT create git tags, GitHub releases, or publish packages. Full publishing is out of scope at the current PoC stage.
+
+### Automation Status
+
+- CI automation: **active and enforced**.
+- Release metadata generation: **active**.
+- Full distribution/publishing pipeline: **not implemented** (out of scope for current PoC).
+
 ## Operating Rhythm
 
 - Update this file when product reality changes, not only when task states change.

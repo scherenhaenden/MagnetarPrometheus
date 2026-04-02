@@ -1,5 +1,30 @@
 # Logbook of MagnetarPrometheus
 
+<!--
+Why this file exists in this form:
+
+- This file is the canonical reverse-chronological project logbook. It is not a changelog,
+  not a release note file, and not a narrative diary. Its job is to preserve decisions,
+  conflict resolutions, branch reconciliations, governance corrections, and important
+  implementation state transitions in a format that can be scanned quickly later.
+- Entries are intentionally concise and structured because this document is meant to be
+  updated often across many branches and merge events. The stable Timestamp / Author /
+  Entry shape reduces ambiguity during merges and makes historical reconstruction easier
+  for both humans and automation.
+- Reverse chronological order is deliberate. The newest operational truth needs to be at
+  the top so an engineer or agent opening the file can understand the latest state before
+  reading older history that may already have been superseded.
+- References to GitHub issues, pull requests, workflows, and branch names are kept inline
+  because this file acts as the bridge between repository state and repository process.
+  When a branch, PR, or issue drove a change, this file should make that linkage obvious.
+- This file should preserve meaningful operational context, not every tiny edit. The bar
+  for an entry is that it helps explain why the repository looks the way it does, why a
+  conflict was resolved a certain way, or what higher-level work a set of commits served.
+- If this file ever starts to look like a wall of repetitive low-signal notes, the right
+  fix is not to remove structure but to tighten entry discipline so only decisions and
+  notable state changes remain.
+-->
+
 This document is the project logbook. It records decisions, state changes, discoveries, and exceptions in reverse chronological order.
 
 ## Entry Format
@@ -11,6 +36,41 @@ Each entry should use:
 - Entry: concise event description
 
 ## Entries
+
+---
+**Timestamp:** 2026-04-02 16:00 CEST
+**Author:** Codex
+**Entry:** Addressed the last actionable PR `#153` audit concern by tightening `DependencySpec` validation in `backend/src/magnetar_prometheus/bootstrap.py` and documenting why the `pip install` subprocess call is not shell-interpolated: it uses argv-list form without `shell=True`. Added a focused bootstrap test so malformed blank dependency declarations now fail early and the bootstrap contract stays explicit.
+
+---
+**Timestamp:** 2026-04-02 15:41 CEST
+**Author:** Codex
+**Entry:** Added a split set of independent frontend/delegation prompts under `work-/for-agents/11-frontend-prompt-index.md` through `20-frontend-local-run-flow.md`. The prompts are Angular-only for the web surface, explicitly reject React, and are divided by disjoint ownership so workspace scaffolding, web shell, data boundary, design system, run-history slice, job-submission slice, desktop shell, validation guards, and local run flow can be delegated separately.
+
+---
+**Timestamp:** 2026-04-02 15:34 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `copilot/add-dependency-installation-report` by preserving the branch's long-form bootstrap intent documentation while replacing the raw dependency dict contract in `backend/src/magnetar_prometheus/bootstrap.py` with an explicit `DependencySpec` dataclass. Updated the bootstrap regression tests to use the structured dependency type so the non-short-circuit installation guarantee remains covered without reverting to stringly-typed key access.
+
+---
+**Timestamp:** 2026-04-02 15:11 CEST
+**Author:** Codex
+**Entry:** Addressed the fourth actionable PR `#159` review fix by replacing the `parents[2]` repository-root assumption in `backend/tests/test_documentation_contract.py` with an upward search for stable repo markers (`BITACORA.md` and `backend/pyproject.toml`). The documentation-contract test is now less brittle if the test package layout moves later.
+
+---
+**Timestamp:** 2026-04-02 15:10 CEST
+**Author:** Codex
+**Entry:** Addressed the third actionable PR `#159` review fix by extending `backend/tests/test_documentation_contract.py` to protect the long policy comment above `DEFAULT_API_HOST` in `api/server.py`. The branch now treats that explanatory comment block as part of the enforced documentation contract instead of leaving it unguarded.
+
+---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
+**Entry:** Addressed the second actionable PR `#159` review fix by making `backend/tests/test_documentation_contract.py` target the specific CLI API-mode test docstrings through AST parsing instead of searching the entire file text. The documentation-contract guard remains strict, but it is now tied to the exact tests whose policy explanations it is meant to protect.
+
+---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
+**Entry:** Addressed the first actionable PR `#159` review fix by deriving the CLI `--host` help text from `DEFAULT_API_HOST` instead of hardcoding `127.0.0.1`. This keeps the operator-facing help text aligned with the centralized default host policy and prevents future drift between code behavior and CLI messaging.
 
 ---
 **Timestamp:** 2026-04-02 14:48 CEST
@@ -61,6 +121,11 @@ Each entry should use:
 **Timestamp:** 2026-04-02 13:55 CEST
 **Author:** Codex
 **Entry:** Addressed the first remaining PR `#121` governance-doc review item by splitting the `RULES.md` `in_review` to `done` transition note into a short main bullet plus a separate clarification line. This keeps the rule visible while making the caution about internal-only completion easier to scan during reviews.
+
+---
+**Timestamp:** 2026-04-02 13:50 UTC
+**Author:** GitHub Copilot (Coding Agent)
+**Entry:** Stabilised CI/release pipeline automation on branch `copilot/create-ci-pipelines-for-testing`. Added substantial RULES.md-required comment headers to `.github/workflows/ci.yml` and `.github/workflows/release.yml` describing intent, validated execution paths, and non-obvious semantics (step ordering rationale, server-mode non-activation, coverage threshold centralisation, PoC-scope publishing exclusion). Updated `STATUS.md` with an explicit "CI and Release Automation" section covering the active workflows, their trigger conditions, steps enforced, and current automation limits. This completes the documentation alignment required by the issue acceptance criteria.
 
 ---
 **Timestamp:** 2026-04-02 12:15 CEST

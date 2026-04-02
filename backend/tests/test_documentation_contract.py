@@ -20,7 +20,20 @@ import ast
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+def _find_repo_root(start_path: Path) -> Path:
+    """Walk upward until the repository root markers are found.
+
+    This avoids hardcoding a fragile parent-depth assumption into the documentation-contract
+    tests. The branch is deliberately using repo markers that should remain stable even if the
+    test package or backend layout is reorganized.
+    """
+    for candidate in (start_path, *start_path.parents):
+        if (candidate / "BITACORA.md").is_file() and (candidate / "backend" / "pyproject.toml").is_file():
+            return candidate
+    raise AssertionError("Could not locate repository root for documentation-contract tests.")
+
+
+REPO_ROOT = _find_repo_root(Path(__file__).resolve())
 CLI_PATH = REPO_ROOT / "backend" / "src" / "magnetar_prometheus" / "cli.py"
 API_SERVER_PATH = REPO_ROOT / "backend" / "src" / "magnetar_prometheus" / "api" / "server.py"
 CLI_TEST_PATH = REPO_ROOT / "backend" / "tests" / "test_cli.py"
@@ -71,10 +84,22 @@ def test_run_server_docstring_preserves_binding_policy() -> None:
     assert "security" in docstring or "policy" in docstring
 
 
+def test_default_api_host_comment_preserves_policy_context() -> None:
+    """Ensure the DEFAULT_API_HOST comment keeps the bind-policy rationale stable."""
+    source_text = API_SERVER_PATH.read_text(encoding="utf-8")
+
+    assert "DEFAULT_API_HOST" in source_text
+    assert "Keep the loopback default in one constant" in source_text
+    assert "unauthenticated `/run-example` endpoint stays local by default" in source_text
+
+
 def test_cli_api_mode_tests_keep_policy_explanation() -> None:
     """Ensure the CLI API-mode tests keep their long-form policy narrative."""
-    source_text = CLI_TEST_PATH.read_text(encoding="utf-8")
+    api_default_doc = _read_function_docstring(CLI_TEST_PATH, "test_cli_api_flag")
+    api_custom_host_doc = _read_function_docstring(
+        CLI_TEST_PATH, "test_cli_api_flag_custom_host"
+    )
 
-    assert "This test deliberately protects multiple policy boundaries at once" in source_text
-    assert "safe loopback default" in source_text
-    assert "users are allowed to opt into a broader bind" in source_text
+    assert "This test deliberately protects multiple policy boundaries at once" in api_default_doc
+    assert "safe loopback default" in api_default_doc
+    assert "users are allowed to opt into a broader bind" in api_custom_host_doc

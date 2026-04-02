@@ -139,7 +139,7 @@ def main():
         default=DEFAULT_API_HOST,
         help=(
             "Network interface to bind the API server to "
-            "(defaults to 127.0.0.1 for local-only access). "
+            f"(defaults to {DEFAULT_API_HOST} for local-only access). "
             "Pass 0.0.0.0 to bind on all interfaces."
         ),
     )

@@ -108,6 +108,8 @@ Work is tracked through milestones and tasks. Each task must use one of the allo
 
 `planned` -> `ready` -> `in_progress` -> `in_review` -> `done`
 
+(Note: "done" must not imply a finished product experience if only an internal slice is complete).
+
 When necessary, tasks may move into `blocked`, but that state must be reflected in [BLOCKERS.md](/home/edward/Development/MagnetarPrometheus/BLOCKERS.md) and summarized in [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md).
 
 Every state change must be logged in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
@@ -122,7 +124,8 @@ The preferred delivery rhythm is:
 
 - every round trip should aim to make one more thing runnable, visible, or testable
 - internal refactors are allowed, but they should be tied to a near-term user-visible increment whenever possible
-- when a slice is not yet user-visible, the docs must say so directly instead of overstating completion
+- parallel work must be divided by disjoint write ownership
+- documentation must state clearly whether a change is user-visible or internal-only; when a slice is not yet user-visible, the docs must say so directly instead of overstating completion
 
 ## YAML Project Schema
 

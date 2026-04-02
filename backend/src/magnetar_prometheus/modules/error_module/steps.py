@@ -1,5 +1,8 @@
+import logging
 from typing import Dict, Any
 from magnetar_prometheus_sdk.models import StepResult
+
+logger = logging.getLogger(__name__)
 
 def start_error(context: Dict[str, Any], config: Dict[str, Any]) -> StepResult:
     """Executes the initial step of the error workflow.
@@ -16,6 +19,7 @@ def trigger_error(context: Dict[str, Any], config: Dict[str, Any]) -> StepResult
     message to simulate a real-world problem during execution. It demonstrates
     the engine's error handling and halting capabilities.
     """
+    logger.error("Error triggered in example workflow: Simulated error occurred")
     return StepResult(success=False, error_message="Simulated error occurred")
 
 def register_error_steps(registry):

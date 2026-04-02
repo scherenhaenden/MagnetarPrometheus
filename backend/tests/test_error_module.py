@@ -27,6 +27,15 @@ def test_trigger_error():
     assert res.success is False
     assert res.error_message == "Simulated error occurred"
 
+def test_trigger_error_logs_failure(caplog):
+    """
+    Tests that the simulated failure path emits an error log for traceability.
+    """
+    with caplog.at_level("ERROR"):
+        trigger_error({}, {})
+
+    assert "Error triggered in example workflow" in caplog.text
+
 def test_register_error_steps():
     """
     Tests the registration of the error workflow steps.

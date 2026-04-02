@@ -21,8 +21,7 @@ steps:
     next: trigger_error
 
   # This step intentionally triggers a failure by returning a StepResult with success=False.
-  # The engine should catch this and halt the workflow before reaching the 'end' state.
+  # The engine should catch this and halt the workflow immediately.
   trigger_error:
     type: error.trigger
     executor: python
-    next: end

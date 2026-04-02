@@ -65,6 +65,7 @@ Allowed progression is normally:
 - Exceeding the limit requires explicit approval recorded in [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md) and [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md)
 - Work should be organized around user-incremental delivery. A reasonable default expectation is that each work round leaves a newly testable, runnable, or inspectable increment for the user or operator.
 - Parallel work must be divided by disjoint write ownership so contributors do not collide in the same surface.
+- See [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md) for the operating definition of disjoint write ownership and an example of how to split work safely.
 
 ## Blocker Lifecycle
 

@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 14:10 CEST
+**Author:** Codex
+**Entry:** Addressed the last remaining PR `#121` governance-doc review item by adding a direct cross-reference from `RULES.md` to `WIP_GUIDELINES.md` for "disjoint write ownership" and by defining that term in a dedicated WIP-guidance section with a concrete example of safe parallel work partitioning.
+
+---
 **Timestamp:** 2026-04-02 14:05 CEST
 **Author:** Codex
 **Entry:** Addressed the second remaining PR `#121` governance-doc review item by rephrasing the `RULES.md` documentation-discipline requirement to match the repo's newer governance language in `CONTRIBUTING.md`. The rule now speaks consistently in terms of whether an increment is user-visible or internal-only instead of using the older "actually user-testable" phrasing.

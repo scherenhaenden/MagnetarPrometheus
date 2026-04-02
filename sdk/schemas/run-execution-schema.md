@@ -10,7 +10,7 @@ While `workflow-graph-schema.md` defines how a workflow is authored, this docume
 
 *   **Job Submission:** The request to start a workflow execution. It encapsulates the workflow ID, the desired starting context, and execution policies.
 *   **Run:** A single, unique execution of a workflow. A run has a unique identifier, a status, and an associated context that evolves as steps are executed.
-*   **RunContext:** The current state of a run, containing inputs, intermediate results, AI decisions, execution history, and errors. This directly maps to the backend `RunContext` model.
+*   **RunContext:** The current state of a run, containing inputs, intermediate results, AI decisions, execution history, and errors. This document describes the **target external contract (vNext)** for API/UI consumers; the current backend runtime shape is close in intent but still requires a compatibility mapping layer.
 *   **RunResult Envelope:** The final payload returned when a run completes (successfully or not), providing a summary of the execution alongside the final context.
 
 ## 3. Schema Definitions
@@ -46,26 +46,35 @@ definitions:
             default: "info"
 ```
 
-### 3.2 Run Lifecycle and Status Model
+### 3.2 Run Lifecycle and Status Model (Target)
 
 A run progresses through a defined set of statuses. These statuses dictate what operations are permitted on the run (e.g., you can cancel a `running` job, but not a `completed` one).
+
+> Compatibility note: the current engine actively emits `running`, `failed`, and `completed`.
+> `pending`, `paused`, and `cancelled` are reserved/planned states for future API/runtime capabilities and should not be assumed to exist in the live in-process engine yet.
 
 ```yaml
 definitions:
   RunStatus:
     type: string
     enum:
-      - pending      # Accepted but not yet executing (e.g., queued)
-      - running      # Currently executing steps
-      - paused       # Execution temporarily halted (e.g., awaiting human review)
-      - completed    # Execution finished successfully
-      - failed       # Execution halted due to an error
-      - cancelled    # Execution aborted by user request
+      - pending      # Reserved/planned: accepted but not yet executing (e.g., queued)
+      - running      # Active: currently executing steps
+      - paused       # Reserved/planned: execution temporarily halted (e.g., awaiting human review)
+      - completed    # Active: execution finished successfully
+      - failed       # Active: execution halted due to an error
+      - cancelled    # Reserved/planned: execution aborted by user request
 ```
 
-### 3.3 RunContext Schema (Maps to `RunContext`)
+### 3.3 RunContext Schema (Target Contract With Runtime Mapping Notes)
 
 The `RunContext` represents the current state of the workflow and is the core object passed between steps.
+
+Compatibility notes for current runtime consumers:
+
+- The in-process engine currently guarantees `run.workflow_id` and `run.status`, but does not yet populate every future-facing metadata field in this target contract (`run.id`, `run.current_step`, `run.start_time`, `run.end_time`) in a durable API-ready way.
+- Current runtime `history` entries are emitted as `{step, success, output, error_code, error_message}`. An adapter layer should map those internal records into the target external shape documented below, especially `step -> step_id` and `success -> status`.
+- Current runtime `errors` entries are emitted as `{step, error_code, error_message}`. An adapter layer should map those internal records into the target external shape documented below, especially `step -> step_id` and `error_message -> message`.
 
 ```yaml
 definitions:
@@ -103,8 +112,16 @@ definitions:
           type: object
           properties:
             step_id: { type: string }
-            status: { type: string, enum: ["success", "failed"] }
-            duration_ms: { type: number }
+            status:
+              type: string
+              enum: ["success", "failed"]
+              description: "Per-step outcome, intentionally narrower than the run-level lifecycle enum"
+            output:
+              type: object
+              description: "Per-step output payload retained for traceability and debugging"
+            error_code: { type: string }
+            error_message: { type: string }
+            duration_ms: { type: integer }
             timestamp: { type: string, format: "date-time" }
       errors:
         type: array
@@ -114,12 +131,16 @@ definitions:
           properties:
             step_id: { type: string }
             error_code: { type: string }
-            message: { type: string }
+            message:
+              type: string
+              description: "External contract field; current runtime emits `error_message` and should map it here"
 ```
 
 ### 3.4 RunResult Envelope Schema
 
-When a client queries the final result of a workflow execution, or when an engine completes a run, it returns a `RunResult Envelope`.
+When a client queries the final result of a workflow execution through a future API layer, that API can wrap the engine output in a `RunResult Envelope`. The current in-process engine returns the `RunContext` directly, so this envelope should be read as an external-service contract rather than a claim about the exact return shape of `Engine.run(...)` today.
+
+The top-level `run_id`, `workflow_id`, and `status` fields are intentionally duplicated from `final_context.run.*` for client convenience. API consumers can inspect the envelope header without traversing the full nested context object, while still treating `final_context` as the authoritative detailed payload.
 
 ```yaml
 definitions:
@@ -139,8 +160,8 @@ definitions:
         type: object
         description: "A high-level overview of the execution"
         properties:
-          total_steps_executed: { type: number }
-          total_duration_ms: { type: number }
+          total_steps_executed: { type: integer }
+          total_duration_ms: { type: integer }
           has_errors: { type: boolean }
 ```
 
@@ -150,7 +171,7 @@ The UI or external systems will interact with the engine using these contracts:
 
 ### 4.1 Initiating a Run
 
-A client submits a `JobSubmission` payload. The engine responds with an initial `RunContext` (with status `pending` or `running`) or a unique `run_id` to poll.
+A client submits a `JobSubmission` payload. The target API/runtime responds with an initial `RunContext` (with status `pending` or `running`) or a unique `run_id` to poll. In the current in-process engine, workflow execution is immediate and does not yet expose a queued `pending` phase.
 
 ### 4.2 Inspecting Execution State
 
@@ -162,4 +183,4 @@ A client queries the engine for a list of runs, optionally filtered by `workflow
 
 ### 4.4 Resuming/Interacting (Future)
 
-If a run is in a `paused` state (e.g., waiting for manual review from a `review.queue` step), a client can submit a continuation payload referencing the `run_id`, injecting new data into the context, and transitioning the status back to `running`.
+If a run is in a `paused` state (e.g., waiting for manual review from a `review.queue` step), a client can submit a continuation payload referencing the `run_id`, injecting new data into the context, and transitioning the status back to `running`. This is a planned interaction pattern for the future service/API surface rather than a capability emitted by the current engine implementation.

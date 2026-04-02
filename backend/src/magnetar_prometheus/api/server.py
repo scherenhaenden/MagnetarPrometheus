@@ -33,10 +33,29 @@ from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.core.executor_router import ExecutorRouter
 from magnetar_prometheus.core.workflow_loader import WorkflowLoader
 from magnetar_prometheus.executors.python_executor import PythonExecutor
-from magnetar_prometheus.modules.email_module.steps import register_example_steps
+from magnetar_prometheus.modules.example_registry import register_all_example_steps
 from magnetar_prometheus.registry.step_registry import StepRegistry
 
 logger = logging.getLogger(__name__)
+
+# Keep the loopback default in one constant so every local-service surface in the repository
+# speaks the same language about what "safe by default" means for this API slice.
+#
+# This comment is intentionally long because this exact value is the sort of thing that drifts
+# when multiple agents touch the same feature over time. One agent changes the server default,
+# another edits CLI help text, a third updates tests, and suddenly the codebase contains three
+# different "defaults" that all look individually plausible. The project does not want that.
+#
+# The real policy is:
+# - the unauthenticated `/run-example` endpoint stays local by default
+# - broader exposure is supported, but only when an operator asks for it explicitly
+# - the CLI, the server implementation, and the tests should all derive that default from one
+#   source of truth so that intent cannot quietly fork across files
+#
+# Keep this constant unless the repository grows a clearly better configuration object that
+# centrally owns bind defaults for every surface. A shorter comment would save a few lines but
+# would not carry enough context to stop the next "harmless cleanup" from reintroducing drift.
+DEFAULT_API_HOST = "127.0.0.1"
 
 
 def _resolve_example_workflow_path() -> Path:
@@ -65,7 +84,7 @@ def _build_example_runtime() -> tuple[Path, object, Engine]:
     workflow = loader.load_workflow(str(workflow_path))
 
     registry = StepRegistry()
-    register_example_steps(registry)
+    register_all_example_steps(registry)
 
     executor = PythonExecutor(registry)
     router = ExecutorRouter()
@@ -191,16 +210,35 @@ class MagnetarAPIHandler(BaseHTTPRequestHandler):
             self._send_json_response(500, {"error": "Internal server error."})
 
 
-def run_server(port: int = 8000) -> None:
+def run_server(port: int = 8000, host: str = DEFAULT_API_HOST) -> None:
     """Start the minimal local MagnetarPrometheus API server.
 
-    The server binds on all interfaces because this slice is meant to be easy to run from a
-    local checkout without additional configuration. Shutdown handling is explicit so Ctrl+C
-    releases the socket cleanly and the test suite can assert the server lifecycle behavior.
+    This function is intentionally explicit about bind behavior because the bind behavior is
+    part of the product's current security posture, not an incidental implementation detail.
+
+    The default host stays on the loopback interface because the current API surface is a
+    local-development and local-validation tool. It exposes an unauthenticated example-run
+    endpoint, so broader binding should remain an operator choice that is visible at the call
+    site rather than a quiet default hidden in framework configuration.
+
+    Future agents should read this docstring as a constraint:
+    - do not casually replace the explicit ``host`` parameter with an implicit global default
+    - do not broaden the default binding without intentionally changing the product policy
+    - do not collapse the lifecycle handling into a shorter bootstrap if that makes shutdown,
+      logging, or review-time reasoning about the bind behavior harder
+
+    In other words, keep this function boring and obvious unless there is a clearly better
+    application-level bootstrap that preserves the same explicit security story.
+
+    Args:
+        port: TCP port to listen on. Defaults to ``8000``.
+        host: Network interface to bind to. Defaults to ``DEFAULT_API_HOST`` so local-only
+            access remains the out-of-the-box behavior. Passing a broader host is supported,
+            but it should remain an explicit opt-in decision.
     """
-    server_address = ("", port)
+    server_address = (host, port)
     httpd = MagnetarAPIServer(server_address, MagnetarAPIHandler)
-    logger.info("Starting Magnetar API on port %s", port)
+    logger.info("Starting Magnetar API on %s:%s", host, port)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

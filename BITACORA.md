@@ -38,6 +38,146 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 15:34 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `copilot/add-dependency-installation-report` by preserving the branch's long-form bootstrap intent documentation while replacing the raw dependency dict contract in `backend/src/magnetar_prometheus/bootstrap.py` with an explicit `DependencySpec` dataclass. Updated the bootstrap regression tests to use the structured dependency type so the non-short-circuit installation guarantee remains covered without reverting to stringly-typed key access.
+
+---
+**Timestamp:** 2026-04-02 15:11 CEST
+**Author:** Codex
+**Entry:** Addressed the fourth actionable PR `#159` review fix by replacing the `parents[2]` repository-root assumption in `backend/tests/test_documentation_contract.py` with an upward search for stable repo markers (`BITACORA.md` and `backend/pyproject.toml`). The documentation-contract test is now less brittle if the test package layout moves later.
+
+---
+**Timestamp:** 2026-04-02 15:10 CEST
+**Author:** Codex
+**Entry:** Addressed the third actionable PR `#159` review fix by extending `backend/tests/test_documentation_contract.py` to protect the long policy comment above `DEFAULT_API_HOST` in `api/server.py`. The branch now treats that explanatory comment block as part of the enforced documentation contract instead of leaving it unguarded.
+
+---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
+**Entry:** Addressed the second actionable PR `#159` review fix by making `backend/tests/test_documentation_contract.py` target the specific CLI API-mode test docstrings through AST parsing instead of searching the entire file text. The documentation-contract guard remains strict, but it is now tied to the exact tests whose policy explanations it is meant to protect.
+
+---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
+**Entry:** Addressed the first actionable PR `#159` review fix by deriving the CLI `--host` help text from `DEFAULT_API_HOST` instead of hardcoding `127.0.0.1`. This keeps the operator-facing help text aligned with the centralized default host policy and prevents future drift between code behavior and CLI messaging.
+
+---
+**Timestamp:** 2026-04-02 14:48 CEST
+**Author:** Codex
+**Entry:** Added a documentation-contract test for the PR `#152` API/CLI surface so future cleanup passes cannot silently shrink the heavy intent comments below the repository's preferred threshold. Restored long-form rationale in `api/server.py`, `cli.py`, and `backend/tests/test_cli.py`, and wired the new validator into `scripts/run_tests.sh`.
+
+---
+**Timestamp:** 2026-04-02 14:48 CEST
+**Author:** Codex
+**Entry:** Addressed the remaining PR `#152` cleanup feedback by centralizing the default API loopback host in `api/server.py` and reusing it from the CLI, then trimming a few overly repetitive comments/docstrings in the CLI, API server, and CLI tests without weakening the documented security intent.
+
+---
+**Timestamp:** 2026-04-02 14:41 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `copilot/fix-api-server-loopback-binding` by reconciling the CLI API-mode changes. The merged result keeps the branch's loopback-by-default and explicit `--host` forwarding while preserving the newer `master` startup-failure normalization and workflow-short-circuit test coverage.
+
+---
+**Timestamp:** 2026-04-02 14:18 CEST
+**Author:** Codex
+**Entry:** Addressed the substantive PR `#127` review finding by removing `branches/feature/planning-product-surface/plan.md`, which was only a branch-local achievement artifact. The durable planning state remains in `PLAN.md`, `STATUS.md`, and `ARCHITECTURE.md` rather than in a feature-branch documentation path.
+
+---
+**Timestamp:** 2026-04-02 14:16 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `feature/planning-product-surface-7059919661031247844` by preserving the newer Bitacora-retention planning task from `master` as `task-112`, renumbering the product-surface planning tasks to `task-113` and `task-114`, and restoring strict reverse-chronological ordering at the top of the logbook.
+
+---
+**Timestamp:** 2026-04-02 14:10 CEST
+**Author:** Codex
+**Entry:** Addressed the last remaining PR `#121` governance-doc review item by adding a direct cross-reference from `RULES.md` to `WIP_GUIDELINES.md` for "disjoint write ownership" and by defining that term in a dedicated WIP-guidance section with a concrete example of safe parallel work partitioning.
+
+---
+**Timestamp:** 2026-04-02 14:05 CEST
+**Author:** Codex
+**Entry:** Addressed the second remaining PR `#121` governance-doc review item by rephrasing the `RULES.md` documentation-discipline requirement to match the repo's newer governance language in `CONTRIBUTING.md`. The rule now speaks consistently in terms of whether an increment is user-visible or internal-only instead of using the older "actually user-testable" phrasing.
+
+---
+**Timestamp:** 2026-04-02 14:03 CEST
+**Author:** Codex
+**Entry:** Addressed the last remaining PR `#121` wording nit by making `WIP_GUIDELINES.md` enforce user-incremental delivery with mandatory language rather than optional phrasing. The guidance now states that each round must leave something runnable, visible, or inspectable and that work packets must unlock a small user-visible or user-testable increment.
+
+---
+**Timestamp:** 2026-04-02 14:00 CEST
+**Author:** Codex
+**Entry:** Merged current `master` into `chore/governance-user-incremental-16392512902076639900` before finishing the PR `#121` review pass. Preserved the branch's governance additions around disjoint write ownership, user-visible versus internal-only reporting, and the meaning of `done`, while also keeping the newer repository-wide documentation standards that later landed on `master`.
+
+---
+**Timestamp:** 2026-04-02 13:55 CEST
+**Author:** Codex
+**Entry:** Addressed the first remaining PR `#121` governance-doc review item by splitting the `RULES.md` `in_review` to `done` transition note into a short main bullet plus a separate clarification line. This keeps the rule visible while making the caution about internal-only completion easier to scan during reviews.
+
+---
+**Timestamp:** 2026-04-02 12:15 CEST
+**Author:** Gemini CLI
+**Entry:** Completed PR `#122` on branch `feature/example-workflows-16281624406611618711` by adding `linear_module` and `error_module`, their workflow definitions, and their step implementations, and by verifying 100 percent test coverage for the new module scope.
+
+---
+**Timestamp:** 2026-04-02 11:55 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `feature/example-workflows-16281624406611618711` by preserving both the example-workflow branch history and the newer `master` changes for API, schemas, testing-surface behavior, and day-planning/governance updates. Also added a planned backlog item in `PLAN.md` to define `BITACORA.md` retention so entries older than 2 days are summarized and moved into GitHub Discussions and the repository wiki.
+
+---
+**Timestamp:** 2026-04-02 11:35 CEST
+**Author:** Codex
+**Entry:** Addressed the PR `#125` testing-surface review concern around false-green placeholder tiers. Updated `scripts/run_tests.sh` so direct `api` and `ui` tier invocations now return a non-success status instead of silently passing, while the default `all` path continues to validate the implemented backend tier and explicitly reports the unimplemented tiers as skipped placeholders. Also aligned `TESTING.md` with that current testing contract.
+
+---
+**Timestamp:** 2026-04-02 11:20 CEST
+**Author:** Codex
+**Entry:** Consolidated the two day-plan drafts into a single source of truth in `DAY_PLAN.md`. Kept the user-centered structure from the original daily plan and folded in the more concrete execution steps from the alternate draft: improve CLI legibility, serve the first UI shell from the existing API path, trigger the example workflow through that service boundary, and verify both the CLI and local API/UI paths directly.
+
+---
+**Timestamp:** 2026-04-02 11:07 CEST
+**Author:** Codex
+**Entry:** Created a dedicated root-level `DAY_PLAN.md` for the 2026-04-02 execution slice focused on making MagnetarPrometheus more user-visible. Kept `PLAN.md` at milestone/backlog level by adding an explicit note that day-specific execution planning belongs in `DAY_PLAN.md`, not in the durable project plan.
+
+---
+**Timestamp:** 2026-04-01 18:00 UTC
+**Author:** Codex
+**Entry:** Addressed the last schema-local PR `#120` review fix by adding a dedicated shared-definitions section to `sdk/schemas/run-job-schema.md`. The document now carries resolvable local definitions for `RunStatus` and an abbreviated `RunContext`, so the internal `$ref` targets used by `RunResponse`, `RunListingItem`, and `RunSummary` no longer point at missing definitions while still directing readers to `run-execution-schema.md` for the fuller execution-context contract.
+
+---
+**Timestamp:** 2026-04-01 17:55 UTC
+**Author:** Codex
+**Entry:** Addressed the first remaining PR `#120` schema-doc follow-up by making `completed_at` explicitly nullable in the `RunListingItem` and `RunSummary` schema examples, matching the documented "null if active" lifecycle semantics. Also cleaned up the awkward `deep-inspect` wording so the run-summary section reads more clearly without changing the contract shape.
+
+---
+**Timestamp:** 2026-04-01 16:50 UTC
+**Author:** Codex
+**Entry:** Addressed the third PR `#120` schema-doc review pass by aligning `sdk/schemas/run-job-schema.md` with the Python `Run*` models for `tags`. Added the missing `description` and `default: []` metadata to the `RunListingItem` and `RunSummary` schema blocks so the contract documentation matches the SDK model behavior and stays internally consistent with `RunSubmissionRequest`.
+
+---
+**Timestamp:** 2026-04-01 16:47 UTC
+**Author:** Codex
+**Entry:** Addressed the second PR `#120` model-review pass by making `RunSummary` inherit from `RunListingItem` in the SDK models. This removes repeated field declarations while making the contract relationship explicit: the detailed run view is the listing shape plus final-context and error details. Added a focused assertion in the SDK tests so that inheritance remains intentional and covered.
+
+---
+**Timestamp:** 2026-04-01 16:43 UTC
+**Author:** Codex
+**Entry:** Addressed the first PR `#120` model-review pass on `feature/run-job-schema-models-5527624013875748583` by typing `created_at` and `completed_at` as `datetime` objects in the SDK `Run*` models instead of plain strings. Updated the model docstrings and tests so the Python contract now validates and normalizes RFC3339 timestamps at the SDK boundary rather than deferring that parsing burden to every caller.
+
+---
+**Timestamp:** 2026-04-01 16:24 UTC
+**Author:** Codex
+**Entry:** Addressed the second PR `#119` schema-review pass by tightening the run/execution contract details in `sdk/schemas/run-execution-schema.md`. Added explicit runtime-mapping notes for current `history` and `errors` shapes, documented why per-step `history.status` intentionally stays narrower than the run lifecycle enum, restored `output` to history entries for traceability, changed duration/count fields to integers, and explained why `RunResultEnvelope` duplicates `run_id`, `workflow_id`, and `status` at the top level for client convenience.
+
+---
+**Timestamp:** 2026-04-01 16:18 UTC
+**Author:** Codex
+**Entry:** Addressed the first PR `#119` review pass on `feature/run-execution-schema-14984419196851415430` by clarifying that `sdk/schemas/run-execution-schema.md` describes the target external run/execution contract rather than claiming a one-to-one mapping with the current in-process engine output. Marked `pending`, `paused`, and `cancelled` as reserved/planned states, and annotated the run-result envelope and future interaction sections so consumers do not mistake planned API behavior for current engine guarantees.
+
+---
+**Timestamp:** 2026-04-01 16:05 UTC
+**Author:** Codex
+**Entry:** Resolved the merge of `master` into `feature/run-execution-schema-14984419196851415430` by keeping this branch's run-execution schema work in `sdk/schemas/run-execution-schema.md` while also carrying forward the newer CLI, workflow-loader, version-helper, and API-server hardening that already exists on `master`. The reconciliation preserves the schema branch's intent without reopening older runtime bugs or discarding later review-driven safety/test coverage improvements.
+
+---
 **Timestamp:** 2026-04-01 15:18 UTC
 **Author:** Codex
 **Entry:** Addressed the remaining PR `#123` API-server review threads on `feature/minimal-api-server-110130192739416379` after the `master` merge. Refactored the minimal HTTP server so the example workflow runtime is assembled once at server startup and reused across requests, replaced raw exception leakage and `print`-style server output with `logging` plus stable client-facing 500 payloads, and rewrote the HTTP error assertions in `backend/tests/test_api_server.py` to the more idiomatic `pytest.raises(...)` style. Revalidated with `bash scripts/run_tests.sh`: `70 passed`, `100.00%` coverage.
@@ -46,6 +186,11 @@ Each entry should use:
 **Timestamp:** 2026-04-01 15:07 UTC
 **Author:** Codex
 **Entry:** Resolved the active merge on `feature/minimal-api-server-110130192739416379` by preserving the branch's API-server CLI path and its `--api/--port` regression coverage while also keeping `master`'s richer module documentation and the stricter `__main__` entrypoint assertion in `backend/tests/test_cli.py`. The reconciliation keeps the minimal HTTP server feature visible on this branch without discarding the later review-driven test hardening that landed on `master`.
+
+---
+**Timestamp:** 2026-04-01 14:30 UTC
+**Author:** Jules
+**Entry:** Expanded the set of example modules by adding `linear_module` and `error_module`. Registered the new modules via `email_module/steps.py` to maintain compatibility with the backend CLI. Added comprehensive unit tests enforcing 100% coverage, and addressed PR review feedback by removing embedded signatures from docstrings.
 
 ---
 **Timestamp:** 2026-04-01 14:28 UTC
@@ -162,7 +307,6 @@ Each entry should use:
 **Author:** Codex
 **Entry:** Closed the remaining implementation gaps for issues `#2`, `#3`, and `#4` on a follow-up branch by making the canonical version stamp portable and explicit as `yyyy.MM.dd HH:mm:ss.SSS`, validating and locating `release-version.txt` deterministically from the backend, shifting bootstrap dependency installation to the package declarations in `backend/pyproject.toml` and `sdk/python/pyproject.toml`, and hardening the CI/release workflows with dependency-path-aware caching, timeout control, artifact upload, and non-empty version-stamp validation.
 
----
 **Timestamp:** 2026-03-27 14:18 UTC
 **Author:** Codex
 **Entry:** Updated the top-level governance and contribution docs to make the delivery model explicit: MagnetarPrometheus should be advanced in user-incremental slices so that each work round leaves something new runnable, visible, or testable. This was added to `README.md`, `RULES.md`, `WIP_GUIDELINES.md`, `CONTRIBUTING.md`, `PLAN.md`, and `STATUS.md`.
@@ -200,7 +344,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-27 11:56 UTC
 **Author:** Codex
-**Entry:** Resolved the PR 14 workflow conflict in the GitHub Actions workflow `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
+**Entry:** Resolved the PR 14 workflow conflict in `.github/workflows/release.yml` by keeping the shared `scripts/get_version_stamp.sh` source for the canonical `yyyy.MM.dd HH:mm:sss` release stamp and expanding the workflow trigger to run on pushes to `master` as well as `release-*` tags. This ensures release metadata is generated after merges into `master`, not for open PR updates.
 
 ---
 **Timestamp:** 2026-03-27 11:45 UTC
@@ -255,7 +399,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-03-26 12:05 UTC
 **Author:** Codex
-**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in the GitHub Actions workflow `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
+**Entry:** Corrected the branch execution path. `scripts/bootstrap_python.sh` now creates and prepares the virtual environment reliably for the current PoC slice, `scripts/run_backend.sh` now executes the example workflow successfully, and `scripts/run_tests.sh` now passes with 100 percent coverage on the implemented backend and SDK scope. Added release metadata automation in `.github/workflows/release.yml` using the canonical timestamp format `yyyy.MM.dd HH:mm:sss`.
 
 ---
 **Timestamp:** 2026-03-26 10:58 UTC
@@ -300,38 +444,3 @@ Each entry should use:
 ## Immutability
 
 This logbook should not be rewritten retroactively. Corrections must be made by adding a new entry that clarifies an earlier one.
-
----
-**Timestamp:** 2026-04-01 09:48 UTC
-**Author:** Codex
-**Entry:** Reproduced the CI `validate` job locally with `act push -j validate` and fixed a CLI contract regression in `backend/src/magnetar_prometheus/cli.py`. Restored the documented/tested `--format {summary,json}` switch, returned summary output to the default mode, and normalized invalid workflow-load failures into a clear CLI error with exit code `1`. Verified the fix with `bash scripts/run_tests.sh`.
-
----
-**Timestamp:** 2026-04-01 09:56 UTC
-**Author:** Codex
-**Entry:** Expanded the `ConditionEvaluator.evaluate` and CLI `main` docstrings to restore the behavior-specific guidance flagged in review. Documented the exact supported conditional expression shapes, the conservative `False` fallback semantics, the `summary` and `json` CLI output modes, and the CLI exit behavior for missing or invalid workflow files.
-
----
-**Timestamp:** 2026-04-01 10:01 UTC
-**Author:** Codex
-**Entry:** Resolved the in-progress merge of `origin/master` into `penify/auto_doc_9505494_6d9da` without dropping branch history. Conflict resolution kept the branch versions of `backend/src/magnetar_prometheus/cli.py` and `backend/src/magnetar_prometheus/core/evaluator.py` because they preserve the reviewed API-behavior documentation that `master` had reduced to minimal one-line docstrings. This merge is being completed as an explicit ancestry-preserving merge commit, not a squash or history-flattening replacement.
-
----
-**Timestamp:** 2026-04-01 08:26 UTC
-**Author:** Codex
-**Entry:** Addressed PR #145 review follow-up on workflow-loading error handling. Narrowed `backend/src/magnetar_prometheus/cli.py` to catch only documented workflow-loading exceptions and updated `backend/src/magnetar_prometheus/core/workflow_loader.py` to validate via `Workflow.model_validate(...)`, so structurally invalid YAML payloads now surface as the documented Pydantic validation failure instead of an incidental `TypeError`. Revalidated with `bash scripts/run_tests.sh`.
-
----
-**Timestamp:** 2026-04-01 13:42 UTC
-**Author:** Codex
-**Entry:** Addressed the high-priority PR #145 review finding on CLI exit semantics. `backend/src/magnetar_prometheus/cli.py` now exits with status `1` after rendering output when the workflow run result reports `run.status == "failed"`, so shell automation and CI can detect execution failures without parsing stdout. Added `backend/tests/test_cli.py::test_cli_failed_workflow_exits_non_zero` and revalidated with `bash scripts/run_tests.sh`.
-
----
-**Timestamp:** 2026-04-01 13:54 UTC
-**Author:** Codex
-**Entry:** Addressed the remaining PR #145 summary-rendering robustness review. Hardened `backend/src/magnetar_prometheus/cli.py::_print_summary` to tolerate partial run contexts by using safe accessors and fallback values instead of direct indexing, and added an explicit in-code review-follow-up comment describing why the defensive handling is required. Added `backend/tests/test_cli.py::test_cli_summary_tolerates_partial_context` and revalidated with `bash scripts/run_tests.sh`.
-
----
-**Timestamp:** 2026-04-01 14:05 UTC
-**Author:** Codex
-**Entry:** Aligned the `backend/src/magnetar_prometheus/cli.py::main` docstring with the implemented CLI exit semantics so the documentation now explicitly states that the command also exits with status `1` when workflow execution completes with `run.status == "failed"`.

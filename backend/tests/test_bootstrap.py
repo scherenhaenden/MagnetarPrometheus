@@ -13,11 +13,10 @@ Coverage requirements (enforced by pytest-cov --cov-fail-under=100):
 import subprocess
 from unittest.mock import call, patch
 
-import pytest
-
 from magnetar_prometheus.bootstrap import (
     BootstrapPolicy,
     BootstrapResult,
+    DependencySpec,
     bootstrap_runtime,
     check_and_install_dependencies,
 )
@@ -29,7 +28,7 @@ def test_check_dependencies_all_present():
     Uses ``sys`` which is guaranteed to be present in any Python interpreter,
     so no pip subprocess is ever invoked.
     """
-    deps = [{"module": "sys", "package": "sys"}]
+    deps = [DependencySpec(module="sys", package="sys")]
     result = check_and_install_dependencies(deps)
     assert result.success is True
     assert not result.missing
@@ -43,7 +42,7 @@ def test_check_dependencies_missing_no_auto():
     The function must return immediately after detection when the policy
     prohibits automatic installation, leaving ``installed`` and ``failed`` empty.
     """
-    deps = [{"module": "non_existent_module_xyz", "package": "pkg_xyz"}]
+    deps = [DependencySpec(module="non_existent_module_xyz", package="pkg_xyz")]
     policy = BootstrapPolicy(auto_install=False)
     result = check_and_install_dependencies(deps, policy=policy)
     assert result.success is False
@@ -59,7 +58,7 @@ def test_check_dependencies_missing_auto_success(mock_call):
     After a successful ``pip install`` the dependency must appear in
     ``result.installed`` and ``result.success`` must be True.
     """
-    deps = [{"module": "non_existent_module_xyz", "package": "pkg_xyz"}]
+    deps = [DependencySpec(module="non_existent_module_xyz", package="pkg_xyz")]
     policy = BootstrapPolicy(auto_install=True)
     result = check_and_install_dependencies(deps, policy=policy)
     assert result.success is True
@@ -76,7 +75,7 @@ def test_check_dependencies_missing_auto_fail(mock_call):
     ``result.failed`` must contain the dependency and ``success`` must be False.
     """
     mock_call.side_effect = subprocess.CalledProcessError(1, "cmd")
-    deps = [{"module": "non_existent_module_xyz", "package": "pkg_xyz"}]
+    deps = [DependencySpec(module="non_existent_module_xyz", package="pkg_xyz")]
     policy = BootstrapPolicy(auto_install=True)
     result = check_and_install_dependencies(deps, policy=policy)
     assert result.success is False
@@ -101,9 +100,9 @@ def test_check_dependencies_multiple_failures_all_collected(mock_call):
     mock_call.side_effect = subprocess.CalledProcessError(1, "cmd")
 
     # Three distinct missing packages — all expected to fail.
-    dep_a = {"module": "non_existent_module_aaa", "package": "pkg_aaa"}
-    dep_b = {"module": "non_existent_module_bbb", "package": "pkg_bbb"}
-    dep_c = {"module": "non_existent_module_ccc", "package": "pkg_ccc"}
+    dep_a = DependencySpec(module="non_existent_module_aaa", package="pkg_aaa")
+    dep_b = DependencySpec(module="non_existent_module_bbb", package="pkg_bbb")
+    dep_c = DependencySpec(module="non_existent_module_ccc", package="pkg_ccc")
     deps = [dep_a, dep_b, dep_c]
 
     policy = BootstrapPolicy(auto_install=True)
@@ -119,7 +118,7 @@ def test_check_dependencies_multiple_failures_all_collected(mock_call):
     # iterated over every entry instead of stopping at the first exception.
     assert mock_call.call_count == 3
     expected_calls = [
-        call([__import__("sys").executable, "-m", "pip", "install", dep["package"]])
+        call([__import__("sys").executable, "-m", "pip", "install", dep.package])
         for dep in deps
     ]
     mock_call.assert_has_calls(expected_calls, any_order=False)
@@ -141,7 +140,7 @@ def test_bootstrap_runtime_success_with_installed_printed(mock_check, capsys):
     block of ``bootstrap_runtime``.  The print should only happen when some packages
     were newly installed, not merely when all packages were already present.
     """
-    installed_dep = {"module": "non_existent_module_xyz", "package": "pkg_xyz"}
+    installed_dep = DependencySpec(module="non_existent_module_xyz", package="pkg_xyz")
     mock_check.return_value = BootstrapResult(success=True, installed=[installed_dep])
     assert bootstrap_runtime(auto_install=True) is True
     captured = capsys.readouterr()
@@ -156,7 +155,7 @@ def test_bootstrap_runtime_failure_no_auto(mock_check, capsys):
     The output must list every missing package so the operator knows exactly
     what to install without having to inspect internal state.
     """
-    missing_dep = {"module": "non_existent_module_xyz", "package": "pkg_xyz"}
+    missing_dep = DependencySpec(module="non_existent_module_xyz", package="pkg_xyz")
     mock_check.return_value = BootstrapResult(success=False, missing=[missing_dep])
     assert bootstrap_runtime(auto_install=False) is False
     captured = capsys.readouterr()
@@ -174,7 +173,7 @@ def test_bootstrap_runtime_failure_auto_install(mock_check, capsys):
     which is the user-visible complement to the fix in ``check_and_install_dependencies``
     that now collects all failures rather than stopping at the first one.
     """
-    failed_dep = {"module": "non_existent_module_xyz", "package": "pkg_xyz"}
+    failed_dep = DependencySpec(module="non_existent_module_xyz", package="pkg_xyz")
     mock_check.return_value = BootstrapResult(success=False, failed=[failed_dep])
     assert bootstrap_runtime(auto_install=True) is False
     captured = capsys.readouterr()

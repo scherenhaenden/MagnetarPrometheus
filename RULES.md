@@ -1,28 +1,5 @@
 # Rules of MagnetarPrometheus
 
-<!--
-Why this file exists in this form:
-
-- This file is the repository's hard governance layer. It is intentionally stricter than
-  README-style guidance because it defines what contributors, agents, and automation are
-  allowed to treat as normal operating procedure.
-- The rules here are phrased as repository-level constraints rather than personal advice.
-  That distinction matters because this document is meant to survive changes in tools,
-  agents, and maintainers without losing the expected operating model.
-- Branching, planning, status tracking, and documentation rules live together here on
-  purpose. MagnetarPrometheus relies on those artifacts as part of the product-delivery
-  process, so governance is not separate from implementation quality.
-- Merge behavior belongs here because repository history is part of the system's audit
-  surface. If merges destroy ancestry, hide reviewed branch work, or leave ambiguous
-  branch state behind, they create operational confusion even when the resulting code is
-  technically present on `master`.
-- This file should bias toward explicitness over convenience. A contributor should be able
-  to read it and understand not just what is preferred, but what is considered a process
-  failure that must not be normalized.
-- If a workflow exception is ever necessary, the exception must be documented in
-  `BITACORA.md` rather than silently replacing the normal rule with ad hoc behavior.
--->
-
 These rules codify how MagnetarPrometheus operates under the Magnetar Canonical Project Model. The repository must comply unless a formal exception is documented in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
 
 ## Naming Conventions
@@ -63,12 +40,6 @@ The following files must exist unless an exemption is logged in [BITACORA.md](/h
 - `feature/*` branches may start from `master` or `develop` and should be rebased before merge.
 - `hotfix/*` branches start from `master` and require a follow-up update in [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md).
 - Every pull request must reference impacted tasks and corresponding [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md) entries.
-- Normal pull requests must be merged with ancestry-preserving history. Squash merges are
-  not acceptable for standard feature/fix/chore PRs because they sever the visible link
-  between reviewed branch work and the resulting `master` history.
-- If a squash merge is ever used as an explicit exception, that exception and its reason
-  must be documented in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md)
-  before the history is considered clean again.
 
 ## Allowed Task States
 
@@ -85,6 +56,7 @@ Allowed progression is normally:
 - `ready` to `in_progress`
 - `in_progress` to `in_review`
 - `in_review` to `done`
+- Note: `done` means the specific task slice is complete. It must not be used to imply a finished product experience when only an internal slice is complete.
 - any active state to `blocked` when a tracked blocker is present
 
 ## Work-In-Progress Constraints
@@ -92,6 +64,8 @@ Allowed progression is normally:
 - Default WIP limit per individual or AI agent: 2 tasks in `in_progress`
 - Exceeding the limit requires explicit approval recorded in [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md) and [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md)
 - Work should be organized around user-incremental delivery. A reasonable default expectation is that each work round leaves a newly testable, runnable, or inspectable increment for the user or operator.
+- Parallel work must be divided by disjoint write ownership so contributors do not collide in the same surface.
+- See [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md) for the operating definition of disjoint write ownership and an example of how to split work safely.
 
 ## Blocker Lifecycle
 
@@ -106,8 +80,13 @@ Allowed progression is normally:
 - [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md) records state changes, decisions, and exceptions chronologically.
 - [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md) is updated at least daily during active work or after each merge.
 - [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md) is the planning source of truth for milestones and task assignments.
+- Python source files and Python test files must begin with a substantial file-level module docstring that explains what the file does, why it exists, why the implementation is shaped the way it is, and any important constraints or tradeoffs.
+- Public functions, methods, and test cases in touched Python files must carry docstrings that explain intent and the behavior being protected or provided. Tiny wrappers may stay concise, but they should not be left undocumented by default.
+- Workflow YAML files and other executable config artifacts must begin with a substantial comment header describing intent, the scenario they model, and any non-obvious execution semantics such as failure-only or example-only behavior.
+- The minimum acceptable documentation threshold for Python code is 80 percent docstring coverage, and the preferred operating target is 100 percent for touched scope.
+- Any file touched in a pull request should be brought up to the file-level intent-header standard, and any touched Python functions or methods in that file should be documented to the same intent-first standard.
 - Daily updates must include user-visible progress, not just technical deltas.
-- Status, plan, and architecture documents must state clearly whether the latest increment is actually user-testable or still only an internal capability.
+- Status, plan, and architecture documents and pull requests must state clearly whether the latest increment is user-visible or internal-only.
 - Actionable work should be mirrored in GitHub issues whenever the repository is using GitHub operationally.
 - Open design, product, and governance questions should be tracked in GitHub discussions when they are broader than a single task.
 - GitHub issues created from reviews must preserve the original review evidence instead of compressing it into a short summary.

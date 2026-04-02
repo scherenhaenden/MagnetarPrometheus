@@ -188,14 +188,47 @@ def test_api_server_records_generic_startup_failure_message():
 
 
 def test_run_server_keyboard_interrupt():
-    """Verify that ``run_server`` shuts down cleanly on ``KeyboardInterrupt``."""
+    """Verify that ``run_server`` shuts down cleanly on ``KeyboardInterrupt``.
+
+    The test also asserts that the server is constructed with the correct ``(host, port)``
+    tuple so that the loopback-by-default behaviour is protected.  Using a mock for
+    ``MagnetarAPIServer`` keeps this test isolated from real socket allocation while still
+    verifying the full lifecycle of ``run_server``.
+    """
     with patch("magnetar_prometheus.api.server.MagnetarAPIServer") as mock_server_class:
         mock_server = MagicMock()
         mock_server.serve_forever.side_effect = KeyboardInterrupt
         mock_server_class.return_value = mock_server
 
+        # Call run_server with an explicit port but rely on the default host so the test
+        # documents that the loopback address is used when the caller omits the argument.
         run_server(port=8080)
 
-        mock_server_class.assert_called_once()
+        # The server must be constructed with the loopback address and the given port.
+        # This assertion is the primary guard against the all-interfaces regression that
+        # motivated this change: ("", port) must never appear here.
+        mock_server_class.assert_called_once_with(("127.0.0.1", 8080), MagnetarAPIHandler)
+        mock_server.serve_forever.assert_called_once()
+        mock_server.server_close.assert_called_once()
+
+
+def test_run_server_custom_host():
+    """Verify that a custom ``host`` value is forwarded to the server constructor.
+
+    This ensures the opt-in path for broader bindings (e.g. ``"0.0.0.0"``) works as
+    intended.  The default loopback path is already covered by
+    ``test_run_server_keyboard_interrupt``; this case adds the non-default branch so that
+    any future refactor that hard-codes the host is caught immediately.
+    """
+    with patch("magnetar_prometheus.api.server.MagnetarAPIServer") as mock_server_class:
+        mock_server = MagicMock()
+        mock_server.serve_forever.side_effect = KeyboardInterrupt
+        mock_server_class.return_value = mock_server
+
+        # Provide an all-interfaces host to exercise the non-default branch.
+        run_server(port=9000, host="0.0.0.0")
+
+        # The custom host must be passed through without modification.
+        mock_server_class.assert_called_once_with(("0.0.0.0", 9000), MagnetarAPIHandler)
         mock_server.serve_forever.assert_called_once()
         mock_server.server_close.assert_called_once()

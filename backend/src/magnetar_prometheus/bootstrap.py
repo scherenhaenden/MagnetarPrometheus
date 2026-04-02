@@ -51,6 +51,31 @@ class DependencySpec:
     module: str
     package: str
 
+    def __post_init__(self) -> None:
+        """Validate the dependency shape early so bootstrap contracts stay explicit.
+
+        This validation is not about shell escaping. The subprocess call below
+        already uses ``check_call([...])`` with argument-vector form and never
+        enables ``shell=True``, so shell metacharacters are not interpreted by a
+        shell. The point here is different: bootstrap should reject obviously
+        malformed dependency specs early instead of quietly carrying empty or
+        whitespace-padded identifiers deeper into runtime startup logic.
+
+        Keeping this validation on the dataclass also makes the contract easier
+        for future agents to understand. A dependency spec is supposed to be a
+        deliberate runtime declaration, not a loosely shaped dict that accepts
+        arbitrary missing/blank values by accident.
+        """
+
+        if not self.module or not self.module.strip():
+            raise ValueError("DependencySpec.module must be a non-empty string.")
+        if not self.package or not self.package.strip():
+            raise ValueError("DependencySpec.package must be a non-empty string.")
+        if self.module != self.module.strip():
+            raise ValueError("DependencySpec.module must not contain outer whitespace.")
+        if self.package != self.package.strip():
+            raise ValueError("DependencySpec.package must not contain outer whitespace.")
+
 
 @dataclass
 class BootstrapPolicy:
@@ -160,6 +185,13 @@ def check_and_install_dependencies(
     # partial reports that reveal only the first broken package per run.
     for dep in missing:
         try:
+            # Security/audit note:
+            # This subprocess invocation intentionally uses argv-list form and
+            # does not enable ``shell=True``. That means the package string is
+            # passed to the pip process as one argument, not interpolated by a
+            # shell. ``DependencySpec`` validation above further constrains the
+            # bootstrap declaration shape so obviously malformed values fail
+            # early instead of silently entering runtime startup.
             subprocess.check_call([sys.executable, "-m", "pip", "install", dep.package])
             result.installed.append(dep)
         except subprocess.CalledProcessError:

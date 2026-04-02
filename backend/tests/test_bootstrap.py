@@ -36,6 +36,38 @@ def test_check_dependencies_all_present():
     assert not result.failed
 
 
+def test_dependency_spec_rejects_blank_values():
+    """DependencySpec rejects blank identifiers instead of carrying malformed startup data.
+
+    The bootstrap contract should fail early on clearly invalid dependency
+    declarations so later runtime stages do not have to reason about empty or
+    whitespace-only package/module names.
+    """
+    import pytest
+
+    with pytest.raises(ValueError):
+        DependencySpec(module="", package="valid-package")
+
+    with pytest.raises(ValueError):
+        DependencySpec(module="valid.module", package="   ")
+
+
+def test_dependency_spec_rejects_outer_whitespace():
+    """DependencySpec rejects outer whitespace so startup declarations stay exact.
+
+    The dataclass should not silently normalize padded values because bootstrap
+    declarations are supposed to be explicit and reviewable, not auto-cleaned
+    behind the caller's back.
+    """
+    import pytest
+
+    with pytest.raises(ValueError):
+        DependencySpec(module=" valid.module ", package="valid-package")
+
+    with pytest.raises(ValueError):
+        DependencySpec(module="valid.module", package=" valid-package ")
+
+
 def test_check_dependencies_missing_no_auto():
     """A missing module with auto_install=False must be reported but NOT installed.
 

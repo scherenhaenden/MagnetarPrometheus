@@ -20,7 +20,11 @@ def trigger_error(context: Dict[str, Any], config: Dict[str, Any]) -> StepResult
     the engine's error handling and halting capabilities.
     """
     logger.error("Error triggered in example workflow: Simulated error occurred")
-    return StepResult(success=False, error_message="Simulated error occurred")
+    return StepResult(
+        success=False,
+        error_message="Simulated error occurred",
+        output={},
+    )
 
 def register_error_steps(registry):
     """Registers the error module's steps with the workflow engine.

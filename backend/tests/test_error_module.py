@@ -26,6 +26,7 @@ def test_trigger_error():
     res = trigger_error({}, {})
     assert res.success is False
     assert res.error_message == "Simulated error occurred"
+    assert res.output == {}
 
 def test_trigger_error_logs_failure(caplog):
     """

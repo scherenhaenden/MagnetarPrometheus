@@ -29,6 +29,11 @@ def test_extract_email_data():
     res1 = extract_email_data({}, {})
     assert res1.success is False
 
+    ctx_non_list_emails = {"data": {"emails": {"subject": "Wrong shape"}}}
+    res_non_list_emails = extract_email_data(ctx_non_list_emails, {})
+    assert res_non_list_emails.success is False
+    assert res_non_list_emails.error_message == "Email payload is malformed."
+
     ctx_missing_subject = {"data": {"emails": [{"body": "Missing subject"}]}}
     res_missing_subject = extract_email_data(ctx_missing_subject, {})
     assert res_missing_subject.success is False

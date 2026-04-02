@@ -32,6 +32,9 @@ def extract_email_data(context: Dict[str, Any], config: Dict[str, Any]) -> StepR
     ``KeyError`` or shape surprises escape from reference example code.
     """
     emails = context.get("data", {}).get("emails", [])
+    if not isinstance(emails, list):
+        return StepResult(success=False, error_message="Email payload is malformed.")
+
     if not emails:
         return StepResult(success=False, error_message="No emails found.")
 

@@ -1,3 +1,35 @@
+# CI Workflow for MagnetarPrometheus
+#
+# Purpose:
+#   This workflow enforces the quality gate that must pass on every push to the main
+#   integration branches (master/main) and on every pull request targeting those branches.
+#   It is the primary automated validation surface for the MagnetarPrometheus backend PoC.
+#
+# What this workflow validates:
+#   1. Bootstrap path — exercises `scripts/bootstrap_python.sh` to confirm that a clean
+#      environment can be prepared without manual intervention. This catches missing
+#      dependency declarations and broken setup assumptions early.
+#   2. Backend run-path — exercises `scripts/run_backend.sh` (no extra arguments) to confirm
+#      that the default example workflow can actually be loaded, executed, and printed from
+#      a freshly bootstrapped environment. This is the "does the product actually run?"
+#      check, separate from unit-test correctness.
+#   3. Test execution with coverage enforcement — exercises `scripts/run_tests.sh` which
+#      invokes pytest for the backend and SDK scope and enforces 100% code coverage via
+#      the threshold configured in `backend/pyproject.toml`. The pipeline fails if coverage
+#      drops below the enforced minimum.
+#
+# Non-obvious execution semantics:
+#   - Steps are intentionally ordered: bootstrap → run → test. Bootstrap must succeed before
+#     the run-path is exercised, and the run-path validates the real CLI path independently
+#     of the test harness.
+#   - The `run_backend.sh` step exits after the example workflow completes. It does NOT start
+#     a long-running server unless `--api` is passed, which is not the case here.
+#   - Coverage enforcement is centralised in `backend/pyproject.toml` (addopts flag). No
+#     coverage threshold is duplicated in this workflow file.
+#   - Python version is pinned to 3.11 to match the project's minimum requirement declared
+#     in `backend/pyproject.toml`. Changing it here without updating the project constraint
+#     would produce a false-passing state.
+
 name: CI
 
 on:

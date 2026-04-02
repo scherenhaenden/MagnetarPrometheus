@@ -13,6 +13,12 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 13:50 UTC
+**Author:** GitHub Copilot (Coding Agent)
+**Entry:** Stabilised CI/release pipeline automation on branch `copilot/create-ci-pipelines-for-testing`. Added substantial RULES.md-required comment headers to `.github/workflows/ci.yml` and `.github/workflows/release.yml` describing intent, validated execution paths, and non-obvious semantics (step ordering rationale, server-mode non-activation, coverage threshold centralisation, PoC-scope publishing exclusion). Updated `STATUS.md` with an explicit "CI and Release Automation" section covering the active workflows, their trigger conditions, steps enforced, and current automation limits. This completes the documentation alignment required by the issue acceptance criteria.
+
+---
+
 **Timestamp:** 2026-04-02 12:15 CEST
 **Author:** Gemini CLI
 **Entry:** Completed PR `#122` on branch `feature/example-workflows-16281624406611618711` by adding `linear_module` and `error_module`, their workflow definitions, and their step implementations, and by verifying 100 percent test coverage for the new module scope.

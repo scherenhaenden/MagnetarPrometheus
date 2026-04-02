@@ -53,9 +53,6 @@ run_backend_tests() {
     # for the subsequent test functions that might rely on being at the repo root.
     # Code coverage enforcement rules are centralized in backend/pyproject.toml
     (cd "${ROOT_DIR}/backend" && pytest)
-
-    # If the subshell commands fail (e.g. coverage < 100%), explicitly exit with an error.
-    if [ $? -ne 0 ]; then exit 1; fi
 }
 
 # -----------------------------------------------------------------------------

@@ -7,10 +7,10 @@ from magnetar_prometheus.version import get_canonical_version_stamp
 
 def test_get_canonical_version_stamp_from_file(tmp_path):
     version_file = tmp_path / "release-version.txt"
-    version_file.write_text("2026.03.26 12:00:00123")
+    version_file.write_text("2026.03.26 12:00:00.123")
 
     version = get_canonical_version_stamp(override_path=str(version_file))
-    assert version == "2026.03.26 12:00:00123"
+    assert version == "2026.03.26 12:00:00.123"
 
 def test_get_canonical_version_stamp_empty_file(tmp_path):
     version_file = tmp_path / "release-version.txt"
@@ -19,13 +19,13 @@ def test_get_canonical_version_stamp_empty_file(tmp_path):
     # with an empty file it should fallback to dynamic timestamp
     # we just check the format of the output
     version = get_canonical_version_stamp(override_path=str(version_file))
-    assert len(version) >= 22 # yyyy.MM.dd HH:mm:sss is 22 chars
+    assert len(version) >= 23 # yyyy.MM.dd HH:mm:ss.SSS is 23 chars
     assert "." in version
     assert ":" in version
 
 def test_get_canonical_version_stamp_file_read_error(tmp_path):
     version_file = tmp_path / "release-version.txt"
-    version_file.write_text("2026.03.26 12:00:00123")
+    version_file.write_text("2026.03.26 12:00:00.123")
 
     # Mock open to raise an OSError when reading the file
     with patch("builtins.open", side_effect=OSError("Permission denied")):
@@ -44,4 +44,4 @@ def test_get_canonical_version_stamp_dynamic_fallback():
 
         with patch("magnetar_prometheus.version.datetime.datetime", MockDateTime):
             version = get_canonical_version_stamp()
-            assert version == "2026.03.26 12:05:10045"
+            assert version == "2026.03.26 12:05:10.045"

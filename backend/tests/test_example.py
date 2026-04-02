@@ -25,9 +25,19 @@ def test_fetch_emails():
     assert "emails" in res.output["data"]
 
 def test_extract_email_data():
-    """Verify that extraction fails without emails and succeeds with the first subject."""
+    """Verify extraction handles missing emails, missing subjects, and valid subjects cleanly."""
     res1 = extract_email_data({}, {})
     assert res1.success is False
+
+    ctx_missing_subject = {"data": {"emails": [{"body": "Missing subject"}]}}
+    res_missing_subject = extract_email_data(ctx_missing_subject, {})
+    assert res_missing_subject.success is False
+    assert res_missing_subject.error_message == "Email subject is missing."
+
+    ctx_malformed_email = {"data": {"emails": ["not-a-dict"]}}
+    res_malformed_email = extract_email_data(ctx_malformed_email, {})
+    assert res_malformed_email.success is False
+    assert res_malformed_email.error_message == "Email payload is malformed."
 
     ctx = {"data": {"emails": [{"subject": "Test"}]}}
     res2 = extract_email_data(ctx, {})

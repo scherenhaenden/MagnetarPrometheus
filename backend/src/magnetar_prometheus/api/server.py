@@ -37,6 +37,7 @@ from magnetar_prometheus.modules.example_registry import register_all_example_st
 from magnetar_prometheus.registry.step_registry import StepRegistry
 
 logger = logging.getLogger(__name__)
+DEFAULT_API_HOST = "127.0.0.1"
 
 
 def _resolve_example_workflow_path() -> Path:
@@ -191,36 +192,18 @@ class MagnetarAPIHandler(BaseHTTPRequestHandler):
             self._send_json_response(500, {"error": "Internal server error."})
 
 
-def run_server(port: int = 8000, host: str = "127.0.0.1") -> None:
+def run_server(port: int = 8000, host: str = DEFAULT_API_HOST) -> None:
     """Start the minimal local MagnetarPrometheus API server.
 
-    Why the default host is ``127.0.0.1`` and not ``""`` (all interfaces):
-
-    - The unauthenticated ``/run-example`` endpoint must not be exposed on every network
-      interface by default. Binding to the loopback address keeps the server genuinely
-      local unless the caller explicitly opts into a broader binding by passing a different
-      ``host`` value. This makes broader exposure an intentional operator decision rather
-      than the inadvertent default.
-    - The ``host`` parameter is therefore the supported escape hatch for cases where the
-      caller genuinely wants to bind on all interfaces (e.g., ``host="0.0.0.0"`` in a
-      controlled containerised environment). The decision stays explicit at the call site
-      instead of being buried in module-level logic.
-    - The log line includes both ``host`` and ``port`` so operators can verify the actual
-      binding at a glance rather than having to infer it from port alone.
-    - Shutdown handling is explicit so ``Ctrl+C`` releases the socket cleanly and the test
-      suite can assert the server lifecycle behavior without leaking OS resources.
+    The loopback default keeps the unauthenticated ``/run-example`` endpoint local unless
+    the caller explicitly chooses a broader binding.
 
     Args:
-        port: TCP port to listen on.  Defaults to ``8000``.
-        host: Network interface to bind to.  Defaults to ``"127.0.0.1"`` (loopback only).
-              Pass ``"0.0.0.0"`` to bind on all interfaces.
+        port: TCP port to listen on. Defaults to ``8000``.
+        host: Network interface to bind to. Defaults to ``DEFAULT_API_HOST``.
     """
-    # Build the (host, port) tuple that Python's HTTPServer expects.  Using the loopback
-    # address by default keeps the unauthenticated endpoint off the network without any
-    # operator action.
     server_address = (host, port)
     httpd = MagnetarAPIServer(server_address, MagnetarAPIHandler)
-    # Log the full address so the operator can confirm the binding at a glance.
     logger.info("Starting Magnetar API on %s:%s", host, port)
     try:
         httpd.serve_forever()

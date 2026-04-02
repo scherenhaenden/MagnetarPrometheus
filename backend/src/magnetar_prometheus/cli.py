@@ -34,7 +34,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
-from magnetar_prometheus.api.server import run_server
+from magnetar_prometheus.api.server import DEFAULT_API_HOST, run_server
 from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.core.executor_router import ExecutorRouter
@@ -52,9 +52,7 @@ def _print_summary(workflow_path: Path, result_context: dict) -> None:
     operators frequently run the CLI directly from a terminal, and a second crash inside the
     renderer would hide the original workflow failure behind a formatting bug.
     """
-    # Review hardening preserved during the merge: summary rendering must tolerate partial
-    # engine output so the CLI still reports failures cleanly instead of crashing on missing
-    # keys while trying to display the result.
+    # Tolerate partial engine output so summary rendering never hides the original failure.
     run_info = result_context.get("run") or {}
     history = result_context.get("history") or []
     data = result_context.get("data") or {}
@@ -122,14 +120,11 @@ def main():
         help="Port to run the API server on (defaults to 8000).",
     )
 
-    # The --host argument lets operators explicitly opt into a broader binding.
-    # The default is the loopback address so the unauthenticated /run-example endpoint
-    # is not reachable from the network unless the operator makes that choice consciously.
-    # This mirrors the run_server() default and keeps the two surfaces consistent.
+    # Reuse the server default so local-only binding stays the safe path by default.
     parser.add_argument(
         "--host",
         type=str,
-        default="127.0.0.1",
+        default=DEFAULT_API_HOST,
         help=(
             "Network interface to bind the API server to "
             "(defaults to 127.0.0.1 for local-only access). "

@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 14:03 CEST
+**Author:** Codex
+**Entry:** Addressed the last remaining PR `#121` wording nit by making `WIP_GUIDELINES.md` enforce user-incremental delivery with mandatory language rather than optional phrasing. The guidance now states that each round must leave something runnable, visible, or inspectable and that work packets must unlock a small user-visible or user-testable increment.
+
+---
 **Timestamp:** 2026-04-02 14:10 CEST
 **Author:** Codex
 **Entry:** Addressed the last remaining PR `#121` governance-doc review item by adding a direct cross-reference from `RULES.md` to `WIP_GUIDELINES.md` for "disjoint write ownership" and by defining that term in a dedicated WIP-guidance section with a concrete example of safe parallel work partitioning.

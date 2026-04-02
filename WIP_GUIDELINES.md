@@ -18,7 +18,7 @@ Exceptions require:
 - split oversized tasks before violating WIP limits
 - prefer moving tasks to `ready` rather than starting too many in parallel
 - parallel work must be divided by disjoint write ownership so contributors do not collide in the same surface
-- each round should preferably leave one more thing runnable, visible, or inspectable; prefer work packets that each unlock a small user-visible or user-testable increment instead of only internal progress
+- each round must leave one more thing runnable, visible, or inspectable; work packets must unlock a small user-visible or user-testable increment instead of only internal progress
 
 ## Disjoint Write Ownership
 

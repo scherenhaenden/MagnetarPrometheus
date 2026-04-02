@@ -149,7 +149,7 @@ Steps enforced:
 
 Triggers on push to `master`, on `release-*` tags, or manually via `workflow_dispatch`.
 
-- Generates a canonical version stamp in the format `yyyy.MM.dd HH:mm:sss`.
+- Generates a canonical version stamp in the format `yyyy.MM.dd HH:mm:ss.SSS`.
 - Uploads `release-version.txt` as a GitHub Actions artifact.
 - Does NOT create git tags, GitHub releases, or publish packages. Full publishing is out of scope at the current PoC stage.
 

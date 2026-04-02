@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 from magnetar_prometheus.core.context_manager import ContextManager
@@ -89,7 +91,7 @@ def test_engine_missing_step(engine):
         start_step="missing",
         steps={},
     )
-    with pytest.raises(ValueError, match="Step 'missing' not found in workflow definition."):
+    with pytest.raises(ValueError, match=re.escape("Step 'missing' not found in workflow definition.")):
         engine.run(wf)
 
 

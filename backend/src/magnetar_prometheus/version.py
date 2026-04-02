@@ -28,10 +28,10 @@ from typing import Optional
 def get_canonical_version_stamp(override_path: Optional[str] = None) -> str:
     """Return the canonical MagnetarPrometheus version stamp.
 
-    The repository's canonical format is `yyyy.MM.dd HH:mm:sss`, which in the current helper
-    implementation means the timestamp has no separator between the seconds field and the
-    zero-padded millisecond suffix. The helper resolves that stamp in a precedence order that
-    matches how the repository is operated:
+    The repository's canonical format is `yyyy.MM.dd HH:mm:ss.SSS`, which keeps
+    the millisecond suffix visually separated from the seconds field while
+    remaining compact and deterministic. The helper resolves that stamp in a
+    precedence order that matches how the repository is operated:
 
     1. If an explicit `override_path` is supplied, check that location first. This is used by
        tests or controlled tooling that wants to point directly at a known artifact.
@@ -77,4 +77,4 @@ def get_canonical_version_stamp(override_path: Optional[str] = None) -> str:
     # the current UTC time using the repository's canonical timestamp shape.
     now = datetime.datetime.now(datetime.timezone.utc)
     ms = f"{now.microsecond // 1000:03d}"
-    return now.strftime(f"%Y.%m.%d %H:%M:%S{ms}")
+    return now.strftime(f"%Y.%m.%d %H:%M:%S.{ms}")

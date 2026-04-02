@@ -30,7 +30,7 @@ The following files must exist unless an exemption is logged in [BITACORA.md](/h
 
 ## Versioning Standard
 
-- Canonical version and release stamps use the format `yyyy.MM.dd HH:mm:sss`
+- Canonical version and release stamps use the format `yyyy.MM.dd HH:mm:ss.SSS`
 - The same timestamp-oriented format should be reused across release notes, pipeline artifacts, and other operational metadata where practical
 
 ## Branching Conventions

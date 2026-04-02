@@ -1,7 +1,14 @@
 # Error Workflow Example
-# This workflow is designed to simulate a failure scenario within the execution engine.
-# It serves to demonstrate how the engine handles steps that return a failed StepResult,
-# halting the workflow and updating the context appropriately.
+#
+# Why this file exists in this form:
+# - This workflow is the repository's focused failure-path example. It exists to show how the
+#   engine behaves when a step returns ``success=False`` rather than raising a Python exception.
+# - The workflow starts with one successful setup step so the run history proves the engine can
+#   execute normally before encountering the simulated failure.
+# - The final step is intentionally failure-only and has no success transition because the
+#   point of the example is to halt the run immediately once the failure result is returned.
+# - ``stop_on_unhandled_error`` is explicit here so the workflow doubles as documentation for
+#   the repository's current failure-handling expectation in example runs.
 
 id: error_example
 name: Error Workflow Example

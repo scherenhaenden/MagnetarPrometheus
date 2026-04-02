@@ -1,3 +1,15 @@
+"""Tests for the focused failure-path example workflow handlers.
+
+Why this file exists in this form:
+
+- The error example module exists to make failure semantics explicit, so its tests must verify
+  the exact failure result shape rather than only checking that something went wrong.
+- This file also protects the branch's logging addition so the example failure path leaves a
+  traceable signal without relying on broader engine logging behavior.
+- Registration checks remain here because the example modules are intentionally small and the
+  repository benefits from keeping each module's local contract tests close to its behavior.
+"""
+
 import pytest
 from magnetar_prometheus.modules.error_module.steps import (
     start_error, trigger_error, register_error_steps

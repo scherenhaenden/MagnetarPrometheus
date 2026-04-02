@@ -1,3 +1,16 @@
+"""Tests for the repository's bundled example registration and email example handlers.
+
+Why this file exists in this form:
+
+- These tests protect the original email example workflow logic because that workflow remains
+  the default runnable slice for the CLI and the reference happy-path example for contributors.
+- The file now also verifies the distinction between module-local registration and
+  application-level bundled example registration so the branch's decoupling work does not
+  regress silently.
+- The assertions stay intentionally direct and deterministic because this file is meant to
+  guard example-surface behavior, not explore deep engine semantics already covered elsewhere.
+"""
+
 import pytest
 from magnetar_prometheus.modules.example_registry import register_all_example_steps
 from magnetar_prometheus.modules.email_module.steps import (

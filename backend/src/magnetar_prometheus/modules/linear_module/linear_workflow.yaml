@@ -1,7 +1,14 @@
 # Linear Workflow Example
-# This workflow demonstrates a simple, sequential execution path.
-# It consists of two steps: a starting step and a processing step.
-# It serves as a fundamental example of how the workflow engine handles linear progression.
+#
+# Why this file exists in this form:
+# - This is the smallest successful workflow in the repository that demonstrates ordinary
+#   linear progression without conditional routing or failure semantics.
+# - It exists to prove the engine can execute a clean start -> process -> end sequence using
+#   a dedicated example module rather than only the larger email example.
+# - The workflow is intentionally tiny so contributors can understand one complete happy-path
+#   execution without first reading the richer branching examples.
+# - The two-step shape is deliberate: one step proves normal initialization, and the second
+#   proves straightforward next-step resolution into a terminal success state.
 
 id: linear_example
 name: Linear Workflow Example

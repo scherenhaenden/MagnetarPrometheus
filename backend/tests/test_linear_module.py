@@ -1,3 +1,15 @@
+"""Tests for the simple linear example workflow handlers.
+
+Why this file exists in this form:
+
+- The linear example module is intentionally tiny, so its tests must prove both the happy-path
+  outputs and the small input-validation behavior added on this branch.
+- These cases are deliberately narrow because they are not engine integration tests; they are
+  contract checks for the deterministic example step functions and their registry wiring.
+- Keeping the tests separate from the email example tests makes the branch's example-module
+  expansion easier to reason about and keeps failures localized.
+"""
+
 import pytest
 from magnetar_prometheus.modules.linear_module.steps import (
     start_linear, process_linear, register_linear_steps

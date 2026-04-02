@@ -1,3 +1,18 @@
+"""Step handlers for the simple linear example workflow module.
+
+Why this file exists in this form:
+
+- This module intentionally keeps the example logic minimal so contributors can see the
+  smallest possible successful workflow handler pair in the codebase.
+- The handlers return deterministic `StepResult` objects with tiny output payloads because the
+  point is to exercise engine flow, not business logic.
+- A small shared input validator exists even in this example module because the branch review
+  asked for clearer structural expectations around `context` and `config`, and keeping that
+  helper local avoids spreading example-only validation rules elsewhere.
+- Registration stays inside this module for its own step types only. Cross-module bundling is
+  handled at the application level so this example remains independent of the other examples.
+"""
+
 from typing import Dict, Any
 from magnetar_prometheus_sdk.models import StepResult
 

@@ -15,6 +15,11 @@ Each entry should use:
 ---
 **Timestamp:** 2026-04-02 14:48 CEST
 **Author:** Codex
+**Entry:** Added a documentation-contract test for the PR `#152` API/CLI surface so future cleanup passes cannot silently shrink the heavy intent comments below the repository's preferred threshold. Restored long-form rationale in `api/server.py`, `cli.py`, and `backend/tests/test_cli.py`, and wired the new validator into `scripts/run_tests.sh`.
+
+---
+**Timestamp:** 2026-04-02 14:48 CEST
+**Author:** Codex
 **Entry:** Addressed the remaining PR `#152` cleanup feedback by centralizing the default API loopback host in `api/server.py` and reusing it from the CLI, then trimming a few overly repetitive comments/docstrings in the CLI, API server, and CLI tests without weakening the documented security intent.
 
 ---

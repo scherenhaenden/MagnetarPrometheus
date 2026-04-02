@@ -13,6 +13,31 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 14:03 CEST
+**Author:** Codex
+**Entry:** Addressed the last remaining PR `#121` wording nit by making `WIP_GUIDELINES.md` enforce user-incremental delivery with mandatory language rather than optional phrasing. The guidance now states that each round must leave something runnable, visible, or inspectable and that work packets must unlock a small user-visible or user-testable increment.
+
+---
+**Timestamp:** 2026-04-02 14:10 CEST
+**Author:** Codex
+**Entry:** Addressed the last remaining PR `#121` governance-doc review item by adding a direct cross-reference from `RULES.md` to `WIP_GUIDELINES.md` for "disjoint write ownership" and by defining that term in a dedicated WIP-guidance section with a concrete example of safe parallel work partitioning.
+
+---
+**Timestamp:** 2026-04-02 14:05 CEST
+**Author:** Codex
+**Entry:** Addressed the second remaining PR `#121` governance-doc review item by rephrasing the `RULES.md` documentation-discipline requirement to match the repo's newer governance language in `CONTRIBUTING.md`. The rule now speaks consistently in terms of whether an increment is user-visible or internal-only instead of using the older "actually user-testable" phrasing.
+
+---
+**Timestamp:** 2026-04-02 14:00 CEST
+**Author:** Codex
+**Entry:** Merged current `master` into `chore/governance-user-incremental-16392512902076639900` before finishing the PR `#121` review pass. Preserved the branch's governance additions around disjoint write ownership, user-visible versus internal-only reporting, and the meaning of `done`, while also keeping the newer repository-wide documentation standards that later landed on `master`.
+
+---
+**Timestamp:** 2026-04-02 13:55 CEST
+**Author:** Codex
+**Entry:** Addressed the first remaining PR `#121` governance-doc review item by splitting the `RULES.md` `in_review` to `done` transition note into a short main bullet plus a separate clarification line. This keeps the rule visible while making the caution about internal-only completion easier to scan during reviews.
+
+---
 **Timestamp:** 2026-04-02 12:15 CEST
 **Author:** Gemini CLI
 **Entry:** Completed PR `#122` on branch `feature/example-workflows-16281624406611618711` by adding `linear_module` and `error_module`, their workflow definitions, and their step implementations, and by verifying 100 percent test coverage for the new module scope.

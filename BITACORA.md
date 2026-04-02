@@ -13,9 +13,14 @@ Each entry should use:
 ## Entries
 
 ---
-**Timestamp:** 2026-04-02 14:03 CEST
+**Timestamp:** 2026-04-02 14:18 CEST
 **Author:** Codex
-**Entry:** Addressed the last remaining PR `#121` wording nit by making `WIP_GUIDELINES.md` enforce user-incremental delivery with mandatory language rather than optional phrasing. The guidance now states that each round must leave something runnable, visible, or inspectable and that work packets must unlock a small user-visible or user-testable increment.
+**Entry:** Addressed the substantive PR `#127` review finding by removing `branches/feature/planning-product-surface/plan.md`, which was only a branch-local achievement artifact. The durable planning state remains in `PLAN.md`, `STATUS.md`, and `ARCHITECTURE.md` rather than in a feature-branch documentation path.
+
+---
+**Timestamp:** 2026-04-02 14:16 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `feature/planning-product-surface-7059919661031247844` by preserving the newer Bitacora-retention planning task from `master` as `task-112`, renumbering the product-surface planning tasks to `task-113` and `task-114`, and restoring strict reverse-chronological ordering at the top of the logbook.
 
 ---
 **Timestamp:** 2026-04-02 14:10 CEST
@@ -26,6 +31,11 @@ Each entry should use:
 **Timestamp:** 2026-04-02 14:05 CEST
 **Author:** Codex
 **Entry:** Addressed the second remaining PR `#121` governance-doc review item by rephrasing the `RULES.md` documentation-discipline requirement to match the repo's newer governance language in `CONTRIBUTING.md`. The rule now speaks consistently in terms of whether an increment is user-visible or internal-only instead of using the older "actually user-testable" phrasing.
+
+---
+**Timestamp:** 2026-04-02 14:03 CEST
+**Author:** Codex
+**Entry:** Addressed the last remaining PR `#121` wording nit by making `WIP_GUIDELINES.md` enforce user-incremental delivery with mandatory language rather than optional phrasing. The guidance now states that each round must leave something runnable, visible, or inspectable and that work packets must unlock a small user-visible or user-testable increment.
 
 ---
 **Timestamp:** 2026-04-02 14:00 CEST

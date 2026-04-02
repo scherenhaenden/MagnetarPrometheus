@@ -1,4 +1,5 @@
 import pytest
+from magnetar_prometheus.modules.example_registry import register_all_example_steps
 from magnetar_prometheus.modules.email_module.steps import (
     fetch_emails, extract_email_data, ai_classify, create_ticket, manual_review, register_example_steps
 )
@@ -43,3 +44,15 @@ def test_register_example_steps():
     registry = StepRegistry()
     register_example_steps(registry)
     assert registry.get_handler("email.fetch") == fetch_emails
+    with pytest.raises(ValueError, match="linear.start"):
+        registry.get_handler("linear.start")
+    with pytest.raises(ValueError, match="error.trigger"):
+        registry.get_handler("error.trigger")
+
+
+def test_register_all_example_steps():
+    registry = StepRegistry()
+    register_all_example_steps(registry)
+    assert registry.get_handler("email.fetch") == fetch_emails
+    assert registry.get_handler("linear.start") is not None
+    assert registry.get_handler("error.trigger") is not None

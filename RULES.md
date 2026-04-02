@@ -85,7 +85,7 @@ Allowed progression is normally:
 - The minimum acceptable documentation threshold for Python code is 80 percent docstring coverage, and the preferred operating target is 100 percent for touched scope.
 - Any file touched in a pull request should be brought up to the file-level intent-header standard, and any touched Python functions or methods in that file should be documented to the same intent-first standard.
 - Daily updates must include user-visible progress, not just technical deltas.
-- Status, plan, and architecture documents, as well as pull requests, must state clearly whether the latest increment is actually user-testable or still only an internal capability.
+- Status, plan, and architecture documents and pull requests must state clearly whether the latest increment is user-visible or internal-only.
 - Actionable work should be mirrored in GitHub issues whenever the repository is using GitHub operationally.
 - Open design, product, and governance questions should be tracked in GitHub discussions when they are broader than a single task.
 - GitHub issues created from reviews must preserve the original review evidence instead of compressing it into a short summary.

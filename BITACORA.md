@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 15:11 CEST
+**Author:** Codex
+**Entry:** Addressed the fourth actionable PR `#159` review fix by replacing the `parents[2]` repository-root assumption in `backend/tests/test_documentation_contract.py` with an upward search for stable repo markers (`BITACORA.md` and `backend/pyproject.toml`). The documentation-contract test is now less brittle if the test package layout moves later.
+
+---
 **Timestamp:** 2026-04-02 15:10 CEST
 **Author:** Codex
 **Entry:** Addressed the third actionable PR `#159` review fix by extending `backend/tests/test_documentation_contract.py` to protect the long policy comment above `DEFAULT_API_HOST` in `api/server.py`. The branch now treats that explanatory comment block as part of the enforced documentation contract instead of leaving it unguarded.

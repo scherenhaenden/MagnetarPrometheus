@@ -20,7 +20,20 @@ import ast
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+def _find_repo_root(start_path: Path) -> Path:
+    """Walk upward until the repository root markers are found.
+
+    This avoids hardcoding a fragile parent-depth assumption into the documentation-contract
+    tests. The branch is deliberately using repo markers that should remain stable even if the
+    test package or backend layout is reorganized.
+    """
+    for candidate in (start_path, *start_path.parents):
+        if (candidate / "BITACORA.md").is_file() and (candidate / "backend" / "pyproject.toml").is_file():
+            return candidate
+    raise AssertionError("Could not locate repository root for documentation-contract tests.")
+
+
+REPO_ROOT = _find_repo_root(Path(__file__).resolve())
 CLI_PATH = REPO_ROOT / "backend" / "src" / "magnetar_prometheus" / "cli.py"
 API_SERVER_PATH = REPO_ROOT / "backend" / "src" / "magnetar_prometheus" / "api" / "server.py"
 CLI_TEST_PATH = REPO_ROOT / "backend" / "tests" / "test_cli.py"

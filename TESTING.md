@@ -28,6 +28,8 @@ What is not covered yet because it does not exist yet:
 
 As the product expands from a backend engine into a visible service and application, validation is organized into explicit tiers. These tiers can be targeted using `bash scripts/run_tests.sh <tier>`.
 
+Today, the default `bash scripts/run_tests.sh` path runs the implemented backend tier and reports the `api` and `ui` tiers as reserved placeholders. Calling `bash scripts/run_tests.sh api` or `bash scripts/run_tests.sh ui` directly should be treated as a non-success result until those tiers are implemented.
+
 ### 1. Backend (`tier: backend`)
 - Currently active and enforced at 100% code coverage.
 - Unit tests for domain models, validation, next-step resolution, and executor routing

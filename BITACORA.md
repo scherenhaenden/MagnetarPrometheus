@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 11:35 CEST
+**Author:** Codex
+**Entry:** Addressed the PR `#125` testing-surface review concern around false-green placeholder tiers. Updated `scripts/run_tests.sh` so direct `api` and `ui` tier invocations now return a non-success status instead of silently passing, while the default `all` path continues to validate the implemented backend tier and explicitly reports the unimplemented tiers as skipped placeholders. Also aligned `TESTING.md` with that current testing contract.
+
+---
 **Timestamp:** 2026-04-02 11:20 CEST
 **Author:** Codex
 **Entry:** Consolidated the two day-plan drafts into a single source of truth in `DAY_PLAN.md`. Kept the user-centered structure from the original daily plan and folded in the more concrete execution steps from the alternate draft: improve CLI legibility, serve the first UI shell from the existing API path, trigger the example workflow through that service boundary, and verify both the CLI and local API/UI paths directly.

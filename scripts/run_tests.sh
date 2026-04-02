@@ -9,10 +9,10 @@
 #
 # Usage: bash scripts/run_tests.sh [tier]
 # Options for tier:
-#   all     - (Default) Runs all registered test tiers sequentially.
+#   all     - (Default) Runs all implemented test tiers and reports placeholder tiers as skipped.
 #   backend - Runs the internal Python engine, SDK tests, and enforces 100% coverage.
-#   api     - Validates the HTTP boundary (Stubbed for future use).
-#   ui      - Validates the visual application (Stubbed for future use).
+#   api     - Validates the HTTP boundary (Not implemented yet; exits non-zero).
+#   ui      - Validates the visual application (Not implemented yet; exits non-zero).
 
 set -euo pipefail
 
@@ -33,6 +33,13 @@ if [ ! -f "${VENV_ACTIVATE}" ]; then
 fi
 
 source "${VENV_ACTIVATE}"
+
+report_unimplemented_tier() {
+    local tier_name="$1"
+
+    echo "Error: tier '${tier_name}' is not implemented yet." >&2
+    return 2
+}
 
 # -----------------------------------------------------------------------------
 # Tier 1: Backend & SDK Tests
@@ -58,9 +65,8 @@ run_backend_tests() {
 # -----------------------------------------------------------------------------
 run_api_tests() {
     echo "--- Running API Tests ---"
-    echo "[Stub] Future API integration tests slot."
-    echo "This slot will validate the HTTP service boundary once implemented."
-    # Future implementation e.g.: (cd "${ROOT_DIR}/api" && run_api_tests.sh)
+    echo "This tier is reserved for future HTTP service-boundary validation."
+    report_unimplemented_tier "api"
 }
 
 # -----------------------------------------------------------------------------
@@ -70,9 +76,8 @@ run_api_tests() {
 # -----------------------------------------------------------------------------
 run_ui_tests() {
     echo "--- Running UI Tests ---"
-    echo "[Stub] Future UI end-to-end tests slot."
-    echo "This slot will validate the visual product surface once implemented."
-    # Future implementation e.g.: (cd "${ROOT_DIR}/ui" && npm run test:e2e)
+    echo "This tier is reserved for future visual product-surface validation."
+    report_unimplemented_tier "ui"
 }
 
 # -----------------------------------------------------------------------------
@@ -83,11 +88,13 @@ case "${TIER}" in
     api) run_api_tests ;;
     ui) run_ui_tests ;;
     all)
-        # Run all tiers sequentially. If `run_backend_tests` fails, the `set -e`
-        # and explicit `exit 1` ensures that the script halts immediately.
+        # Run every currently implemented tier. Placeholder tiers are reported explicitly as
+        # skipped here so the default validation path for the current backend proof-of-concept
+        # remains usable without incorrectly implying that API/UI tests executed successfully.
         run_backend_tests
-        run_api_tests
-        run_ui_tests
+        echo "--- Skipped Placeholder Tiers ---"
+        echo "api: not implemented yet"
+        echo "ui: not implemented yet"
         ;;
     *)
         echo "Error: Unknown test tier '${TIER}'. Valid options are: backend, api, ui, all."

@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 16:23 CEST
+**Author:** Codex
+**Entry:** Resolved the pending cleanup set for issues `#111`, `#106`, `#109`, `#95`, and `#96` on the current branch. Reordered the misplaced `2026-03-26 11:00 UTC` Bitacora entry back into strict reverse chronology, hardened the email example step to fail cleanly when the first message lacks a subject, made the base executor contract raise `NotImplementedError` explicitly so the abstract test proves real behavior, escaped regex-sensitive `pytest.raises(match=...)` patterns, and aligned the canonical version stamp contract to the portable `yyyy.MM.dd HH:mm:ss.SSS` form across the shell script, backend helper, tests, and current normative docs.
+
+---
 **Timestamp:** 2026-04-02 16:00 CEST
 **Author:** Codex
 **Entry:** Addressed the last actionable PR `#153` audit concern by tightening `DependencySpec` validation in `backend/src/magnetar_prometheus/bootstrap.py` and documenting why the `pip install` subprocess call is not shell-interpolated: it uses argv-list form without `shell=True`. Added a focused bootstrap test so malformed blank dependency declarations now fail early and the bootstrap contract stays explicit.
@@ -442,6 +447,11 @@ Each entry should use:
 **Entry:** Decision: repository structure established around `backend/`, `sdk/`, and `ui/` to keep the Python runtime, shared contracts, and future drag-and-drop workflow builder decoupled while preserving a single IDE project root.
 
 ---
+**Timestamp:** 2026-03-26 11:00 UTC
+**Author:** AI
+**Entry:** Implemented first core slice of the backend runtime and SDK schemas. Defined Pydantic models in `magnetar_prometheus_sdk`. Implemented `WorkflowLoader`, `Engine`, `ContextManager`, `ExecutorRouter`, and `PythonExecutor` in the backend. Added a runnable example email module and YAML workflow. Replaced placeholder scripts with real runnable `.sh` scripts. Enforced 100% test coverage with pytest-cov. Added a GitHub Actions workflow `.github/workflows/ci.yml`. Resolved tasks `task-103`, `task-104`, `task-107`, `task-108`, `task-109`, and `task-111`.
+
+---
 **Timestamp:** 2026-03-26 10:18 UTC
 **Author:** Codex
 **Entry:** `task-102`: state changed from `planned` to `done`. Modular repository layout created to support PyCharm as the initial IDE without nesting the entire project under an additional top-level directory.
@@ -450,11 +460,6 @@ Each entry should use:
 **Timestamp:** 2026-03-26 10:16 UTC
 **Author:** Codex
 **Entry:** `task-101`: state changed from `planned` to `done`. Canonical governance initialized. Clarified that MagnetarPrometheus follows the Magnetar canonical model but is not itself the canonical model repository.
-
----
-**Timestamp:** 2026-03-26 11:00 UTC
-**Author:** AI
-**Entry:** Implemented first core slice of the backend runtime and SDK schemas. Defined Pydantic models in `magnetar_prometheus_sdk`. Implemented `WorkflowLoader`, `Engine`, `ContextManager`, `ExecutorRouter`, and `PythonExecutor` in the backend. Added a runnable example email module and YAML workflow. Replaced placeholder scripts with real runnable `.sh` scripts. Enforced 100% test coverage with pytest-cov. Added a GitHub Actions workflow `.github/workflows/ci.yml`. Resolved tasks `task-103`, `task-104`, `task-107`, `task-108`, `task-109`, and `task-111`.
 
 ## Immutability
 

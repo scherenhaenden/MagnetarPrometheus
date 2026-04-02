@@ -1,36 +1,41 @@
-import os
-import pytest
 import datetime
-from unittest.mock import patch, mock_open
+import re
+from unittest.mock import patch
 
 from magnetar_prometheus.version import get_canonical_version_stamp
 
 def test_get_canonical_version_stamp_from_file(tmp_path):
     version_file = tmp_path / "release-version.txt"
-    version_file.write_text("2026.03.26 12:00:00123")
+    version_file.write_text("2026.03.26 12:00:00.123")
 
     version = get_canonical_version_stamp(override_path=str(version_file))
-    assert version == "2026.03.26 12:00:00123"
+    assert version == "2026.03.26 12:00:00.123"
 
 def test_get_canonical_version_stamp_empty_file(tmp_path):
     version_file = tmp_path / "release-version.txt"
-    version_file.write_text("   \n") # empty/whitespace
+    version_file.write_text("   \n")  # empty/whitespace
 
-    # with an empty file it should fallback to dynamic timestamp
-    # we just check the format of the output
+    # With an empty file the helper should fall back to a generated timestamp
+    # and that timestamp should match the full canonical format, not merely a
+    # loose "contains a dot and colon somewhere" approximation.
     version = get_canonical_version_stamp(override_path=str(version_file))
-    assert len(version) >= 22 # yyyy.MM.dd HH:mm:sss is 22 chars
-    assert "." in version
-    assert ":" in version
+    assert re.match(
+        r"^\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$",
+        version,
+    ), f"Version '{version}' does not match canonical format"
 
 def test_get_canonical_version_stamp_file_read_error(tmp_path):
     version_file = tmp_path / "release-version.txt"
-    version_file.write_text("2026.03.26 12:00:00123")
+    version_file.write_text("2026.03.26 12:00:00.123")
 
-    # Mock open to raise an OSError when reading the file
+    # A read failure should trigger the same generated canonical fallback shape
+    # as any other missing/unusable artifact path.
     with patch("builtins.open", side_effect=OSError("Permission denied")):
         version = get_canonical_version_stamp(override_path=str(version_file))
-        assert len(version) >= 22
+        assert re.match(
+            r"^\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2}\.\d{3}$",
+            version,
+        ), f"Version '{version}' does not match canonical format"
 
 def test_get_canonical_version_stamp_dynamic_fallback():
     # Make sure we don't accidentally read a real file in the repo
@@ -44,4 +49,4 @@ def test_get_canonical_version_stamp_dynamic_fallback():
 
         with patch("magnetar_prometheus.version.datetime.datetime", MockDateTime):
             version = get_canonical_version_stamp()
-            assert version == "2026.03.26 12:05:10045"
+            assert version == "2026.03.26 12:05:10.045"

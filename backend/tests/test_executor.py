@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from magnetar_prometheus.core.executor_router import ExecutorRouter
 from magnetar_prometheus.executors.base import BaseExecutor
@@ -16,7 +18,7 @@ def test_executor_router():
 
     assert router.get_executor("dummy") is executor
 
-    with pytest.raises(ValueError, match="Executor 'not_found' not found."):
+    with pytest.raises(ValueError, match=re.escape("Executor 'not_found' not found.")):
         router.get_executor("not_found")
 
 def test_step_registry():
@@ -28,7 +30,7 @@ def test_step_registry():
     handler = registry.get_handler("dummy")
     assert handler({}, {}).success is True
 
-    with pytest.raises(ValueError, match="Step type 'not_found' not registered."):
+    with pytest.raises(ValueError, match=re.escape("Step type 'not_found' not registered.")):
         registry.get_handler("not_found")
 
 def test_python_executor():

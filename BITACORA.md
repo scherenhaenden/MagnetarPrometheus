@@ -43,6 +43,11 @@ Each entry should use:
 **Entry:** Addressed the last actionable PR `#153` audit concern by tightening `DependencySpec` validation in `backend/src/magnetar_prometheus/bootstrap.py` and documenting why the `pip install` subprocess call is not shell-interpolated: it uses argv-list form without `shell=True`. Added a focused bootstrap test so malformed blank dependency declarations now fail early and the bootstrap contract stays explicit.
 
 ---
+**Timestamp:** 2026-04-02 15:41 CEST
+**Author:** Codex
+**Entry:** Added a split set of independent frontend/delegation prompts under `work-/for-agents/11-frontend-prompt-index.md` through `20-frontend-local-run-flow.md`. The prompts are Angular-only for the web surface, explicitly reject React, and are divided by disjoint ownership so workspace scaffolding, web shell, data boundary, design system, run-history slice, job-submission slice, desktop shell, validation guards, and local run flow can be delegated separately.
+
+---
 **Timestamp:** 2026-04-02 15:34 CEST
 **Author:** Codex
 **Entry:** Resolved the `master` merge on `copilot/add-dependency-installation-report` by preserving the branch's long-form bootstrap intent documentation while replacing the raw dependency dict contract in `backend/src/magnetar_prometheus/bootstrap.py` with an explicit `DependencySpec` dataclass. Updated the bootstrap regression tests to use the structured dependency type so the non-short-circuit installation guarantee remains covered without reverting to stringly-typed key access.

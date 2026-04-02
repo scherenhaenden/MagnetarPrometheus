@@ -47,6 +47,7 @@ Execution strategy for upcoming slices:
 | `task-109` | `ms-02` | Enforce 100 percent automated test coverage for core and shared contracts | Edward + AI | 5 | 24 | `done` | GitHub issue: #4. Coverage target is strict and should be automated in the test run path. |
 | `task-110` | `ms-01` | Define timestamp-based versioning standard | Edward + AI | 2 | 10 | `done` | GitHub issue: #3. The canonical format is explicitly integrated in backend via a version helper and distinguished from semantic versions. |
 | `task-111` | `ms-02` | Create CI pipelines for testing, validation, and release flows | Edward + AI | 5 | 24 | `done` | GitHub issue: #2. CI test workflow exists and release metadata automation has been added. |
+| `task-112` | `ms-01` | Define Bitacora retention and archival flow | Edward + AI | 3 | 14 | `planned` | Move `BITACORA.md` entries older than 2 days into durable GitHub surfaces such as Discussions and the wiki so the repo logbook stays current and scannable. |
 
 ## Preserved Historical Task Records
 
@@ -103,6 +104,7 @@ These items are not contradicted by the current `done` state. They simply belong
 - Define how jobs/runs are submitted, queued, persisted, and observed.
 - Turn the visual graph schema into an actual editable UI surface.
 - Clarify the future module lifecycle: discovery, registration, packaging, and execution policies.
+- Define a retention policy for `BITACORA.md` so entries older than 2 days are summarized and moved into GitHub Discussions and the repository wiki instead of accumulating indefinitely in the repo root logbook.
 
 ## State Definitions
 

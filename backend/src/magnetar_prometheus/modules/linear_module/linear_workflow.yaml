@@ -1,0 +1,31 @@
+# Linear Workflow Example
+#
+# Why this file exists in this form:
+# - This is the smallest successful workflow in the repository that demonstrates ordinary
+#   linear progression without conditional routing or failure semantics.
+# - It exists to prove the engine can execute a clean start -> process -> end sequence using
+#   a dedicated example module rather than only the larger email example.
+# - The workflow is intentionally tiny so contributors can understand one complete happy-path
+#   execution without first reading the richer branching examples.
+# - The two-step shape is deliberate: one step proves normal initialization, and the second
+#   proves straightforward next-step resolution into a terminal success state.
+
+id: linear_example
+name: Linear Workflow Example
+version: 1.0.0
+start_step: start_linear
+
+steps:
+  # The initial step in the workflow. It executes a Python function
+  # and automatically transitions to the 'process_linear' step upon success.
+  start_linear:
+    type: linear.start
+    executor: python
+    next: process_linear
+
+  # The final processing step. It executes a Python function
+  # and marks the end of the workflow sequence.
+  process_linear:
+    type: linear.process
+    executor: python
+    next: end

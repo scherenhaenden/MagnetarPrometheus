@@ -78,6 +78,11 @@ Allowed progression is normally:
 - [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md) records state changes, decisions, and exceptions chronologically.
 - [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md) is updated at least daily during active work or after each merge.
 - [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md) is the planning source of truth for milestones and task assignments.
+- Python source files and Python test files must begin with a substantial file-level module docstring that explains what the file does, why it exists, why the implementation is shaped the way it is, and any important constraints or tradeoffs.
+- Public functions, methods, and test cases in touched Python files must carry docstrings that explain intent and the behavior being protected or provided. Tiny wrappers may stay concise, but they should not be left undocumented by default.
+- Workflow YAML files and other executable config artifacts must begin with a substantial comment header describing intent, the scenario they model, and any non-obvious execution semantics such as failure-only or example-only behavior.
+- The minimum acceptable documentation threshold for Python code is 80 percent docstring coverage, and the preferred operating target is 100 percent for touched scope.
+- Any file touched in a pull request should be brought up to the file-level intent-header standard, and any touched Python functions or methods in that file should be documented to the same intent-first standard.
 - Daily updates must include user-visible progress, not just technical deltas.
 - Status, plan, and architecture documents, as well as pull requests, must state clearly whether the latest increment is actually user-testable or still only an internal capability.
 - Actionable work should be mirrored in GitHub issues whenever the repository is using GitHub operationally.

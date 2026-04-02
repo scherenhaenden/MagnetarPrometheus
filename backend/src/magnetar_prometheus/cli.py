@@ -40,7 +40,7 @@ from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.core.executor_router import ExecutorRouter
 from magnetar_prometheus.core.workflow_loader import WorkflowLoader
 from magnetar_prometheus.executors.python_executor import PythonExecutor
-from magnetar_prometheus.modules.email_module.steps import register_example_steps
+from magnetar_prometheus.modules.example_registry import register_all_example_steps
 from magnetar_prometheus.registry.step_registry import StepRegistry
 
 
@@ -155,7 +155,7 @@ def main():
         sys.exit(1)
 
     registry = StepRegistry()
-    register_example_steps(registry)
+    register_all_example_steps(registry)
 
     executor = PythonExecutor(registry)
     router = ExecutorRouter()

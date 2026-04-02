@@ -13,6 +13,21 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 14:00 CEST
+**Author:** Codex
+**Entry:** Merged current `master` into `chore/governance-user-incremental-16392512902076639900` before finishing the PR `#121` review pass. Preserved the branch's governance additions around disjoint write ownership, user-visible versus internal-only reporting, and the meaning of `done`, while also keeping the newer repository-wide documentation standards that later landed on `master`.
+
+---
+**Timestamp:** 2026-04-02 12:15 CEST
+**Author:** Gemini CLI
+**Entry:** Completed PR `#122` on branch `feature/example-workflows-16281624406611618711` by adding `linear_module` and `error_module`, their workflow definitions, and their step implementations, and by verifying 100 percent test coverage for the new module scope.
+
+---
+**Timestamp:** 2026-04-02 11:55 CEST
+**Author:** Codex
+**Entry:** Resolved the `master` merge on `feature/example-workflows-16281624406611618711` by preserving both the example-workflow branch history and the newer `master` changes for API, schemas, testing-surface behavior, and day-planning/governance updates. Also added a planned backlog item in `PLAN.md` to define `BITACORA.md` retention so entries older than 2 days are summarized and moved into GitHub Discussions and the repository wiki.
+
+---
 **Timestamp:** 2026-04-02 11:35 CEST
 **Author:** Codex
 **Entry:** Addressed the PR `#125` testing-surface review concern around false-green placeholder tiers. Updated `scripts/run_tests.sh` so direct `api` and `ui` tier invocations now return a non-success status instead of silently passing, while the default `all` path continues to validate the implemented backend tier and explicitly reports the unimplemented tiers as skipped placeholders. Also aligned `TESTING.md` with that current testing contract.
@@ -76,6 +91,11 @@ Each entry should use:
 **Timestamp:** 2026-04-01 15:07 UTC
 **Author:** Codex
 **Entry:** Resolved the active merge on `feature/minimal-api-server-110130192739416379` by preserving the branch's API-server CLI path and its `--api/--port` regression coverage while also keeping `master`'s richer module documentation and the stricter `__main__` entrypoint assertion in `backend/tests/test_cli.py`. The reconciliation keeps the minimal HTTP server feature visible on this branch without discarding the later review-driven test hardening that landed on `master`.
+
+---
+**Timestamp:** 2026-04-01 14:30 UTC
+**Author:** Jules
+**Entry:** Expanded the set of example modules by adding `linear_module` and `error_module`. Registered the new modules via `email_module/steps.py` to maintain compatibility with the backend CLI. Added comprehensive unit tests enforcing 100% coverage, and addressed PR review feedback by removing embedded signatures from docstrings.
 
 ---
 **Timestamp:** 2026-04-01 14:28 UTC
@@ -192,7 +212,6 @@ Each entry should use:
 **Author:** Codex
 **Entry:** Closed the remaining implementation gaps for issues `#2`, `#3`, and `#4` on a follow-up branch by making the canonical version stamp portable and explicit as `yyyy.MM.dd HH:mm:ss.SSS`, validating and locating `release-version.txt` deterministically from the backend, shifting bootstrap dependency installation to the package declarations in `backend/pyproject.toml` and `sdk/python/pyproject.toml`, and hardening the CI/release workflows with dependency-path-aware caching, timeout control, artifact upload, and non-empty version-stamp validation.
 
----
 **Timestamp:** 2026-03-27 14:18 UTC
 **Author:** Codex
 **Entry:** Updated the top-level governance and contribution docs to make the delivery model explicit: MagnetarPrometheus should be advanced in user-incremental slices so that each work round leaves something new runnable, visible, or testable. This was added to `README.md`, `RULES.md`, `WIP_GUIDELINES.md`, `CONTRIBUTING.md`, `PLAN.md`, and `STATUS.md`.

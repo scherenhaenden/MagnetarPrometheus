@@ -23,6 +23,16 @@ By the end of today's work, a user should be able to see more of the product and
 3. Leave behind visible evidence of execution that a user can inspect.
 4. Update the docs so they describe what the user can actually see today.
 
+## Concrete Execution Scope
+
+The preferred implementation path for today is:
+
+1. improve the CLI summary so the batch path is easier to scan
+2. serve a first local UI shell from the existing API/server path
+3. let the UI trigger the example workflow through the API
+4. show the latest run result in the UI
+5. refresh the docs around the new visible slice
+
 ## Planned Work
 
 ### 1. First visible UI shell
@@ -33,6 +43,12 @@ Create or extend the first local UI surface under `ui/` so a user can open somet
 - that workflows and runs are the main concepts
 - where a run action will happen
 - where status and results will appear
+
+Preferred delivery shape:
+
+- keep the first UI increment small
+- favor a simple local shell over framework-heavy setup
+- if possible, make it available directly from the existing local API/server entrypoint
 
 ### 2. Example run action through the local service boundary
 
@@ -55,7 +71,17 @@ Minimum acceptable outcome:
 - latest completion state or timestamp
 - short result summary or key output fields
 
-### 4. Documentation refresh for the current visible slice
+### 4. CLI legibility improvement
+
+Keep the CLI path useful while the UI is being introduced.
+
+Minimum acceptable outcome:
+
+- clearer summary output
+- more obvious success or failure state
+- less need to parse raw JSON unless the user explicitly wants it
+
+### 5. Documentation refresh for the current visible slice
 
 Update the repo docs after the visible increment lands so they answer:
 
@@ -63,6 +89,15 @@ Update the repo docs after the visible increment lands so they answer:
 - what a user can run
 - what a user can inspect
 - what is still missing
+
+## Verification For Today
+
+Before calling the day successful, validate the visible paths directly:
+
+1. `bash run_app.sh`
+2. `bash run_app.sh --api`
+3. open the local UI surface and trigger the example run
+4. confirm the result is visible without reading terminal JSON
 
 ## Working Rule For Today
 
@@ -81,3 +116,4 @@ Today counts as successful if:
 
 - `PLAN.md` should stay at milestone and backlog level.
 - Day-specific execution planning belongs in this file, not in `PLAN.md`.
+- If a roadmap change is needed later, reflect it in `PLAN.md` after the visible increment is real, not only proposed.

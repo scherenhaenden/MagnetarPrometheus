@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 11:20 CEST
+**Author:** Codex
+**Entry:** Consolidated the two day-plan drafts into a single source of truth in `DAY_PLAN.md`. Kept the user-centered structure from the original daily plan and folded in the more concrete execution steps from the alternate draft: improve CLI legibility, serve the first UI shell from the existing API path, trigger the example workflow through that service boundary, and verify both the CLI and local API/UI paths directly.
+
+---
 **Timestamp:** 2026-04-02 11:07 CEST
 **Author:** Codex
 **Entry:** Created a dedicated root-level `DAY_PLAN.md` for the 2026-04-02 execution slice focused on making MagnetarPrometheus more user-visible. Kept `PLAN.md` at milestone/backlog level by adding an explicit note that day-specific execution planning belongs in `DAY_PLAN.md`, not in the durable project plan.

@@ -13,6 +13,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-02 15:10 CEST
+**Author:** Codex
+**Entry:** Addressed the third actionable PR `#159` review fix by extending `backend/tests/test_documentation_contract.py` to protect the long policy comment above `DEFAULT_API_HOST` in `api/server.py`. The branch now treats that explanatory comment block as part of the enforced documentation contract instead of leaving it unguarded.
+
+---
 **Timestamp:** 2026-04-02 15:09 CEST
 **Author:** Codex
 **Entry:** Addressed the second actionable PR `#159` review fix by making `backend/tests/test_documentation_contract.py` target the specific CLI API-mode test docstrings through AST parsing instead of searching the entire file text. The documentation-contract guard remains strict, but it is now tied to the exact tests whose policy explanations it is meant to protect.

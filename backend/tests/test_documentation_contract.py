@@ -71,6 +71,15 @@ def test_run_server_docstring_preserves_binding_policy() -> None:
     assert "security" in docstring or "policy" in docstring
 
 
+def test_default_api_host_comment_preserves_policy_context() -> None:
+    """Ensure the DEFAULT_API_HOST comment keeps the bind-policy rationale stable."""
+    source_text = API_SERVER_PATH.read_text(encoding="utf-8")
+
+    assert "DEFAULT_API_HOST" in source_text
+    assert "Keep the loopback default in one constant" in source_text
+    assert "unauthenticated `/run-example` endpoint stays local by default" in source_text
+
+
 def test_cli_api_mode_tests_keep_policy_explanation() -> None:
     """Ensure the CLI API-mode tests keep their long-form policy narrative."""
     api_default_doc = _read_function_docstring(CLI_TEST_PATH, "test_cli_api_flag")

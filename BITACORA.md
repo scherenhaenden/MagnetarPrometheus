@@ -15,6 +15,11 @@ Each entry should use:
 ---
 **Timestamp:** 2026-04-02 15:09 CEST
 **Author:** Codex
+**Entry:** Addressed the second actionable PR `#159` review fix by making `backend/tests/test_documentation_contract.py` target the specific CLI API-mode test docstrings through AST parsing instead of searching the entire file text. The documentation-contract guard remains strict, but it is now tied to the exact tests whose policy explanations it is meant to protect.
+
+---
+**Timestamp:** 2026-04-02 15:09 CEST
+**Author:** Codex
 **Entry:** Addressed the first actionable PR `#159` review fix by deriving the CLI `--host` help text from `DEFAULT_API_HOST` instead of hardcoding `127.0.0.1`. This keeps the operator-facing help text aligned with the centralized default host policy and prevents future drift between code behavior and CLI messaging.
 
 ---

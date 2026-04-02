@@ -73,8 +73,11 @@ def test_run_server_docstring_preserves_binding_policy() -> None:
 
 def test_cli_api_mode_tests_keep_policy_explanation() -> None:
     """Ensure the CLI API-mode tests keep their long-form policy narrative."""
-    source_text = CLI_TEST_PATH.read_text(encoding="utf-8")
+    api_default_doc = _read_function_docstring(CLI_TEST_PATH, "test_cli_api_flag")
+    api_custom_host_doc = _read_function_docstring(
+        CLI_TEST_PATH, "test_cli_api_flag_custom_host"
+    )
 
-    assert "This test deliberately protects multiple policy boundaries at once" in source_text
-    assert "safe loopback default" in source_text
-    assert "users are allowed to opt into a broader bind" in source_text
+    assert "This test deliberately protects multiple policy boundaries at once" in api_default_doc
+    assert "safe loopback default" in api_default_doc
+    assert "users are allowed to opt into a broader bind" in api_custom_host_doc

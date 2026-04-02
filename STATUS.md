@@ -65,7 +65,7 @@ That means the current user experience is batch-style CLI execution, not an inte
 
 ## Progress Summary
 
-The tracked planning baseline is marked complete for the currently defined `44 / 44` effort points, but that does not mean the overall product vision is complete. It means the currently scoped foundation/runtime/schema milestones are complete.
+The tracked planning baseline is marked complete for the currently defined `44 / 44` effort points, but that does not mean the overall product vision is complete. It means the currently scoped foundation/runtime/schema milestones are complete. A new planning baseline (`ms-04`, `ms-05`) is now established to move from the completed CLI PoC to a visible app surface.
 
 - Active scoped completion: `100%` (`44 / 44` effort points)
 - Historical governance-audit view preserved: `84%` prompt-scope completion, `19 / 44` effort points fully completed at that time
@@ -83,6 +83,10 @@ The tracked planning baseline is marked complete for the currently defined `44 /
   Meaning: a backend runtime can execute a sample workflow through the CLI.
 - `ms-03` Visual Model Baseline: Completed
   Meaning: the shared graph/schema boundary is defined, not that a workflow editor already exists.
+- `ms-04` Service API & Persistence: Planned
+  Meaning: a long-running backend service can accept job submissions via an HTTP API, queue runs, and write persistent run history.
+- `ms-05` Minimal Web UI: Planned
+  Meaning: a user-facing web UI can fetch and display run history and workflow details.
 
 ## Implemented Capabilities
 
@@ -108,8 +112,8 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 
 ## Immediate Delivery Focus
 
-- Introduce a visible application surface, likely a minimal local web UI or API-backed operator view.
-- Add a long-running execution surface instead of only one-shot CLI execution.
+- Begin execution on the HTTP API and minimal Web UI slices to introduce a visible application surface.
+- Deliver a long-running execution surface instead of only one-shot CLI execution.
 - Make workflow submission, inspection, and result viewing understandable without reading source code.
 - Keep the UI graph schema aligned with runtime semantics while the first actual UI slice is built.
 - Keep work user-incremental so each round gives the user one more thing to test directly.

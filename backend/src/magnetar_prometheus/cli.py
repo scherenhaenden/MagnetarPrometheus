@@ -34,7 +34,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
-from magnetar_prometheus.api.server import run_server
+from magnetar_prometheus.api.server import DEFAULT_API_HOST, run_server
 from magnetar_prometheus.core.context_manager import ContextManager
 from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.core.executor_router import ExecutorRouter
@@ -52,9 +52,14 @@ def _print_summary(workflow_path: Path, result_context: dict) -> None:
     operators frequently run the CLI directly from a terminal, and a second crash inside the
     renderer would hide the original workflow failure behind a formatting bug.
     """
-    # Review hardening preserved during the merge: summary rendering must tolerate partial
-    # engine output so the CLI still reports failures cleanly instead of crashing on missing
-    # keys while trying to display the result.
+    # This summary path is intentionally defensive because it is the last layer between a
+    # broken workflow and the operator reading the terminal. If a future refactor assumes the
+    # engine always returns a perfectly complete context, the CLI can end up masking the real
+    # workflow failure behind a second formatting failure.
+    #
+    # Keep the fallback `.get(... ) or {}` / `.get(... ) or []` pattern unless the engine
+    # contract changes and the tests are updated to prove summary mode still tolerates partial
+    # failure output. The slightly repetitive style here is serving a resilience goal.
     run_info = result_context.get("run") or {}
     history = result_context.get("history") or []
     data = result_context.get("data") or {}
@@ -122,15 +127,38 @@ def main():
         help="Port to run the API server on (defaults to 8000).",
     )
 
+    # Reuse the server-level constant instead of copying the loopback literal here.
+    #
+    # This is intentionally verbose because default values are one of the easiest places for
+    # multi-agent drift to creep in. If the CLI and the server each carry their own literal,
+    # one future edit can make help text, runtime behavior, and tests disagree without anyone
+    # noticing immediately. Importing the constant makes the alignment explicit in code.
+    parser.add_argument(
+        "--host",
+        type=str,
+        default=DEFAULT_API_HOST,
+        help=(
+            "Network interface to bind the API server to "
+            f"(defaults to {DEFAULT_API_HOST} for local-only access). "
+            "Pass 0.0.0.0 to bind on all interfaces."
+        ),
+    )
+
     args = parser.parse_args()
 
-    # The `--api` path is a deliberate short-circuit: once the operator asks for server mode,
-    # the CLI must not continue into workflow loading or execution. Startup failures are
-    # normalized here so they follow the same stderr + exit-code contract as the rest of the
-    # command-line interface.
+    # The `--api` path is a deliberate short-circuit and should remain obviously so.
+    #
+    # Why this block is intentionally spelled out:
+    # - API mode is a different command mode, not just "workflow run plus one more flag"
+    # - startup failures should be normalized as CLI-facing stderr output rather than leaked as
+    #   raw lower-level tracebacks
+    # - the parsed host should be forwarded explicitly so the call site documents the actual
+    #   binding choice the operator made
+    # - the `return` must remain because dropping it would allow API mode to leak into the
+    #   normal one-shot workflow path after server startup logic
     if args.api:
         try:
-            run_server(port=args.port)
+            run_server(port=args.port, host=args.host)
         except (OSError, OverflowError) as exc:
             print(f"Error starting API server on port {args.port}: {exc}", file=sys.stderr)
             sys.exit(1)

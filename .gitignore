@@ -5,3 +5,4 @@ __pycache__/
 .coverage
 test_output.log
 .idea/
+backend/src/magnetar_prometheus.egg-info/

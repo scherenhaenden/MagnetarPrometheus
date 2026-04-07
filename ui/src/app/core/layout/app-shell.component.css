@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+.shell {
+  min-height: 100vh;
+  color: #e6edf3;
+  background: #0b1220;
+  font-family: Inter, 'Segoe UI', sans-serif;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #1e2a44;
+}
+.topbar h1 { margin: 0; font-size: 1.25rem; }
+.topbar p { margin: .25rem 0 0; color: #9cb0ca; }
+.status { text-transform: capitalize; padding: .35rem .6rem; border-radius: 999px; font-size: .8rem; border: 1px solid #375072; }
+.status.healthy { background: #143d2e; border-color: #2b8a5d; }
+.status.degraded { background: #4a380c; border-color: #b98b24; }
+.status.offline { background: #4b1f1f; border-color: #bd4848; }
+.body { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 88px); }
+.sidenav { display: flex; flex-direction: column; padding: 1rem; gap: .4rem; border-right: 1px solid #1e2a44; }
+.sidenav a { color: #b8c7da; text-decoration: none; padding: .5rem .6rem; border-radius: .4rem; }
+.sidenav a.active, .sidenav a:hover { background: #192a44; color: #fff; }
+.content { padding: 1.25rem 1.5rem; }

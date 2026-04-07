@@ -46,8 +46,9 @@ Today, the default `bash scripts/run_tests.sh` path runs the implemented backend
 - Will contain integration and contract tests validating the HTTP service boundary, job submission, and result retrieval.
 
 ### 3. UI (`tier: ui`)
-- *Future placeholder.*
-- Will contain end-to-end browser automation tests validating the visual workflow editor, drag-and-drop operations, and user dashboard.
+- **Partially implemented.**
+- Angular unit/smoke tests can be executed from `ui/` with `npm run test:ci`.
+- Root-level `scripts/run_tests.sh ui` integration is still pending and should be treated as upcoming work.
 
 ## Code Coverage
 

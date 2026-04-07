@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Global style baseline for the first Angular UI shell.
+ * We keep the palette intentionally dark and high contrast to emphasize dashboard readability.
+ */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0b1220;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: #7fc3ff;
+}

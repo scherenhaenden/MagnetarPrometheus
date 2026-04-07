@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-07 13:20 UTC
+**Author:** Codex
+**Entry:** Advanced the frontend packet stream from `11`/`12` toward `20` on branch `feature/frontend-11-20-progress` by replacing the Angular starter template with a routed shell, adding a documented frontend contract boundary (`FrontendDataService`) with a mock adapter, implementing run-history/run-detail and job-submission slices in mock mode, and updating `ui/README.md` plus packet docs with explicit completion percentages and pending gaps (notably packet `18` desktop shell and root-level UI tier automation integration).
+
+---
 **Timestamp:** 2026-04-02 16:23 CEST
 **Author:** Codex
 **Entry:** Resolved the pending cleanup set for issues `#111`, `#106`, `#109`, `#95`, and `#96` on the current branch. Reordered the misplaced `2026-03-26 11:00 UTC` Bitacora entry back into strict reverse chronology, hardened the email example step to fail cleanly when the first message lacks a subject, made the base executor contract raise `NotImplementedError` explicitly so the abstract test proves real behavior, escaped regex-sensitive `pytest.raises(match=...)` patterns, and aligned the canonical version stamp contract to the portable `yyyy.MM.dd HH:mm:ss.SSS` form across the shell script, backend helper, tests, and current normative docs.

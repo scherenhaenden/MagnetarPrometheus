@@ -16,7 +16,7 @@ What is not real yet:
 
 - There is no long-running backend service.
 - There is no HTTP API for job submission or run inspection.
-- There is no web UI.
+- A first Angular web shell exists in mock mode (`ui/`), but it is not API-backed yet.
 - There is no desktop UI.
 - There is no operator dashboard, queue manager, or persistent run history.
 - There is no production-grade release/publishing pipeline beyond metadata/version-stamp generation.
@@ -131,6 +131,14 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 
 - Risk: users expect an app surface when only a CLI execution slice exists
   Mitigation: state plainly in the docs that the current deliverable is a backend proof of concept, not a finished interactive product.
+
+## Frontend Packet Progress (11 → 20)
+
+- Snapshot date: **2026-04-07**
+- Estimated completion: **~60%**
+- Completed: packet `11` index orchestration, packet `12` workspace skeleton.
+- Substantially advanced: packets `13`, `14`, `16`, `17`, `20` (web shell, contract seam, run surfaces, job submission, local run docs).
+- Remaining heavy work: packet `18` desktop shell skeleton and packet `19` frontend guardrails integration at root script level.
 
 ## CI and Release Automation
 

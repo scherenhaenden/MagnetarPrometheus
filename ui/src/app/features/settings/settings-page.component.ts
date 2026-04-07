@@ -1,3 +1,9 @@
+/**
+ * settings-page.component.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
 import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { PageContainerComponent } from '../../shared/ui/page-container.component';

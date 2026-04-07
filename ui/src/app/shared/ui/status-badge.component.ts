@@ -1,3 +1,9 @@
+/**
+ * status-badge.component.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
 import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 

@@ -1,3 +1,9 @@
+/**
+ * frontend-data.provider.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
 import { Provider } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { ApiFrontendDataService } from './api-frontend-data.service';

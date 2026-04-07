@@ -1,3 +1,9 @@
+/**
+ * job-submission-page.component.spec.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { JobSubmissionPageComponent } from './job-submission-page.component';

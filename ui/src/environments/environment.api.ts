@@ -1,8 +1,8 @@
 /**
- * Development environment defaults for local Angular workflows.
+ * Development API transport mode.
  */
 export const environment = {
   production: false,
-  useMockDataService: true,
+  useMockDataService: false,
   apiBaseUrl: 'http://localhost:8000/api'
 };

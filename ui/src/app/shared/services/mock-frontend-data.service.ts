@@ -69,9 +69,9 @@ export class MockFrontendDataService extends FrontendDataService {
           createdAtIso: item.createdAtIso,
           completedAtIso: item.completedAtIso,
           steps: [
-            { name: 'collect-input', state: 'done' },
-            { name: 'process-route', state: item.status === 'failed' ? 'failed' : 'done' },
-            { name: 'persist-summary', state: item.status === 'failed' ? 'pending' : 'done' }
+            { name: 'collect-input', state: 'done', detail: 'Input payload validated and normalized.' },
+            { name: 'process-route', state: item.status === 'failed' ? 'failed' : 'done', detail: item.status === 'failed' ? 'Rule evaluation failed in mock branch.' : 'Routing rule selected workflow branch.' },
+            { name: 'persist-summary', state: item.status === 'failed' ? 'pending' : 'done', detail: 'Summary persistence placeholder for transport-agnostic UI.' }
           ],
           errorMessage: item.status === 'failed' ? 'Synthetic module failure (mock).' : null,
           outputPreview: item.summary
@@ -86,13 +86,15 @@ export class MockFrontendDataService extends FrontendDataService {
         workflowId: 'email-triage',
         title: 'Email Triage',
         description: 'Classify inbound email traffic and route follow-up actions.',
-        tags: ['email', 'support', 'routing']
+        tags: ['email', 'support', 'routing'],
+        version: '1.2.0'
       },
       {
         workflowId: 'error-module',
         title: 'Failure Simulator',
         description: 'Validate failure handling and observability paths.',
-        tags: ['qa', 'failure', 'testing']
+        tags: ['qa', 'failure', 'testing'],
+        version: '0.9.0'
       }
     ]);
   }

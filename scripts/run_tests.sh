@@ -12,7 +12,7 @@
 #   all     - (Default) Runs all implemented test tiers and reports placeholder tiers as skipped.
 #   backend - Runs the internal Python engine, SDK tests, and enforces 100% coverage.
 #   api     - Validates the HTTP boundary (Not implemented yet; exits non-zero).
-#   ui      - Validates the visual application (Not implemented yet; exits non-zero).
+#   ui      - Validates Angular build, test, and documentation guard checks.
 
 set -euo pipefail
 
@@ -26,13 +26,15 @@ TIER="${1:-all}"
 echo "Running tests for MagnetarPrometheus..."
 echo "Target test tier: ${TIER}"
 
-# Ensure the Python environment is bootstrapped and ready before invoking any Python-based validation
-if [ ! -f "${VENV_ACTIVATE}" ]; then
-    echo "Virtual environment missing. Bootstrapping first..."
-    bash "${ROOT_DIR}/scripts/bootstrap_python.sh"
-fi
+ensure_python_environment() {
+    if [ ! -f "${VENV_ACTIVATE}" ]; then
+        echo "Virtual environment missing. Bootstrapping first..."
+        bash "${ROOT_DIR}/scripts/bootstrap_python.sh"
+    fi
 
-source "${VENV_ACTIVATE}"
+    # shellcheck disable=SC1090
+    source "${VENV_ACTIVATE}"
+}
 
 report_unimplemented_tier() {
     local tier_name="$1"
@@ -48,10 +50,7 @@ report_unimplemented_tier() {
 # -----------------------------------------------------------------------------
 run_backend_tests() {
     echo "--- Running Backend & SDK Tests ---"
-    # Execute pytest from within the backend directory inside a subshell.
-    # The subshell `(...)` ensures we do not permanently change the working directory
-    # for the subsequent test functions that might rely on being at the repo root.
-    # Code coverage enforcement rules are centralized in backend/pyproject.toml
+    ensure_python_environment
     (cd "${ROOT_DIR}/backend" && pytest)
 }
 
@@ -73,8 +72,8 @@ run_api_tests() {
 # -----------------------------------------------------------------------------
 run_ui_tests() {
     echo "--- Running UI Tests ---"
-    echo "This tier is reserved for future visual product-surface validation."
-    report_unimplemented_tier "ui"
+    (cd "${ROOT_DIR}/ui" && npm run build && npm run test:ci)
+    bash "${ROOT_DIR}/scripts/check_ui_docs.sh"
 }
 
 # -----------------------------------------------------------------------------
@@ -89,9 +88,9 @@ case "${TIER}" in
         # skipped here so the default validation path for the current backend proof-of-concept
         # remains usable without incorrectly implying that API/UI tests executed successfully.
         run_backend_tests
+        run_ui_tests
         echo "--- Skipped Placeholder Tiers ---"
         echo "api: not implemented yet"
-        echo "ui: not implemented yet"
         ;;
     *)
         echo "Error: Unknown test tier '${TIER}'. Valid options are: backend, api, ui, all."

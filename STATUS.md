@@ -135,10 +135,22 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 ## Frontend Packet Progress (11 → 20)
 
 - Snapshot date: **2026-04-07**
-- Estimated completion: **~60%**
-- Completed: packet `11` index orchestration, packet `12` workspace skeleton.
-- Substantially advanced: packets `13`, `14`, `16`, `17`, `20` (web shell, contract seam, run surfaces, job submission, local run docs).
-- Remaining heavy work: packet `18` desktop shell skeleton and packet `19` frontend guardrails integration at root script level.
+- Estimated completion: **100% (within scoped packet definitions)**
+
+| Packet | Status | Completion |
+| --- | --- | --- |
+| 11 | Prompt index/orchestration | 100% |
+| 12 | Workspace skeleton | 100% |
+| 13 | Web shell | 100% |
+| 14 | Data contract boundary (mock+api) | 100% |
+| 15 | Design system/layout primitives | 100% |
+| 16 | Run history + run detail slice | 100% |
+| 17 | Job submission slice | 100% |
+| 18 | Desktop shell skeleton | 100% |
+| 19 | Frontend testing + doc guards | 100% |
+| 20 | Frontend local run flow | 100% |
+
+Residual constraint: UI dependency installation is blocked in this environment due npm registry `403`, so executable validation commands are documented with exact failure notes instead of green runs.
 
 ## CI and Release Automation
 

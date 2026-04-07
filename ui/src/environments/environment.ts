@@ -1,12 +1,11 @@
 /**
- * Intent:
- * This is the base environment configuration file for the MagnetarPrometheus UI.
- * It will hold the default settings for the application environment, such as
- * base API URLs or feature flags.
+ * Production-like environment defaults.
  *
- * Note: When building the application, Angular will automatically replace this
- * file with the target-specific environment file (e.g., `environment.development.ts`).
+ * In current repo scope we default production builds to API transport mode, while development
+ * defaults to mock mode for standalone UI iteration.
  */
 export const environment = {
-  production: true
+  production: true,
+  useMockDataService: false,
+  apiBaseUrl: '/api'
 };

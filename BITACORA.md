@@ -469,3 +469,9 @@ Each entry should use:
 ## Immutability
 
 This logbook should not be rewritten retroactively. Corrections must be made by adding a new entry that clarifies an earlier one.
+
+
+---
+**Timestamp:** 2026-04-07 18:15 UTC
+**Author:** Codex
+**Entry:** Closed frontend packets 13-20 to scoped 100% by finalizing Angular shell/layout primitives, implementing mock+API service boundary with explicit mappers, completing run-history/run-detail/job-submission/workflow-catalog slices with loading-empty-error handling, adding Electron desktop skeleton under `desktop/`, integrating UI test/doc guard tier into `scripts/run_tests.sh ui`, and aligning README/STATUS/TESTING/UI docs plus packet-tracking markdowns. Validation commands were executed, but environment registry policy returned npm 403 so Node dependency installation and downstream Angular build/test execution could not complete in this container.

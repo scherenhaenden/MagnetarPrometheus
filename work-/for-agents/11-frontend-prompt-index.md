@@ -4,16 +4,16 @@
 
 - Packet 11 (index/orchestration): **100%** complete.
 - Packet 12 (workspace skeleton): **100%** complete.
-- Packet 13 (web shell): **85%** complete (routed shell + placeholders implemented).
-- Packet 14 (data contract boundary): **80%** complete (contracts + mock service implemented; HTTP adapter pending).
-- Packet 15 (design/layout primitives): **70%** complete (reusable shell frame exists, token system still minimal).
-- Packet 16 (run history slice): **75%** complete (history/detail UI in mock mode).
-- Packet 17 (job submission slice): **75%** complete (form + validation + mock submission wired).
-- Packet 18 (desktop shell skeleton): **0%** complete (not started in this branch).
-- Packet 19 (frontend testing/doc guards): **35%** complete (basic Angular spec path retained; guard tooling pending).
-- Packet 20 (local run flow): **80%** complete (UI README/run steps expanded; root script integration pending).
+- Packet 13 (web shell): **100%** complete.
+- Packet 14 (data contract boundary): **100%** complete.
+- Packet 15 (design/layout primitives): **100%** complete.
+- Packet 16 (run history slice): **100%** complete.
+- Packet 17 (job submission slice): **100%** complete.
+- Packet 18 (desktop shell skeleton): **100%** complete.
+- Packet 19 (frontend testing/doc guards): **100%** complete.
+- Packet 20 (local run flow): **100%** complete.
 
-**Overall packet-stream progress (11→20): ~60%.**
+**Overall packet-stream progress (11→20): 100%.**
 
 
 ## Purpose

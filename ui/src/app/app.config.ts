@@ -1,10 +1,10 @@
 import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { FrontendDataService } from './shared/services/frontend-data.service';
-import { MockFrontendDataService } from './shared/services/mock-frontend-data.service';
+import { FRONTEND_DATA_SERVICE_PROVIDER } from './shared/services/frontend-data.provider';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), { provide: FrontendDataService, useClass: MockFrontendDataService }]
+  providers: [provideRouter(routes), provideHttpClient(), FRONTEND_DATA_SERVICE_PROVIDER]
 };

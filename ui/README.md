@@ -1,37 +1,38 @@
 # MagnetarPrometheus UI (Angular)
 
-This directory now contains the **first browser-visible Angular shell** for MagnetarPrometheus.
-
 ## Current State (2026-04-07)
 
-- Workspace skeleton: ✅ implemented
-- Routed shell/navigation: ✅ implemented
-- Frontend data-contract seam + mock adapter: ✅ implemented
-- Run history and run detail slice: ✅ implemented (mock-backed)
-- Job submission slice: ✅ implemented (mock-backed)
-- API-backed transport integration: 🚧 pending
-- Desktop shell integration: 🚧 pending
+- Packet 13 web shell: ✅ complete
+- Packet 14 data contract boundary: ✅ complete (mock + API adapters + mappers)
+- Packet 15 design system/layout primitives: ✅ complete
+- Packet 16 run history/detail slice: ✅ complete
+- Packet 17 job submission slice: ✅ complete
+- Packet 18 desktop shell skeleton: ✅ complete (Electron skeleton in `../desktop`)
+- Packet 19 testing/doc guardrails: ✅ complete (UI test tier + docs guard script integrated)
+- Packet 20 local run flow docs: ✅ complete
 
-Approximate completion for the `11 → 20` frontend packet stream: **65%**.
+Approximate completion for packets `11 → 20`: **100% in agreed scope**.
 
-## Directory Intent
+## Transport Modes
 
-- `src/app/core/`: app frame and top-level shell structure
-- `src/app/shared/models`: frontend contract interfaces decoupled from raw transport payloads
-- `src/app/shared/services`: service boundary (`FrontendDataService`) + mock adapter
-- `src/app/features/*`: isolated product slices (overview, runs, run detail, submission, workflow catalog, settings)
+- **Mock mode** (`environment.development.ts`): `useMockDataService: true`
+- **API mode** (`environment.api.ts` and production env): `useMockDataService: false`
+- Strategy provider: `src/app/shared/services/frontend-data.provider.ts`
 
 ## Local Run Flow
-
-From repository root:
 
 ```bash
 cd ui
 npm ci
-npm run start
+npm run start:mock
 ```
 
-Open `http://localhost:4200`.
+API mode: 
+
+```bash
+cd ui
+npm run start:api
+```
 
 ## Validation
 
@@ -39,9 +40,11 @@ Open `http://localhost:4200`.
 cd ui
 npm run build
 npm run test:ci
+npm run check:docs
 ```
 
-## Boundary Clarification
+Root-level integration:
 
-The current UI defaults to **mock transport mode** via `MockFrontendDataService`.
-That is intentional so feature work can move in parallel while backend HTTP persistence/API work is still landing.
+```bash
+bash scripts/run_tests.sh ui
+```

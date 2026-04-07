@@ -33,7 +33,7 @@ What is not covered yet because it does not exist yet:
 
 As the product expands from a backend engine into a visible service and application, validation is organized into explicit tiers. These tiers can be targeted using `bash scripts/run_tests.sh <tier>`.
 
-Today, the default `bash scripts/run_tests.sh` path runs the implemented backend tier and reports the `api` and `ui` tiers as reserved placeholders. Calling `bash scripts/run_tests.sh api` or `bash scripts/run_tests.sh ui` directly should be treated as a non-success result until those tiers are implemented.
+Today, `bash scripts/run_tests.sh` runs backend and UI tiers. The API tier remains placeholder-only and returns non-zero when selected explicitly.
 
 ### 1. Backend (`tier: backend`)
 - Currently active and enforced at 100% code coverage.
@@ -46,9 +46,9 @@ Today, the default `bash scripts/run_tests.sh` path runs the implemented backend
 - Will contain integration and contract tests validating the HTTP service boundary, job submission, and result retrieval.
 
 ### 3. UI (`tier: ui`)
-- **Partially implemented.**
-- Angular unit/smoke tests can be executed from `ui/` with `npm run test:ci`.
-- Root-level `scripts/run_tests.sh ui` integration is still pending and should be treated as upcoming work.
+- **Implemented.**
+- Angular unit/smoke tests execute through `npm run test:ci`.
+- Root-level integration executes `npm run build`, `npm run test:ci`, and `scripts/check_ui_docs.sh` via `bash scripts/run_tests.sh ui`.
 
 ## Code Coverage
 

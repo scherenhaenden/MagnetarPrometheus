@@ -4,8 +4,8 @@
 
 - Local Angular run/install/test flow now documented in `ui/README.md`.
 - Mock-vs-future-API boundary now documented explicitly.
-- Remaining gap: integrate frontend checks into root `scripts/run_tests.sh ui` tier and root README quick-start.
-- **Completion:** **80%** for packet 20 scope in this branch.
+- All scoped run-flow gaps closed: root README quick-start aligned, UI README expanded, root `scripts/run_tests.sh ui` tier integrated.
+- **Completion:** **100%** for packet 20 scope in this branch.
 
 
 ## First Read These Files

@@ -23,7 +23,8 @@ export const routes: Routes = [
       { path: 'runs/:runId', component: RunDetailPageComponent },
       { path: 'submit', component: JobSubmissionPageComponent },
       { path: 'workflows', component: WorkflowCatalogPageComponent },
-      { path: 'settings', component: SettingsPageComponent }
+      { path: 'settings', component: SettingsPageComponent },
+      { path: '**', redirectTo: '' }
     ]
   }
 ];

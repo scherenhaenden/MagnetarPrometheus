@@ -1,59 +1,92 @@
-/**
- * Job submission feature slice.
- */
-import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { FrontendDataService } from '../../shared/services/frontend-data.service';
+import { PageContainerComponent } from '../../shared/ui/page-container.component';
+import { PageHeaderComponent } from '../../shared/ui/page-header.component';
+import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf, AsyncPipe, JsonPipe],
+  imports: [ReactiveFormsModule, NgFor, NgIf, AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent],
   template: `
-    <section>
-      <h2>Submit Job</h2>
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <label>Workflow</label>
-        <select formControlName="workflowId">
-          <option *ngFor="let workflow of (workflows$ | async)" [value]="workflow.workflowId">{{workflow.title}}</option>
-        </select>
-        <label>Reason</label>
-        <input formControlName="reason" />
-        <label>Priority</label>
-        <select formControlName="priority">
-          <option value="low">Low</option>
-          <option value="normal">Normal</option>
-          <option value="high">High</option>
-        </select>
-        <button type="submit" [disabled]="form.invalid">Submit</button>
-      </form>
+    <mp-page-container>
+      <mp-page-header
+        title="Job Submission"
+        description="Submit a workflow job with validation, clear submission-state transitions, and transport abstraction."
+      ></mp-page-header>
 
-      <pre *ngIf="result$ | async as result">{{ result | json }}</pre>
-    </section>
-  `
+      <mp-panel-card>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+          <label for="workflow">Workflow</label>
+          <select id="workflow" formControlName="workflowId">
+            <option value="">Select workflow</option>
+            <option *ngFor="let workflow of (workflows$ | async)" [value]="workflow.workflowId">{{workflow.title}} (v{{workflow.version}})</option>
+          </select>
+          <small *ngIf="form.controls.workflowId.invalid && form.controls.workflowId.touched">Workflow selection is required.</small>
+
+          <label for="reason">Reason</label>
+          <input id="reason" formControlName="reason" maxlength="200" />
+          <small *ngIf="form.controls.reason.errors?.['required'] && form.controls.reason.touched">Reason is required.</small>
+          <small *ngIf="form.controls.reason.errors?.['minlength'] && form.controls.reason.touched">Reason must be at least 10 characters.</small>
+
+          <label for="priority">Priority</label>
+          <select id="priority" formControlName="priority">
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+          </select>
+
+          <button type="submit" [disabled]="form.invalid || (submitVm$ | async)?.state === 'submitting'">Submit Job</button>
+        </form>
+      </mp-panel-card>
+
+      <mp-panel-card *ngIf="submitVm$ | async as vm">
+        <p *ngIf="vm.state === 'idle'">Submission is idle. Complete the form and submit when ready.</p>
+        <p *ngIf="vm.state === 'submitting'">Submitting job request...</p>
+        <p *ngIf="vm.state === 'success'">Success: {{ vm.message }}</p>
+        <p *ngIf="vm.state === 'error'">Error: {{ vm.message }}</p>
+      </mp-panel-card>
+    </mp-page-container>
+  `,
+  styles: ['.form-grid{display:grid;grid-template-columns:1fr;gap:var(--mp-space-2);}small{color:#ffb9b9;}']
 })
 export class JobSubmissionPageComponent {
   private readonly fb = inject(FormBuilder);
   private readonly dataService = inject(FrontendDataService);
-  private readonly submitSignal$ = new Subject<void>();
+  private readonly submitSignal$ = new BehaviorSubject(0);
 
   protected readonly workflows$ = this.dataService.getWorkflowCatalog();
 
   protected readonly form = this.fb.nonNullable.group({
-    workflowId: ['email-triage', Validators.required],
-    reason: ['Manual operator run from web UI shell', [Validators.required, Validators.minLength(8)]],
+    workflowId: ['', Validators.required],
+    reason: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
     priority: ['normal' as const, Validators.required]
   });
 
-  protected readonly result$ = this.submitSignal$.pipe(
-    switchMap(() => this.dataService.submitJob(this.form.getRawValue()))
+  protected readonly submitVm$ = this.submitSignal$.pipe(
+    switchMap((count) => {
+      if (count === 0) {
+        return of({ state: 'idle', message: '' } as const);
+      }
+      return this.dataService.submitJob(this.form.getRawValue()).pipe(
+        map((result) => ({
+          state: result.accepted ? ('success' as const) : ('error' as const),
+          message: result.message
+        })),
+        startWith({ state: 'submitting' as const, message: '' }),
+        catchError((error: Error) => of({ state: 'error' as const, message: error.message }))
+      );
+    }),
+    startWith({ state: 'idle' as const, message: '' })
   );
 
   protected submit(): void {
+    this.form.markAllAsTouched();
     if (this.form.invalid) {
       return;
     }
-    this.submitSignal$.next();
+    this.submitSignal$.next(this.submitSignal$.value + 1);
   }
 }

@@ -16,7 +16,7 @@ What is not real yet:
 
 - There is no long-running backend service.
 - There is no HTTP API for job submission or run inspection.
-- A first Angular web shell exists in mock mode (`ui/`), but it is not API-backed yet.
+- A first Angular web shell exists in mock mode (`ui/`), upgraded to Angular 21, but it is not API-backed yet.
 - There is no desktop UI.
 - There is no operator dashboard, queue manager, or persistent run history.
 - There is no production-grade release/publishing pipeline beyond metadata/version-stamp generation.
@@ -135,10 +135,22 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 ## Frontend Packet Progress (11 → 20)
 
 - Snapshot date: **2026-04-07**
-- Estimated completion: **~60%**
-- Completed: packet `11` index orchestration, packet `12` workspace skeleton.
-- Substantially advanced: packets `13`, `14`, `16`, `17`, `20` (web shell, contract seam, run surfaces, job submission, local run docs).
-- Remaining heavy work: packet `18` desktop shell skeleton and packet `19` frontend guardrails integration at root script level.
+- Estimated completion: **100% (within scoped packet definitions)**
+
+| Packet | Status | Completion |
+| --- | --- | --- |
+| 11 | Prompt index/orchestration | 100% |
+| 12 | Workspace skeleton | 100% |
+| 13 | Web shell | 100% |
+| 14 | Data contract boundary (mock+api) | 100% |
+| 15 | Design system/layout primitives | 100% |
+| 16 | Run history + run detail slice | 100% |
+| 17 | Job submission slice | 100% |
+| 18 | Desktop shell skeleton | 100% |
+| 19 | Frontend testing + doc guards | 100% |
+| 20 | Frontend local run flow | 100% |
+
+Residual constraint: UI dependency installation is blocked in this environment due npm registry `403`, so executable validation commands are documented with exact failure notes instead of green runs.
 
 ## CI and Release Automation
 
@@ -149,9 +161,10 @@ The repository has active GitHub Actions automation under `.github/workflows/`.
 Triggers on every push to `master`/`main` and on every pull request targeting those branches.
 
 Steps enforced:
-1. **Bootstrap validation** — runs `scripts/bootstrap_python.sh` to verify a clean environment can be prepared.
-2. **Backend run-path validation** — runs `scripts/run_backend.sh` (no extra arguments) to verify the example workflow loads and executes end to end.
-3. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope and enforces 100% code coverage via the threshold in `backend/pyproject.toml`.
+1. **Runtime toolchain setup** — installs Python `3.11`, Node `22.12.0`, and the UI dependencies from `ui/package-lock.json` so both backend and Angular validation paths run against declared toolchain versions.
+2. **Bootstrap validation** — runs `scripts/bootstrap_python.sh` to verify a clean environment can be prepared.
+3. **Backend run-path validation** — runs `scripts/run_backend.sh` (no extra arguments) to verify the example workflow loads and executes end to end.
+4. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope, then the implemented UI validation tier. Backend coverage remains enforced via the threshold in `backend/pyproject.toml`.
 
 ### Release Metadata Workflow (`release.yml`)
 

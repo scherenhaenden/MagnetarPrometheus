@@ -17,9 +17,9 @@ import {
 } from '../models/frontend-contracts';
 
 export abstract class FrontendDataService {
-  abstract getServiceHealth(): Observable<ServiceHealthSnapshot>;
-  abstract getRunHistory(): Observable<ReadonlyArray<RunListingItem>>;
-  abstract getRunDetail(runId: string): Observable<RunDetail | null>;
-  abstract getWorkflowCatalog(): Observable<ReadonlyArray<WorkflowSummary>>;
-  abstract submitJob(request: JobSubmissionRequest): Observable<JobSubmissionResult>;
+  public abstract getServiceHealth(): Observable<ServiceHealthSnapshot>;
+  public abstract getRunHistory(): Observable<ReadonlyArray<RunListingItem>>;
+  public abstract getRunDetail(runId: string): Observable<RunDetail | null>;
+  public abstract getWorkflowCatalog(): Observable<ReadonlyArray<WorkflowSummary>>;
+  public abstract submitJob(request: JobSubmissionRequest): Observable<JobSubmissionResult>;
 }

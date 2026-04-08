@@ -1,12 +1,9 @@
 /**
- * Frontend Contract Boundary for MagnetarPrometheus.
+ * Frontend contract boundary for MagnetarPrometheus.
  *
- * Why this file exists:
- * - The backend runtime models are Python-first and may evolve independently.
- * - The Angular product surface needs a stable, TypeScript-native contract seam so feature
- *   components can remain transport-agnostic and avoid coupling to raw HTTP payload details.
- * - During the current milestone, the UI runs mostly in mock mode. Defining explicit interfaces
- *   here keeps future API integration honest: we can swap adapters without rewriting pages.
+ * This contract file is intentionally the only domain shape that feature components consume.
+ * Backend payloads may evolve, and mock transport may diverge from HTTP payload structure,
+ * but the UI surface should remain stable behind these TypeScript interfaces.
  */
 
 export type FrontendRunStatus =
@@ -15,6 +12,8 @@ export type FrontendRunStatus =
   | 'succeeded'
   | 'failed'
   | 'cancelled';
+
+export type FrontendStepState = 'pending' | 'done' | 'failed' | 'unknown';
 
 export interface ServiceHealthSnapshot {
   readonly status: 'healthy' | 'degraded' | 'offline';
@@ -32,13 +31,19 @@ export interface RunListingItem {
   readonly summary: string;
 }
 
+export interface RunDetailStep {
+  readonly name: string;
+  readonly state: FrontendStepState;
+  readonly detail: string;
+}
+
 export interface RunDetail {
   readonly runId: string;
   readonly workflowId: string;
   readonly status: FrontendRunStatus;
   readonly createdAtIso: string;
   readonly completedAtIso: string | null;
-  readonly steps: ReadonlyArray<{ name: string; state: 'pending' | 'done' | 'failed' }>;
+  readonly steps: ReadonlyArray<RunDetailStep>;
   readonly errorMessage: string | null;
   readonly outputPreview: string;
 }
@@ -48,6 +53,7 @@ export interface WorkflowSummary {
   readonly title: string;
   readonly description: string;
   readonly tags: ReadonlyArray<string>;
+  readonly version: string;
 }
 
 export interface JobSubmissionRequest {

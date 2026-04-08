@@ -13,7 +13,7 @@ export type FrontendRunStatus =
   | 'failed'
   | 'cancelled';
 
-export type FrontendStepState = 'pending' | 'done' | 'failed';
+export type FrontendStepState = 'pending' | 'done' | 'failed' | 'unknown';
 
 export interface ServiceHealthSnapshot {
   readonly status: 'healthy' | 'degraded' | 'offline';

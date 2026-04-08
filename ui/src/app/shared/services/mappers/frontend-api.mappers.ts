@@ -42,7 +42,8 @@ const normalizeStepState = (value: string): FrontendStepState => {
   if (normalized === 'pending' || normalized === 'done' || normalized === 'failed') {
     return normalized;
   }
-  return 'pending';
+  console.warn(`normalizeStepState: received unexpected step state "${value}"`);
+  return 'unknown';
 };
 
 export const mapHealthApiResponseToSnapshot = (

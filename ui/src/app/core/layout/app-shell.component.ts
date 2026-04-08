@@ -9,7 +9,7 @@
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { map, startWith } from 'rxjs';
+import { catchError, map, of, shareReplay, startWith } from 'rxjs';
 import { FrontendDataService } from '../../shared/services/frontend-data.service';
 
 @Component({
@@ -46,7 +46,17 @@ import { FrontendDataService } from '../../shared/services/frontend-data.service
 })
 export class AppShellComponent {
   private readonly dataService = inject(FrontendDataService);
-  protected readonly health$ = this.dataService.getServiceHealth();
+  protected readonly health$ = this.dataService.getServiceHealth().pipe(
+    catchError(() =>
+      of({
+        status: 'offline' as const,
+        message: 'Service unreachable',
+        checkedAtIso: new Date().toISOString(),
+        mode: 'api' as const
+      })
+    ),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
   protected readonly healthTone$ = this.health$.pipe(map((snapshot) => snapshot.status), startWith('degraded'));
   protected readonly healthLabel$ = this.health$.pipe(
     map((snapshot) => `${snapshot.status} · ${snapshot.mode.toUpperCase()} · ${snapshot.message}`),

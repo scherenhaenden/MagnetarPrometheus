@@ -52,8 +52,8 @@ export class ApiFrontendDataService extends FrontendDataService {
 
   public getRunDetail(runId: string): Observable<RunDetail | null> {
     return this.http
-      .get<RunDetailApiResponse>(`${this.baseUrl}/runs/${runId}`)
-      .pipe(map((response) => mapRunDetailApiResponseToRunDetail(response)));
+      .get<RunDetailApiResponse | null>(`${this.baseUrl}/runs/${runId}`)
+      .pipe(map((response) => (response ? mapRunDetailApiResponseToRunDetail(response) : null)));
   }
 
   public getWorkflowCatalog(): Observable<ReadonlyArray<WorkflowSummary>> {

@@ -73,7 +73,15 @@ run_api_tests() {
 run_ui_tests() {
     echo "--- Running UI Tests ---"
     python3 "${ROOT_DIR}/scripts/check_ui_code_contracts.py"
-    (cd "${ROOT_DIR}/ui" && npm run build && npm run test:ci)
+    (
+      cd "${ROOT_DIR}/ui"
+      if [ ! -x "node_modules/.bin/ng" ]; then
+        echo "UI dependencies missing. Installing with npm ci..."
+        npm ci
+      fi
+      npm run build
+      npm run test:ci
+    )
 }
 
 # -----------------------------------------------------------------------------

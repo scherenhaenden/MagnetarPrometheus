@@ -5,6 +5,32 @@
  */
 const { app, BrowserWindow } = require('electron');
 const path = require('node:path');
+const fs = require('node:fs');
+
+const resolveRendererEntry = () => {
+  const configuredDistDir = process.env.MP_UI_DIST_DIR;
+  const candidateRoots = configuredDistDir
+    ? [configuredDistDir]
+    : [
+        path.resolve(app.getAppPath(), 'ui/dist/magnetar-prometheus-ui/browser'),
+        path.resolve(app.getAppPath(), '../ui/dist/magnetar-prometheus-ui/browser'),
+        path.resolve(process.resourcesPath, 'ui/dist/magnetar-prometheus-ui/browser'),
+        path.resolve(__dirname, '../../ui/dist/magnetar-prometheus-ui/browser')
+      ];
+
+  for (const root of candidateRoots) {
+    const entry = path.join(root, 'index.html');
+    if (fs.existsSync(entry)) {
+      return entry;
+    }
+  }
+
+  throw new Error(
+    `Unable to locate Angular renderer bundle. Checked: ${candidateRoots
+      .map((root) => path.join(root, 'index.html'))
+      .join(', ')}`
+  );
+};
 
 const createMainWindow = () => {
   const window = new BrowserWindow({
@@ -22,7 +48,7 @@ const createMainWindow = () => {
   if (devServerUrl) {
     window.loadURL(devServerUrl);
   } else {
-    window.loadFile(path.resolve(__dirname, '../../ui/dist/magnetar-prometheus-ui/browser/index.html'));
+    window.loadFile(resolveRendererEntry());
   }
 };
 

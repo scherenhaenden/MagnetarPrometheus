@@ -26,14 +26,11 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
       @if (vm$ | async; as vm) {
         @if (vm.loading) {
           <mp-panel-card>Loading run detail...</mp-panel-card>
-        }
-        @if (vm.error) {
+        } @else if (vm.error) {
           <mp-panel-card>Unable to load run detail: {{ vm.error }}</mp-panel-card>
-        }
-        @if (!vm.loading && !vm.error && !vm.detail) {
+        } @else if (!vm.detail) {
           <mp-panel-card>No run found for the selected identifier.</mp-panel-card>
-        }
-        @if (!vm.loading && !vm.error && vm.detail; as detail) {
+        } @else if (vm.detail; as detail) {
           <mp-panel-card>
             <div class="headline"><strong>{{ detail.runId }}</strong><mp-status-badge [text]="detail.status" [tone]="detail.status"></mp-status-badge></div>
             <p>Workflow: {{ detail.workflowId }}</p>
@@ -49,7 +46,7 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
           <mp-panel-card>
             <h3>Step Timeline</h3>
             <ul>
-              @for (step of detail.steps; track step) {
+              @for (step of detail.steps; track step.name) {
                 <li>
                   <strong>{{ step.name }}</strong> — {{ step.state }} — {{ step.detail }}
                 </li>

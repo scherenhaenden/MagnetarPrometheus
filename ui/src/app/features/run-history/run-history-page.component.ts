@@ -52,18 +52,15 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
       @if (vm$ | async; as vm) {
         @if (vm.loading) {
           <mp-panel-card>Loading run history...</mp-panel-card>
-        }
-        @if (vm.error) {
+        } @else if (vm.error) {
           <mp-panel-card>Unable to load run history: {{ vm.error }}</mp-panel-card>
-        }
-        @if (!vm.loading && !vm.error && vm.items.length === 0) {
+        } @else if (vm.items.length === 0) {
           <mp-panel-card>
             No runs match the current filters.
           </mp-panel-card>
-        }
-        @if (!vm.loading && !vm.error && vm.items.length > 0) {
+        } @else {
           <mp-data-list-wrapper>
-            @for (run of vm.items; track run) {
+            @for (run of vm.items; track run.runId) {
               <mp-panel-card>
                 <div class="run-row">
                   <a [routerLink]="['/runs', run.runId]"><strong>{{ run.runId }}</strong></a>

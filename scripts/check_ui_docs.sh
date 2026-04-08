@@ -4,7 +4,10 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 UI_DIR="${ROOT_DIR}/ui/src/app"
 
-mapfile -t required_files < <(find "${UI_DIR}" -type f -name "*.ts" | sort)
+required_files=()
+while IFS= read -r file; do
+  required_files+=("${file}")
+done < <(find "${UI_DIR}" -type f -name "*.ts" | sort)
 
 for file in "${required_files[@]}"; do
   if ! head -n 5 "${file}" | rg -q '^/\*\*'; then

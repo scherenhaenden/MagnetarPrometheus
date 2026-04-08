@@ -14,24 +14,33 @@ import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
 @Component({
-  standalone: true,
-  imports: [AsyncPipe, NgFor, NgIf, PageContainerComponent, PageHeaderComponent, PanelCardComponent, DataListWrapperComponent],
-  template: `
+    imports: [AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent, DataListWrapperComponent],
+    template: `
     <mp-page-container>
       <mp-page-header title="Workflow Catalog" description="Available workflow templates and metadata exposed through the frontend data service boundary."></mp-page-header>
-      <ng-container *ngIf="vm$ | async as vm">
-        <mp-panel-card *ngIf="vm.loading">Loading workflow catalog...</mp-panel-card>
-        <mp-panel-card *ngIf="vm.error">Unable to load workflow catalog: {{ vm.error }}</mp-panel-card>
-        <mp-panel-card *ngIf="!vm.loading && !vm.error && vm.items.length===0">No workflows are currently available.</mp-panel-card>
-        <mp-data-list-wrapper *ngIf="!vm.loading && !vm.error && vm.items.length > 0">
-          <mp-panel-card *ngFor="let workflow of vm.items">
-            <strong>{{workflow.title}}</strong> ({{workflow.workflowId}} · v{{workflow.version}})
-            <p>{{workflow.description}}</p>
-          </mp-panel-card>
-        </mp-data-list-wrapper>
-      </ng-container>
+      @if (vm$ | async; as vm) {
+        @if (vm.loading) {
+          <mp-panel-card>Loading workflow catalog...</mp-panel-card>
+        }
+        @if (vm.error) {
+          <mp-panel-card>Unable to load workflow catalog: {{ vm.error }}</mp-panel-card>
+        }
+        @if (!vm.loading && !vm.error && vm.items.length===0) {
+          <mp-panel-card>No workflows are currently available.</mp-panel-card>
+        }
+        @if (!vm.loading && !vm.error && vm.items.length > 0) {
+          <mp-data-list-wrapper>
+            @for (workflow of vm.items; track workflow) {
+              <mp-panel-card>
+                <strong>{{workflow.title}}</strong> ({{workflow.workflowId}} · v{{workflow.version}})
+                <p>{{workflow.description}}</p>
+              </mp-panel-card>
+            }
+          </mp-data-list-wrapper>
+        }
+      }
     </mp-page-container>
-  `
+    `
 })
 export class WorkflowCatalogPageComponent {
   private readonly dataService = inject(FrontendDataService);

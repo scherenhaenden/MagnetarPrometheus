@@ -16,7 +16,7 @@ What is not real yet:
 
 - There is no long-running backend service.
 - There is no HTTP API for job submission or run inspection.
-- A first Angular web shell exists in mock mode (`ui/`), but it is not API-backed yet.
+- A first Angular web shell exists in mock mode (`ui/`), upgraded to Angular 21, but it is not API-backed yet.
 - There is no desktop UI.
 - There is no operator dashboard, queue manager, or persistent run history.
 - There is no production-grade release/publishing pipeline beyond metadata/version-stamp generation.

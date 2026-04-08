@@ -20,6 +20,6 @@ import { Component, Input } from '@angular/core';
   ]
 })
 export class StatusBadgeComponent {
-  @Input({ required: true }) text = '';
-  @Input() tone = '';
+  @Input({ required: true }) public text = '';
+  @Input() public tone = '';
 }

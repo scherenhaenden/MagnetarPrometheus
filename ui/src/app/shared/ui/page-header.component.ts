@@ -22,6 +22,6 @@ import { Component, Input } from '@angular/core';
   ]
 })
 export class PageHeaderComponent {
-  @Input({ required: true }) title = '';
-  @Input({ required: true }) description = '';
+  @Input({ required: true }) public title = '';
+  @Input({ required: true }) public description = '';
 }

@@ -31,6 +31,8 @@ The UI application in `ui/` is still pinned to Angular 17.3.x. The goal of this 
 - Verified changes passed properly.
 - Refreshed `ui/package-lock.json` after the Angular 21 dependency bump so `npm ci` works again on the upgraded branch.
 - Addressed the first PR `#165` review follow-up by replacing object-reference `@for` tracking with stable identifiers and simplifying repeated conditional template blocks with `@else if` / `@else`.
+- Closed the remaining actionable review findings by restoring explicit standalone metadata on upgraded components and reintroducing an explicit browser-oriented `lib` list in `ui/tsconfig.json`.
+- Verified `npm ci` under Node `20.19.4`; local `npm run test:ci` remains sandbox-blocked because Karma cannot bind port `9876`, so that result should not be treated as an Angular regression on the branch.
 
 ## Notes
 

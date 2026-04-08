@@ -1,3 +1,9 @@
+/**
+ * run-history-page.component.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
 import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -11,12 +17,9 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
 
 @Component({
-  standalone: true,
-  imports: [
+    imports: [
     AsyncPipe,
     DatePipe,
-    NgFor,
-    NgIf,
     RouterLink,
     ReactiveFormsModule,
     PageContainerComponent,
@@ -24,8 +27,8 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
     PanelCardComponent,
     DataListWrapperComponent,
     StatusBadgeComponent
-  ],
-  template: `
+],
+    template: `
     <mp-page-container>
       <mp-page-header
         title="Run History"
@@ -46,27 +49,36 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
         </form>
       </mp-panel-card>
 
-      <ng-container *ngIf="vm$ | async as vm">
-        <mp-panel-card *ngIf="vm.loading">Loading run history...</mp-panel-card>
-        <mp-panel-card *ngIf="vm.error">Unable to load run history: {{ vm.error }}</mp-panel-card>
-        <mp-panel-card *ngIf="!vm.loading && !vm.error && vm.items.length === 0">
-          No runs match the current filters.
-        </mp-panel-card>
-
-        <mp-data-list-wrapper *ngIf="!vm.loading && !vm.error && vm.items.length > 0">
-          <mp-panel-card *ngFor="let run of vm.items">
-            <div class="run-row">
-              <a [routerLink]="['/runs', run.runId]"><strong>{{ run.runId }}</strong></a>
-              <mp-status-badge [text]="run.status" [tone]="run.status"></mp-status-badge>
-            </div>
-            <div>{{ run.workflowId }} · {{ run.createdAtIso | date:'medium' }}</div>
-            <div>{{ run.summary }}</div>
+      @if (vm$ | async; as vm) {
+        @if (vm.loading) {
+          <mp-panel-card>Loading run history...</mp-panel-card>
+        }
+        @if (vm.error) {
+          <mp-panel-card>Unable to load run history: {{ vm.error }}</mp-panel-card>
+        }
+        @if (!vm.loading && !vm.error && vm.items.length === 0) {
+          <mp-panel-card>
+            No runs match the current filters.
           </mp-panel-card>
-        </mp-data-list-wrapper>
-      </ng-container>
+        }
+        @if (!vm.loading && !vm.error && vm.items.length > 0) {
+          <mp-data-list-wrapper>
+            @for (run of vm.items; track run) {
+              <mp-panel-card>
+                <div class="run-row">
+                  <a [routerLink]="['/runs', run.runId]"><strong>{{ run.runId }}</strong></a>
+                  <mp-status-badge [text]="run.status" [tone]="run.status"></mp-status-badge>
+                </div>
+                <div>{{ run.workflowId }} · {{ run.createdAtIso | date:'medium' }}</div>
+                <div>{{ run.summary }}</div>
+              </mp-panel-card>
+            }
+          </mp-data-list-wrapper>
+        }
+      }
     </mp-page-container>
-  `,
-  styles: ['.filters{display:grid;grid-template-columns:1fr 220px;gap:var(--mp-space-3);}.run-row{display:flex;justify-content:space-between;align-items:center;}']
+    `,
+    styles: ['.filters{display:grid;grid-template-columns:1fr 220px;gap:var(--mp-space-3);}.run-row{display:flex;justify-content:space-between;align-items:center;}']
 })
 export class RunHistoryPageComponent {
   private readonly dataService = inject(FrontendDataService);

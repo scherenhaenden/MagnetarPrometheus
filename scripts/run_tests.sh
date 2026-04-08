@@ -72,8 +72,8 @@ run_api_tests() {
 # -----------------------------------------------------------------------------
 run_ui_tests() {
     echo "--- Running UI Tests ---"
+    python3 "${ROOT_DIR}/scripts/check_ui_code_contracts.py"
     (cd "${ROOT_DIR}/ui" && npm run build && npm run test:ci)
-    bash "${ROOT_DIR}/scripts/check_ui_docs.sh"
 }
 
 # -----------------------------------------------------------------------------

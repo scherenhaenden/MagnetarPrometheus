@@ -1,3 +1,9 @@
+/**
+ * app.component.spec.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';

@@ -48,7 +48,7 @@ Today, `bash scripts/run_tests.sh` runs backend and UI tiers. The API tier remai
 ### 3. UI (`tier: ui`)
 - **Implemented.**
 - Angular unit/smoke tests execute through `npm run test:ci`.
-- Root-level integration executes `npm run build`, `npm run test:ci`, and `scripts/check_ui_docs.sh` via `bash scripts/run_tests.sh ui`.
+- Root-level integration executes `scripts/check_ui_code_contracts.py`, `npm run build`, and `npm run test:ci` via `bash scripts/run_tests.sh ui`.
 
 ## Code Coverage
 

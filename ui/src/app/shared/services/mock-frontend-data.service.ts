@@ -40,7 +40,7 @@ export class MockFrontendDataService extends FrontendDataService {
     }
   ];
 
-  getServiceHealth(): Observable<ServiceHealthSnapshot> {
+  public getServiceHealth(): Observable<ServiceHealthSnapshot> {
     const healthSnapshot: ServiceHealthSnapshot = {
       status: 'healthy',
       message: 'UI is currently running in mock transport mode.',
@@ -51,11 +51,11 @@ export class MockFrontendDataService extends FrontendDataService {
     return of(healthSnapshot).pipe(delay(150));
   }
 
-  getRunHistory(): Observable<ReadonlyArray<RunListingItem>> {
+  public getRunHistory(): Observable<ReadonlyArray<RunListingItem>> {
     return of(this.runHistory).pipe(delay(250));
   }
 
-  getRunDetail(runId: string): Observable<RunDetail | null> {
+  public getRunDetail(runId: string): Observable<RunDetail | null> {
     return this.getRunHistory().pipe(
       map((items) => items.find((item) => item.runId === runId) ?? null),
       map((item) => {
@@ -80,7 +80,7 @@ export class MockFrontendDataService extends FrontendDataService {
     );
   }
 
-  getWorkflowCatalog(): Observable<ReadonlyArray<WorkflowSummary>> {
+  public getWorkflowCatalog(): Observable<ReadonlyArray<WorkflowSummary>> {
     return of([
       {
         workflowId: 'email-triage',
@@ -99,7 +99,7 @@ export class MockFrontendDataService extends FrontendDataService {
     ]);
   }
 
-  submitJob(request: JobSubmissionRequest): Observable<JobSubmissionResult> {
+  public submitJob(request: JobSubmissionRequest): Observable<JobSubmissionResult> {
     const generatedRunId = `run-${Date.now()}`;
     this.runHistory.unshift({
       runId: generatedRunId,

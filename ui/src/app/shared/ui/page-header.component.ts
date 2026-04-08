@@ -1,3 +1,9 @@
+/**
+ * page-header.component.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -16,6 +22,6 @@ import { Component, Input } from '@angular/core';
   ]
 })
 export class PageHeaderComponent {
-  @Input({ required: true }) title = '';
-  @Input({ required: true }) description = '';
+  @Input({ required: true }) public title = '';
+  @Input({ required: true }) public description = '';
 }

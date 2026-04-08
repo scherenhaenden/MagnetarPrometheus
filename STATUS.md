@@ -16,7 +16,7 @@ What is not real yet:
 
 - There is no long-running backend service.
 - There is no HTTP API for job submission or run inspection.
-- A first Angular web shell exists in mock mode (`ui/`), but it is not API-backed yet.
+- A first Angular web shell exists in mock mode (`ui/`), upgraded to Angular 21, but it is not API-backed yet.
 - There is no desktop UI.
 - There is no operator dashboard, queue manager, or persistent run history.
 - There is no production-grade release/publishing pipeline beyond metadata/version-stamp generation.
@@ -161,9 +161,10 @@ The repository has active GitHub Actions automation under `.github/workflows/`.
 Triggers on every push to `master`/`main` and on every pull request targeting those branches.
 
 Steps enforced:
-1. **Bootstrap validation** — runs `scripts/bootstrap_python.sh` to verify a clean environment can be prepared.
-2. **Backend run-path validation** — runs `scripts/run_backend.sh` (no extra arguments) to verify the example workflow loads and executes end to end.
-3. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope and enforces 100% code coverage via the threshold in `backend/pyproject.toml`.
+1. **Runtime toolchain setup** — installs Python `3.11`, Node `22.12.0`, and the UI dependencies from `ui/package-lock.json` so both backend and Angular validation paths run against declared toolchain versions.
+2. **Bootstrap validation** — runs `scripts/bootstrap_python.sh` to verify a clean environment can be prepared.
+3. **Backend run-path validation** — runs `scripts/run_backend.sh` (no extra arguments) to verify the example workflow loads and executes end to end.
+4. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope, then the implemented UI validation tier. Backend coverage remains enforced via the threshold in `backend/pyproject.toml`.
 
 ### Release Metadata Workflow (`release.yml`)
 

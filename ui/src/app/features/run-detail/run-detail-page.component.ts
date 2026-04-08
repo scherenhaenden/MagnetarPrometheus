@@ -15,6 +15,7 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
 
 @Component({
+    standalone: true,
     imports: [AsyncPipe, DatePipe, RouterLink, PageContainerComponent, PageHeaderComponent, PanelCardComponent, StatusBadgeComponent],
     template: `
     <mp-page-container>

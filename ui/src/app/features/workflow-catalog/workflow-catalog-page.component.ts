@@ -14,6 +14,7 @@ import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
 @Component({
+    standalone: true,
     imports: [AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent, DataListWrapperComponent],
     template: `
     <mp-page-container>

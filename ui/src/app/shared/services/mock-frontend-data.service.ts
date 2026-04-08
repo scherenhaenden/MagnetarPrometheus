@@ -52,7 +52,7 @@ export class MockFrontendDataService extends FrontendDataService {
   }
 
   public getRunHistory(): Observable<ReadonlyArray<RunListingItem>> {
-    return of(this.runHistory).pipe(delay(250));
+    return of([...this.runHistory]).pipe(delay(250));
   }
 
   public getRunDetail(runId: string): Observable<RunDetail | null> {

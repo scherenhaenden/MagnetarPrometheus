@@ -27,7 +27,7 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
           <label for="workflow">Workflow</label>
           <select id="workflow" formControlName="workflowId">
             <option value="">Select workflow</option>
-            @for (workflow of (workflows$ | async); track workflow) {
+            @for (workflow of (workflows$ | async); track workflow.workflowId) {
               <option [value]="workflow.workflowId">{{workflow.title}} (v{{workflow.version}})</option>
             }
           </select>

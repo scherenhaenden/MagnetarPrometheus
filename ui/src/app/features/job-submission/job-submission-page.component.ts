@@ -14,9 +14,8 @@ import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
 @Component({
-  standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf, AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent],
-  template: `
+    imports: [ReactiveFormsModule, AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent],
+    template: `
     <mp-page-container>
       <mp-page-header
         title="Job Submission"
@@ -28,14 +27,22 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
           <label for="workflow">Workflow</label>
           <select id="workflow" formControlName="workflowId">
             <option value="">Select workflow</option>
-            <option *ngFor="let workflow of (workflows$ | async)" [value]="workflow.workflowId">{{workflow.title}} (v{{workflow.version}})</option>
+            @for (workflow of (workflows$ | async); track workflow) {
+              <option [value]="workflow.workflowId">{{workflow.title}} (v{{workflow.version}})</option>
+            }
           </select>
-          <small *ngIf="form.controls.workflowId.invalid && form.controls.workflowId.touched">Workflow selection is required.</small>
+          @if (form.controls.workflowId.invalid && form.controls.workflowId.touched) {
+            <small>Workflow selection is required.</small>
+          }
 
           <label for="reason">Reason</label>
           <input id="reason" formControlName="reason" maxlength="200" />
-          <small *ngIf="form.controls.reason.errors?.['required'] && form.controls.reason.touched">Reason is required.</small>
-          <small *ngIf="form.controls.reason.errors?.['minlength'] && form.controls.reason.touched">Reason must be at least 10 characters.</small>
+          @if (form.controls.reason.errors?.['required'] && form.controls.reason.touched) {
+            <small>Reason is required.</small>
+          }
+          @if (form.controls.reason.errors?.['minlength'] && form.controls.reason.touched) {
+            <small>Reason must be at least 10 characters.</small>
+          }
 
           <label for="priority">Priority</label>
           <select id="priority" formControlName="priority">
@@ -48,15 +55,25 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
         </form>
       </mp-panel-card>
 
-      <mp-panel-card *ngIf="submitVm$ | async as vm">
-        <p *ngIf="vm.state === 'idle'">Submission is idle. Complete the form and submit when ready.</p>
-        <p *ngIf="vm.state === 'submitting'">Submitting job request...</p>
-        <p *ngIf="vm.state === 'success'">Success: {{ vm.message }}</p>
-        <p *ngIf="vm.state === 'error'">Error: {{ vm.message }}</p>
-      </mp-panel-card>
+      @if (submitVm$ | async; as vm) {
+        <mp-panel-card>
+          @if (vm.state === 'idle') {
+            <p>Submission is idle. Complete the form and submit when ready.</p>
+          }
+          @if (vm.state === 'submitting') {
+            <p>Submitting job request...</p>
+          }
+          @if (vm.state === 'success') {
+            <p>Success: {{ vm.message }}</p>
+          }
+          @if (vm.state === 'error') {
+            <p>Error: {{ vm.message }}</p>
+          }
+        </mp-panel-card>
+      }
     </mp-page-container>
-  `,
-  styles: ['.form-grid{display:grid;grid-template-columns:1fr;gap:var(--mp-space-2);}small{color:#ffb9b9;}']
+    `,
+    styles: ['.form-grid{display:grid;grid-template-columns:1fr;gap:var(--mp-space-2);}small{color:#ffb9b9;}']
 })
 export class JobSubmissionPageComponent {
   private readonly fb = inject(FormBuilder);

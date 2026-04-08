@@ -13,10 +13,9 @@ import { map, startWith } from 'rxjs';
 import { FrontendDataService } from '../../shared/services/frontend-data.service';
 
 @Component({
-  selector: 'app-shell',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, NgClass],
-  template: `
+    selector: 'app-shell',
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, NgClass],
+    template: `
     <div class="shell">
       <header class="topbar">
         <div>
@@ -43,7 +42,7 @@ import { FrontendDataService } from '../../shared/services/frontend-data.service
       </div>
     </div>
   `,
-  styleUrl: './app-shell.component.css'
+    styleUrl: './app-shell.component.css'
 })
 export class AppShellComponent {
   private readonly dataService = inject(FrontendDataService);

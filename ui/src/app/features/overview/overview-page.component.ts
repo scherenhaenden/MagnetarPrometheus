@@ -10,9 +10,8 @@ import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
 @Component({
-  standalone: true,
-  imports: [PageContainerComponent, PageHeaderComponent, PanelCardComponent],
-  template: `
+    imports: [PageContainerComponent, PageHeaderComponent, PanelCardComponent],
+    template: `
     <mp-page-container>
       <mp-page-header
         title="Platform Overview"

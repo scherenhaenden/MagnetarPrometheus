@@ -475,3 +475,8 @@ This logbook should not be rewritten retroactively. Corrections must be made by 
 **Timestamp:** 2026-04-07 18:15 UTC
 **Author:** Codex
 **Entry:** Closed frontend packets 13-20 to scoped 100% by finalizing Angular shell/layout primitives, implementing mock+API service boundary with explicit mappers, completing run-history/run-detail/job-submission/workflow-catalog slices with loading-empty-error handling, adding Electron desktop skeleton under `desktop/`, integrating UI test/doc guard tier into `scripts/run_tests.sh ui`, and aligning README/STATUS/TESTING/UI docs plus packet-tracking markdowns. Validation commands were executed, but environment registry policy returned npm 403 so Node dependency installation and downstream Angular build/test execution could not complete in this container.
+
+---
+**Timestamp:** 2026-04-08 14:58 UTC
+**Author:** Jules
+**Entry:** Upgraded Angular from version 17 to 21 in the `ui` directory. The process included sequential upgrades from v17->18->19->20->21 using `ng update`, accompanied by dependency bumps, migration to block control flow syntax, and `package.json` updates. Verified build and testing pipelines still pass under the new framework baseline.

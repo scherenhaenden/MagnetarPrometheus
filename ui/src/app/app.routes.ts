@@ -6,24 +6,42 @@
  */
 import { Routes } from '@angular/router';
 import { AppShellComponent } from './core/layout/app-shell.component';
-import { JobSubmissionPageComponent } from './features/job-submission/job-submission-page.component';
-import { OverviewPageComponent } from './features/overview/overview-page.component';
-import { RunDetailPageComponent } from './features/run-detail/run-detail-page.component';
-import { RunHistoryPageComponent } from './features/run-history/run-history-page.component';
-import { SettingsPageComponent } from './features/settings/settings-page.component';
-import { WorkflowCatalogPageComponent } from './features/workflow-catalog/workflow-catalog-page.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: AppShellComponent,
     children: [
-      { path: '', component: OverviewPageComponent },
-      { path: 'runs', component: RunHistoryPageComponent },
-      { path: 'runs/:runId', component: RunDetailPageComponent },
-      { path: 'submit', component: JobSubmissionPageComponent },
-      { path: 'workflows', component: WorkflowCatalogPageComponent },
-      { path: 'settings', component: SettingsPageComponent },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/overview/overview-page.component').then((m) => m.OverviewPageComponent)
+      },
+      {
+        path: 'runs',
+        loadComponent: () =>
+          import('./features/run-history/run-history-page.component').then((m) => m.RunHistoryPageComponent)
+      },
+      {
+        path: 'runs/:runId',
+        loadComponent: () =>
+          import('./features/run-detail/run-detail-page.component').then((m) => m.RunDetailPageComponent)
+      },
+      {
+        path: 'submit',
+        loadComponent: () =>
+          import('./features/job-submission/job-submission-page.component').then((m) => m.JobSubmissionPageComponent)
+      },
+      {
+        path: 'workflows',
+        loadComponent: () =>
+          import('./features/workflow-catalog/workflow-catalog-page.component').then((m) => m.WorkflowCatalogPageComponent)
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/settings/settings-page.component').then((m) => m.SettingsPageComponent)
+      },
       { path: '**', redirectTo: '' }
     ]
   }

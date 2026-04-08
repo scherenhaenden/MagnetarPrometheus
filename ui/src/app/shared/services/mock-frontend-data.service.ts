@@ -40,6 +40,13 @@ export class MockFrontendDataService extends FrontendDataService {
     }
   ];
 
+  /**
+   * Simulates a health check by returning a 'healthy' snapshot.
+   *
+   * Includes a artificial delay to mimic network latency.
+   *
+   * @returns An Observable of a 'healthy' service snapshot in 'mock' mode.
+   */
   public getServiceHealth(): Observable<ServiceHealthSnapshot> {
     const healthSnapshot: ServiceHealthSnapshot = {
       status: 'healthy',
@@ -51,10 +58,27 @@ export class MockFrontendDataService extends FrontendDataService {
     return of(healthSnapshot).pipe(delay(150));
   }
 
+  /**
+   * Returns the current in-memory run history.
+   *
+   * Returns a shallow copy of the history array to prevent external mutations
+   * from affecting the mock state. Includes a network-simulating delay.
+   *
+   * @returns An Observable of the mock run history.
+   */
   public getRunHistory(): Observable<ReadonlyArray<RunListingItem>> {
     return of([...this.runHistory]).pipe(delay(250));
   }
 
+  /**
+   * Generates mock run details by finding a run in history and enriching it with synthetic steps.
+   *
+   * The enriched steps are dynamically generated based on the run's status to provide
+   * a realistic-looking run detail view.
+   *
+   * @param runId - The ID of the mock run to retrieve.
+   * @returns An Observable of the run detail or null if the ID was not found.
+   */
   public getRunDetail(runId: string): Observable<RunDetail | null> {
     return this.getRunHistory().pipe(
       map((items) => items.find((item) => item.runId === runId) ?? null),
@@ -80,6 +104,11 @@ export class MockFrontendDataService extends FrontendDataService {
     );
   }
 
+  /**
+   * Returns a static catalog of available mock workflows.
+   *
+   * @returns An Observable of a read-only array of workflow summaries.
+   */
   public getWorkflowCatalog(): Observable<ReadonlyArray<WorkflowSummary>> {
     return of([
       {
@@ -99,6 +128,12 @@ export class MockFrontendDataService extends FrontendDataService {
     ]);
   }
 
+  /**
+   * Simulates a job submission by adding a new 'queued' run to the local mock history.
+   *
+   * @param request - The job submission parameters.
+   * @returns An Observable of a successful job submission result.
+   */
   public submitJob(request: JobSubmissionRequest): Observable<JobSubmissionResult> {
     const generatedRunId = `run-${Date.now()}`;
     this.runHistory.unshift({

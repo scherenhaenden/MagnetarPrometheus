@@ -64,9 +64,26 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
     styles: ['.headline{display:flex;justify-content:space-between;align-items:center;}']
 })
 export class RunDetailPageComponent {
+  /**
+   * Access to the current route parameters, used to extract the runId.
+   */
   private readonly route = inject(ActivatedRoute);
+
+  /**
+   * The frontend data service abstraction used to fetch run details.
+   */
   private readonly dataService = inject(FrontendDataService);
 
+  /**
+   * The primary View Model observable for the run detail page.
+   *
+   * This stream orchestrates the page's reactive state by:
+   * 1. Extracting the `runId` from the route parameters.
+   * 2. Switching to the `getRunDetail` call from the data service.
+   * 3. Mapping the result into a structured state object (detail, error, loading).
+   * 4. Catching service-level errors and surfacing them in the UI state.
+   * 5. Starting with a 'loading' state to provide immediate visual feedback.
+   */
   protected readonly vm$ = this.route.paramMap.pipe(
     switchMap((params) => this.dataService.getRunDetail(params.get('runId') ?? '')),
     map((detail) => ({ detail, error: null as string | null, loading: false })),

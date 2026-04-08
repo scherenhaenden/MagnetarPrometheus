@@ -17,7 +17,6 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
 
 @Component({
-    standalone: true,
     imports: [
     AsyncPipe,
     DatePipe,
@@ -53,15 +52,18 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
       @if (vm$ | async; as vm) {
         @if (vm.loading) {
           <mp-panel-card>Loading run history...</mp-panel-card>
-        } @else if (vm.error) {
+        }
+        @if (vm.error) {
           <mp-panel-card>Unable to load run history: {{ vm.error }}</mp-panel-card>
-        } @else if (vm.items.length === 0) {
+        }
+        @if (!vm.loading && !vm.error && vm.items.length === 0) {
           <mp-panel-card>
             No runs match the current filters.
           </mp-panel-card>
-        } @else {
+        }
+        @if (!vm.loading && !vm.error && vm.items.length > 0) {
           <mp-data-list-wrapper>
-            @for (run of vm.items; track run.runId) {
+            @for (run of vm.items; track run) {
               <mp-panel-card>
                 <div class="run-row">
                   <a [routerLink]="['/runs', run.runId]"><strong>{{ run.runId }}</strong></a>

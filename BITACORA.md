@@ -472,16 +472,6 @@ This logbook should not be rewritten retroactively. Corrections must be made by 
 
 
 ---
-**Timestamp:** 2026-04-08 15:30 UTC
-**Author:** Codex
-**Entry:** Addressed the first actionable PR `#165` Angular-21 review follow-up on branch `feature/upgrade-angular-21-9264419849440967804` by replacing object-identity `@for` tracking with stable keys (`runId`, `workflowId`, `step.name`) and simplifying the upgraded block-control-flow templates with `@else if` / `@else` chains. Also refreshed `ui/package-lock.json` so `npm ci` no longer fails from package/lock drift after the Angular 21 dependency bump.
-
----
-**Timestamp:** 2026-04-08 15:32 UTC
-**Author:** Codex
-**Entry:** Closed the remaining actionable PR `#165` review items on branch `feature/upgrade-angular-21-9264419849440967804` by restoring explicit `standalone: true` metadata on the Angular 21 standalone components touched by the upgrade and by adding an explicit `lib` list (`ES2022`, `dom`) in `ui/tsconfig.json`. Validation under Node `20.19.4` confirmed `npm ci` succeeds; `npm run test:ci` remains blocked in this sandbox because Karma cannot bind port `9876` (`listen EPERM`), so that failure is environmental rather than an application regression.
-
----
 **Timestamp:** 2026-04-07 18:15 UTC
 **Author:** Codex
 **Entry:** Closed frontend packets 13-20 to scoped 100% by finalizing Angular shell/layout primitives, implementing mock+API service boundary with explicit mappers, completing run-history/run-detail/job-submission/workflow-catalog slices with loading-empty-error handling, adding Electron desktop skeleton under `desktop/`, integrating UI test/doc guard tier into `scripts/run_tests.sh ui`, and aligning README/STATUS/TESTING/UI docs plus packet-tracking markdowns. Validation commands were executed, but environment registry policy returned npm 403 so Node dependency installation and downstream Angular build/test execution could not complete in this container.

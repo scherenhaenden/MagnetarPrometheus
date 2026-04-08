@@ -14,7 +14,6 @@ import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
 @Component({
-    standalone: true,
     imports: [ReactiveFormsModule, AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent],
     template: `
     <mp-page-container>
@@ -28,7 +27,7 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
           <label for="workflow">Workflow</label>
           <select id="workflow" formControlName="workflowId">
             <option value="">Select workflow</option>
-            @for (workflow of (workflows$ | async); track workflow.workflowId) {
+            @for (workflow of (workflows$ | async); track workflow) {
               <option [value]="workflow.workflowId">{{workflow.title}} (v{{workflow.version}})</option>
             }
           </select>
@@ -60,11 +59,14 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
         <mp-panel-card>
           @if (vm.state === 'idle') {
             <p>Submission is idle. Complete the form and submit when ready.</p>
-          } @else if (vm.state === 'submitting') {
+          }
+          @if (vm.state === 'submitting') {
             <p>Submitting job request...</p>
-          } @else if (vm.state === 'success') {
+          }
+          @if (vm.state === 'success') {
             <p>Success: {{ vm.message }}</p>
-          } @else if (vm.state === 'error') {
+          }
+          @if (vm.state === 'error') {
             <p>Error: {{ vm.message }}</p>
           }
         </mp-panel-card>

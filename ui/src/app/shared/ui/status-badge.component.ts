@@ -8,7 +8,6 @@ import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
-    standalone: true,
     selector: 'mp-status-badge',
     imports: [NgClass],
     template: '<span class="badge" [ngClass]="tone">{{ text }}</span>',

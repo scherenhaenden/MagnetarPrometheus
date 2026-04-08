@@ -14,7 +14,6 @@ import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
 @Component({
-    standalone: true,
     imports: [AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent, DataListWrapperComponent],
     template: `
     <mp-page-container>
@@ -22,13 +21,16 @@ import { PanelCardComponent } from '../../shared/ui/panel-card.component';
       @if (vm$ | async; as vm) {
         @if (vm.loading) {
           <mp-panel-card>Loading workflow catalog...</mp-panel-card>
-        } @else if (vm.error) {
+        }
+        @if (vm.error) {
           <mp-panel-card>Unable to load workflow catalog: {{ vm.error }}</mp-panel-card>
-        } @else if (vm.items.length===0) {
+        }
+        @if (!vm.loading && !vm.error && vm.items.length===0) {
           <mp-panel-card>No workflows are currently available.</mp-panel-card>
-        } @else {
+        }
+        @if (!vm.loading && !vm.error && vm.items.length > 0) {
           <mp-data-list-wrapper>
-            @for (workflow of vm.items; track workflow.workflowId) {
+            @for (workflow of vm.items; track workflow) {
               <mp-panel-card>
                 <strong>{{workflow.title}}</strong> ({{workflow.workflowId}} · v{{workflow.version}})
                 <p>{{workflow.description}}</p>

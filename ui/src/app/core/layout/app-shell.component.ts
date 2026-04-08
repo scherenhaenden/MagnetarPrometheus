@@ -13,7 +13,6 @@ import { map, startWith } from 'rxjs';
 import { FrontendDataService } from '../../shared/services/frontend-data.service';
 
 @Component({
-    standalone: true,
     selector: 'app-shell',
     imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, NgClass],
     template: `

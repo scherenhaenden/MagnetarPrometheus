@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-07 13:20 UTC
+**Author:** Codex
+**Entry:** Advanced the frontend packet stream from `11`/`12` toward `20` on branch `feature/frontend-11-20-progress` by replacing the Angular starter template with a routed shell, adding a documented frontend contract boundary (`FrontendDataService`) with a mock adapter, implementing run-history/run-detail and job-submission slices in mock mode, and updating `ui/README.md` plus packet docs with explicit completion percentages and pending gaps (notably packet `18` desktop shell and root-level UI tier automation integration).
+
+---
 **Timestamp:** 2026-04-02 16:23 CEST
 **Author:** Codex
 **Entry:** Resolved the pending cleanup set for issues `#111`, `#106`, `#109`, `#95`, and `#96` on the current branch. Reordered the misplaced `2026-03-26 11:00 UTC` Bitacora entry back into strict reverse chronology, hardened the email example step to fail cleanly when the first message lacks a subject, made the base executor contract raise `NotImplementedError` explicitly so the abstract test proves real behavior, escaped regex-sensitive `pytest.raises(match=...)` patterns, and aligned the canonical version stamp contract to the portable `yyyy.MM.dd HH:mm:ss.SSS` form across the shell script, backend helper, tests, and current normative docs.
@@ -464,3 +469,14 @@ Each entry should use:
 ## Immutability
 
 This logbook should not be rewritten retroactively. Corrections must be made by adding a new entry that clarifies an earlier one.
+
+
+---
+**Timestamp:** 2026-04-07 18:15 UTC
+**Author:** Codex
+**Entry:** Closed frontend packets 13-20 to scoped 100% by finalizing Angular shell/layout primitives, implementing mock+API service boundary with explicit mappers, completing run-history/run-detail/job-submission/workflow-catalog slices with loading-empty-error handling, adding Electron desktop skeleton under `desktop/`, integrating UI test/doc guard tier into `scripts/run_tests.sh ui`, and aligning README/STATUS/TESTING/UI docs plus packet-tracking markdowns. Validation commands were executed, but environment registry policy returned npm 403 so Node dependency installation and downstream Angular build/test execution could not complete in this container.
+
+---
+**Timestamp:** 2026-04-08 14:58 UTC
+**Author:** Jules
+**Entry:** Upgraded Angular from version 17 to 21 in the `ui` directory. The process included sequential upgrades from v17->18->19->20->21 using `ng update`, accompanied by dependency bumps, migration to block control flow syntax, and `package.json` updates. Verified build and testing pipelines still pass under the new framework baseline.

@@ -1,13 +1,48 @@
 /**
- * Intent:
- * This file defines the top-level routing structure for the MagnetarPrometheus UI.
- * Future feature slices (like the Run History browser or the Job Submission form)
- * will register their route entries here.
+ * Top-level route map for the MagnetarPrometheus web shell.
  *
- * Rules:
- * - Keep routing lazy-loaded wherever practical.
- * - Route configuration must remain cleanly separated from component implementations.
+ * The route map intentionally separates product slices so each feature packet can evolve
+ * independently with disjoint ownership.
  */
 import { Routes } from '@angular/router';
+import { AppShellComponent } from './core/layout/app-shell.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: '',
+    component: AppShellComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/overview/overview-page.component').then((m) => m.OverviewPageComponent)
+      },
+      {
+        path: 'runs',
+        loadComponent: () =>
+          import('./features/run-history/run-history-page.component').then((m) => m.RunHistoryPageComponent)
+      },
+      {
+        path: 'runs/:runId',
+        loadComponent: () =>
+          import('./features/run-detail/run-detail-page.component').then((m) => m.RunDetailPageComponent)
+      },
+      {
+        path: 'submit',
+        loadComponent: () =>
+          import('./features/job-submission/job-submission-page.component').then((m) => m.JobSubmissionPageComponent)
+      },
+      {
+        path: 'workflows',
+        loadComponent: () =>
+          import('./features/workflow-catalog/workflow-catalog-page.component').then((m) => m.WorkflowCatalogPageComponent)
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/settings/settings-page.component').then((m) => m.SettingsPageComponent)
+      },
+      { path: '**', redirectTo: '' }
+    ]
+  }
+];

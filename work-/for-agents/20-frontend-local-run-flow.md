@@ -1,5 +1,13 @@
 # Agent 20 Prompt: Frontend Local Run Flow
 
+## Implementation Status (2026-04-07)
+
+- Local Angular run/install/test flow now documented in `ui/README.md`.
+- Mock-vs-future-API boundary now documented explicitly.
+- All scoped run-flow gaps closed: root README quick-start aligned, UI README expanded, root `scripts/run_tests.sh ui` tier integrated.
+- **Completion:** **100%** for packet 20 scope in this branch.
+
+
 ## First Read These Files
 
 Read in this order:

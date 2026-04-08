@@ -1,3 +1,4 @@
+import { provideZoneChangeDetection } from "@angular/core";
 /**
  * Intent:
  * This file serves as the main entrypoint for the MagnetarPrometheus Angular web UI.
@@ -14,5 +15,5 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 
-bootstrapApplication(AppComponent, appConfig)
+bootstrapApplication(AppComponent, {...appConfig, providers: [provideZoneChangeDetection(), ...appConfig.providers]})
   .catch((err) => console.error(err));

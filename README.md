@@ -83,7 +83,33 @@ To run a specific workflow file instead of the default example:
 bash run_app.sh --workflow backend/src/magnetar_prometheus/modules/email_module/email_triage.yaml
 ```
 
-At the moment there is no browser-based UI application to launch from this repository. The CLI workflow runner is the current user-facing entrypoint.
+A complete Angular UI baseline now exists under `ui/` with mock and API transport modes plus an Electron desktop host skeleton under `desktop/`.
+
+From repository root:
+
+```bash
+cd ui
+npm ci
+npm run start:mock
+```
+
+The CLI workflow runner remains the most stable integrated runtime path. The UI and desktop shell are now implemented for the scoped baseline and can run in mock/API modes depending on environment setup.
+
+For API transport mode (backend HTTP service must be running):
+
+```bash
+cd ui
+npm run start:api
+```
+
+Desktop shell skeleton (Electron host wrapping Angular):
+
+```bash
+cd desktop
+npm ci
+MP_UI_DEV_SERVER_URL=http://localhost:4200 npm run start
+```
+
 
 ## Project Contents
 

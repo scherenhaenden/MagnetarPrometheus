@@ -29,6 +29,8 @@ The UI application in `ui/` is still pinned to Angular 17.3.x. The goal of this 
 - Ensured migration to Angular 21 compatible syntax and configuration blocks was successfully applied to existing component models.
 - Re-installed dependancies and verified all core building checks via `npm run build`, `npm run test:ci`, and `npm run check:docs`.
 - Verified changes passed properly.
+- Refreshed `ui/package-lock.json` after the Angular 21 dependency bump so `npm ci` works again on the upgraded branch.
+- Addressed the first PR `#165` review follow-up by replacing object-reference `@for` tracking with stable identifiers and simplifying repeated conditional template blocks with `@else if` / `@else`.
 
 ## Notes
 

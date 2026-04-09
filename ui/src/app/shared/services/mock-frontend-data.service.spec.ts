@@ -28,6 +28,16 @@ describe('MockFrontendDataService', () => {
     ]);
   });
 
+  it('should report healthy mock transport status', async () => {
+    await expectAsync(firstValueFrom(service.getServiceHealth())).toBeResolvedTo(
+      jasmine.objectContaining({
+        status: 'healthy',
+        mode: 'mock',
+        message: 'UI is currently running in mock transport mode.'
+      })
+    );
+  });
+
   it('should generate run detail for a known run', async () => {
     await expectAsync(firstValueFrom(service.getRunDetail('run-20260407-001'))).toBeResolvedTo(
       jasmine.objectContaining({
@@ -35,6 +45,27 @@ describe('MockFrontendDataService', () => {
         status: 'succeeded',
         steps: jasmine.arrayContaining([
           jasmine.objectContaining({ name: 'collect-input', state: 'done' })
+        ])
+      })
+    );
+  });
+
+  it('should include failure detail when generating a failed run detail', async () => {
+    await expectAsync(firstValueFrom(service.getRunDetail('run-20260407-002'))).toBeResolvedTo(
+      jasmine.objectContaining({
+        runId: 'run-20260407-002',
+        status: 'failed',
+        errorMessage: 'Synthetic module failure (mock).',
+        steps: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            name: 'process-route',
+            state: 'failed',
+            detail: 'Rule evaluation failed in mock branch.'
+          }),
+          jasmine.objectContaining({
+            name: 'persist-summary',
+            state: 'pending'
+          })
         ])
       })
     );
@@ -63,5 +94,20 @@ describe('MockFrontendDataService', () => {
       status: 'queued',
       summary: 'Queued from UI (high priority): Smoke test'
     }));
+  });
+
+  it('should expose the mock workflow catalog', async () => {
+    await expectAsync(firstValueFrom(service.getWorkflowCatalog())).toBeResolvedTo([
+      jasmine.objectContaining({
+        workflowId: 'email-triage',
+        title: 'Email Triage',
+        version: '1.2.0'
+      }),
+      jasmine.objectContaining({
+        workflowId: 'error-module',
+        title: 'Failure Simulator',
+        version: '0.9.0'
+      })
+    ]);
   });
 });

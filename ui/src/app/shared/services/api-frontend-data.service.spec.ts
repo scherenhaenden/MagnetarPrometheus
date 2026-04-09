@@ -89,6 +89,46 @@ describe('ApiFrontendDataService', () => {
     request.flush(null);
   });
 
+  it('should fetch run detail and map a populated response', () => {
+    service.getRunDetail('run-1').subscribe((detail) => {
+      expect(detail).toEqual({
+        runId: 'run-1',
+        workflowId: 'workflow-a',
+        status: 'succeeded',
+        createdAtIso: '2026-04-09T10:00:00Z',
+        completedAtIso: '2026-04-09T10:00:01Z',
+        steps: [
+          {
+            name: 'collect-input',
+            state: 'done',
+            detail: 'Collected input.'
+          }
+        ],
+        errorMessage: null,
+        outputPreview: 'Preview'
+      });
+    });
+
+    const request = httpMock.expectOne('/api/runs/run-1');
+    expect(request.request.method).toBe('GET');
+    request.flush({
+      run_id: 'run-1',
+      workflow_id: 'workflow-a',
+      status: 'succeeded',
+      created_at: '2026-04-09T10:00:00Z',
+      completed_at: '2026-04-09T10:00:01Z',
+      steps: [
+        {
+          name: 'collect-input',
+          state: 'done',
+          detail: 'Collected input.'
+        }
+      ],
+      error_message: null,
+      output_preview: 'Preview'
+    });
+  });
+
   it('should fetch workflow catalog and map version defaults', () => {
     service.getWorkflowCatalog().subscribe((items) => {
       expect(items).toEqual([

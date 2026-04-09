@@ -13,7 +13,12 @@ import { MockFrontendDataService } from './mock-frontend-data.service';
 /**
  * Strategy provider for selecting mock or API transport mode.
  */
+export const selectFrontendDataServiceClass = (
+  useMockDataService: boolean
+): typeof MockFrontendDataService | typeof ApiFrontendDataService =>
+  useMockDataService ? MockFrontendDataService : ApiFrontendDataService;
+
 export const FRONTEND_DATA_SERVICE_PROVIDER: Provider = {
   provide: FrontendDataService,
-  useClass: environment.useMockDataService ? MockFrontendDataService : ApiFrontendDataService
+  useClass: selectFrontendDataServiceClass(environment.useMockDataService)
 };

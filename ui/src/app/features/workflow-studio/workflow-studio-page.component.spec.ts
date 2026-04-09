@@ -25,4 +25,13 @@ describe('WorkflowStudioPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should render the studio shell in English', () => {
+    const element: HTMLElement = fixture.nativeElement;
+
+    expect(element.querySelector('h2')?.textContent).toContain('Workflow Studio');
+    expect(element.textContent).toContain('Visual editor workspace for building, testing, and debugging workflows.');
+    expect(element.textContent).toContain('New Workflow');
+    expect(element.querySelector('.library')?.getAttribute('aria-label')).toBe('Node Library');
+  });
 });

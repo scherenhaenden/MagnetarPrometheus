@@ -16,7 +16,8 @@
   padding: var(--mp-space-4);
   border: 1px solid var(--mp-color-border);
   border-radius: var(--mp-radius-lg);
-  background: #0f172a;
+  background: var(--mp-color-surface-raised);
+  box-shadow: var(--mp-elevation-1);
 }
 
 .studio-toolbar h2 {
@@ -35,7 +36,7 @@
 
 .toolbar-actions button {
   border: 1px solid var(--mp-color-border);
-  background: #111827;
+  background: var(--mp-color-surface);
   color: var(--mp-color-text-primary);
   border-radius: var(--mp-radius-md);
   padding: var(--mp-space-2) var(--mp-space-3);
@@ -43,9 +44,9 @@
 }
 
 .toolbar-actions button.primary {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #fff;
+  background: var(--mp-color-accent);
+  border-color: var(--mp-color-accent);
+  color: var(--mp-color-accent-contrast);
 }
 
 .studio-grid {
@@ -62,8 +63,9 @@
   border: 1px solid var(--mp-color-border);
   border-radius: var(--mp-radius-lg);
   padding: var(--mp-space-4);
-  background: #0b1220;
+  background: var(--mp-color-surface);
   min-height: 180px;
+  box-shadow: var(--mp-elevation-1);
 }
 
 .panel h3 {

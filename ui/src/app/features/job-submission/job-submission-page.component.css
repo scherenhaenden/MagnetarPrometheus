@@ -1,0 +1,9 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--mp-space-2);
+}
+
+small {
+  color: #ffb9b9;
+}

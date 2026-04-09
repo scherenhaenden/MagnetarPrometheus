@@ -6,10 +6,18 @@
  */
 import { Component } from '@angular/core';
 
+/**
+ * DataListWrapperComponent functions as a structural helper for presenting lists of data items.
+ *
+ * It is primarily intended to wrap collections of `mp-panel-card` components
+ * (often rendered within an `@for` loop). It establishes a consistent vertical flow
+ * and standardized spacing (gap) between the rendered items in the list, ensuring
+ * that data grids across different features maintain a uniform appearance.
+ */
 @Component({
   selector: 'mp-data-list-wrapper',
   standalone: true,
-  template: '<div class="list"><ng-content></ng-content></div>',
-  styles: ['.list{display:flex;flex-direction:column;gap:var(--mp-space-3);}']
+  templateUrl: './data-list-wrapper.component.html',
+  styleUrl: './data-list-wrapper.component.css'
 })
 export class DataListWrapperComponent {}

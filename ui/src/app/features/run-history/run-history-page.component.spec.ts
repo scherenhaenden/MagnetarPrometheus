@@ -84,6 +84,16 @@ describe('RunHistoryPageComponent', () => {
     expect(element.textContent).not.toContain('run-1');
   });
 
+  it('should filter runs by workflow id when the status remains all', () => {
+    component['filterForm'].setValue({ search: 'workflow-a', status: 'all' });
+    fixture.detectChanges();
+
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.textContent).toContain('run-1');
+    expect(element.textContent).toContain('workflow-a');
+    expect(element.textContent).not.toContain('run-2');
+  });
+
   it('should show the empty-state message when filters exclude all runs', () => {
     component['filterForm'].setValue({ search: 'missing', status: 'all' });
     fixture.detectChanges();

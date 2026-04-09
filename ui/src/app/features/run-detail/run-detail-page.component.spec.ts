@@ -47,6 +47,13 @@ describe('RunDetailPageComponent', () => {
     expect(TestBed.inject(FrontendDataService).getRunDetail).toHaveBeenCalledWith('run-1');
   });
 
+  it('should fall back to an empty run id when the route parameter is missing', async () => {
+    routeParamMap$.next(convertToParamMap({}));
+    fixture.detectChanges();
+
+    expect(mockDataService.getRunDetail).toHaveBeenCalledWith('');
+  });
+
   it('should show the loading state before the selected run resolves', () => {
     mockDataService.getRunDetail.and.returnValue(new Subject().asObservable());
 

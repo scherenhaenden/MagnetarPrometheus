@@ -11,6 +11,7 @@ What is real today:
 - A one-command local launcher exists: `bash run_app.sh`.
 - An example workflow, `email_triage`, runs end to end and produces deterministic JSON output.
 - CI and local test execution enforce `100%` coverage for the implemented backend and SDK scope.
+- The Angular UI tier now also enforces `100%` coverage for statements, branches, functions, and lines.
 
 What is not real yet:
 
@@ -150,7 +151,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 | 19 | Frontend testing + doc guards | 100% |
 | 20 | Frontend local run flow | 100% |
 
-Residual constraint: UI dependency installation is blocked in this environment due npm registry `403`, so executable validation commands are documented with exact failure notes instead of green runs.
+Residual constraint: some Codex sandbox environments cannot bind Karma's local port `9876`, so local browser-test failures there should not be confused with the actual repository coverage policy. On a normal developer machine and in GitHub Actions, the UI tier now runs with explicit `100%` coverage enforcement.
 
 ## CI and Release Automation
 
@@ -164,7 +165,7 @@ Steps enforced:
 1. **Runtime toolchain setup** — installs Python `3.11`, Node `22.12.0`, and the UI dependencies from `ui/package-lock.json` so both backend and Angular validation paths run against declared toolchain versions.
 2. **Bootstrap validation** — runs `scripts/bootstrap_python.sh` to verify a clean environment can be prepared.
 3. **Backend run-path validation** — runs `scripts/run_backend.sh` (no extra arguments) to verify the example workflow loads and executes end to end.
-4. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope, then the implemented UI validation tier. Backend coverage remains enforced via the threshold in `backend/pyproject.toml`.
+4. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope, then the implemented UI validation tier. Backend coverage remains enforced via the threshold in `backend/pyproject.toml`, and the Angular UI tier now enforces `100%` coverage through `ui/karma.conf.cjs`.
 
 ### Release Metadata Workflow (`release.yml`)
 

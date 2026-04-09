@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-09 15:25 CEST
+**Author:** Codex
+**Entry:** Tightened the Angular UI validation tier on branch `feature/add-ui-tests-12952883483010130617` so `npm run test:ci` now enforces `100%` statements/branches/functions/lines via `ui/karma.conf.cjs` instead of only requiring test green status. Closed the remaining coverage gaps by expanding route-loader, job-submission, run-detail, run-history, API-adapter, mock-adapter, and provider tests until the only remaining failures were true uncovered branches rather than missing policy wiring.
+
+---
 **Timestamp:** 2026-04-07 13:20 UTC
 **Author:** Codex
 **Entry:** Advanced the frontend packet stream from `11`/`12` toward `20` on branch `feature/frontend-11-20-progress` by replacing the Angular starter template with a routed shell, adding a documented frontend contract boundary (`FrontendDataService`) with a mock adapter, implementing run-history/run-detail and job-submission slices in mock mode, and updating `ui/README.md` plus packet docs with explicit completion percentages and pending gaps (notably packet `18` desktop shell and root-level UI tier automation integration).

@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.studio-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mp-space-4);
+}
+
+.studio-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--mp-space-4);
+  align-items: center;
+  padding: var(--mp-space-4);
+  border: 1px solid var(--mp-color-border);
+  border-radius: var(--mp-radius-lg);
+  background: var(--mp-color-surface-raised);
+  box-shadow: var(--mp-elevation-1);
+}
+
+.studio-toolbar h2 {
+  margin: 0;
+}
+
+.studio-toolbar p {
+  margin: var(--mp-space-1) 0 0;
+  color: var(--mp-color-text-muted);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: var(--mp-space-2);
+}
+
+.toolbar-actions button {
+  border: 1px solid var(--mp-color-border);
+  background: var(--mp-color-surface);
+  color: var(--mp-color-text-primary);
+  border-radius: var(--mp-radius-md);
+  padding: var(--mp-space-2) var(--mp-space-3);
+  cursor: pointer;
+}
+
+.toolbar-actions button.primary {
+  background: var(--mp-color-accent);
+  border-color: var(--mp-color-accent);
+  color: var(--mp-color-accent-contrast);
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 280px minmax(420px, 1fr) 320px;
+  grid-template-rows: minmax(320px, 1fr) auto;
+  grid-template-areas:
+    'library canvas inspector'
+    'diagnostics diagnostics diagnostics';
+  gap: var(--mp-space-3);
+}
+
+.panel {
+  border: 1px solid var(--mp-color-border);
+  border-radius: var(--mp-radius-lg);
+  padding: var(--mp-space-4);
+  background: var(--mp-color-surface);
+  min-height: 180px;
+  box-shadow: var(--mp-elevation-1);
+}
+
+.panel h3 {
+  margin-top: 0;
+}
+
+.panel p {
+  color: var(--mp-color-text-muted);
+}
+
+.library {
+  grid-area: library;
+}
+
+.canvas {
+  grid-area: canvas;
+  min-height: 420px;
+}
+
+.inspector {
+  grid-area: inspector;
+}
+
+.diagnostics {
+  grid-area: diagnostics;
+}
+
+@media (max-width: 1280px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'library'
+      'canvas'
+      'inspector'
+      'diagnostics';
+  }
+}

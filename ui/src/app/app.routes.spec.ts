@@ -38,5 +38,8 @@ describe('App routes smoke', () => {
 
     await router.navigateByUrl('/workflows');
     expect(router.url).toBe('/workflows');
+
+    await router.navigateByUrl('/studio');
+    expect(router.url).toBe('/studio');
   });
 });

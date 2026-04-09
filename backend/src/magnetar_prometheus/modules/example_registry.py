@@ -20,6 +20,8 @@ Why this file exists in this form:
 from magnetar_prometheus.modules.email_module.steps import register_example_steps
 from magnetar_prometheus.modules.error_module.steps import register_error_steps
 from magnetar_prometheus.modules.linear_module.steps import register_linear_steps
+from magnetar_prometheus.modules.math_module.steps import register_math_steps
+from magnetar_prometheus.modules.http_module.steps import register_http_steps
 
 
 def register_all_example_steps(registry) -> None:
@@ -27,3 +29,5 @@ def register_all_example_steps(registry) -> None:
     register_example_steps(registry)
     register_linear_steps(registry)
     register_error_steps(registry)
+    register_math_steps(registry)
+    register_http_steps(registry)

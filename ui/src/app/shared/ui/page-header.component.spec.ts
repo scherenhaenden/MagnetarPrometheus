@@ -32,4 +32,10 @@ describe('PageHeaderComponent', () => {
     expect(component.title).toBe('Test Title');
     expect(component.description).toBe('Test Description');
   });
+
+  it('should render the title and description', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelector('h2')?.textContent).toContain('Test Title');
+    expect(element.querySelector('p')?.textContent).toContain('Test Description');
+  });
 });

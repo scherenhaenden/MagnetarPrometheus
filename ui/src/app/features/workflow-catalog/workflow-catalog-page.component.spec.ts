@@ -34,4 +34,8 @@ describe('WorkflowCatalogPageComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should request the workflow catalog', () => {
+    expect(TestBed.inject(FrontendDataService).getWorkflowCatalog).toHaveBeenCalled();
+  });
 });

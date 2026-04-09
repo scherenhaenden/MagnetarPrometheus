@@ -30,4 +30,14 @@ describe('StatusBadgeComponent', () => {
   it('should accept text input', () => {
     expect(component.text).toBe('test status');
   });
+
+  it('should render text and tone class', () => {
+    component.tone = 'succeeded';
+    fixture.detectChanges();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const badge = element.querySelector('.badge');
+    expect(badge?.textContent).toContain('test status');
+    expect(badge?.classList).toContain('succeeded');
+  });
 });

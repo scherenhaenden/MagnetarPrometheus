@@ -4,6 +4,7 @@
  * This test validates the RunDetailPageComponent.
  */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { RunDetailPageComponent } from './run-detail-page.component';
@@ -21,6 +22,7 @@ describe('RunDetailPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [RunDetailPageComponent, RouterTestingModule],
       providers: [
+        { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ runId: 'run-1' })) } },
         { provide: FrontendDataService, useValue: mockDataService }
       ]
     }).compileComponents();
@@ -34,5 +36,9 @@ describe('RunDetailPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should request the selected run', () => {
+    expect(TestBed.inject(FrontendDataService).getRunDetail).toHaveBeenCalledWith('run-1');
   });
 });

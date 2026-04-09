@@ -15,7 +15,16 @@ describe('RunHistoryPageComponent', () => {
 
   beforeEach(async () => {
     const mockDataService = {
-      getRunHistory: jasmine.createSpy('getRunHistory').and.returnValue(of([]))
+      getRunHistory: jasmine.createSpy('getRunHistory').and.returnValue(of([
+        {
+          runId: 'run-1',
+          workflowId: 'workflow-a',
+          status: 'succeeded',
+          createdAtIso: '2026-04-09T10:00:00Z',
+          completedAtIso: '2026-04-09T10:00:01Z',
+          summary: 'Done'
+        }
+      ]))
     };
 
     await TestBed.configureTestingModule({
@@ -34,5 +43,11 @@ describe('RunHistoryPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render the filter controls', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelector('input[formcontrolname="search"]')).withContext('search input').not.toBeNull();
+    expect(element.querySelector('select[formcontrolname="status"]')).withContext('status select').not.toBeNull();
   });
 });

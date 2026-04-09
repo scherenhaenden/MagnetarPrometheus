@@ -40,4 +40,13 @@ describe('AppShellComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should request service health during initialization', () => {
+    expect(TestBed.inject(FrontendDataService).getServiceHealth).toHaveBeenCalled();
+  });
+
+  it('should render the health label', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelector('.status')?.textContent).toContain('healthy · MOCK · Mock service is healthy');
+  });
 });

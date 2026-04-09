@@ -48,12 +48,14 @@ Today, `bash scripts/run_tests.sh` runs backend and UI tiers. The API tier remai
 ### 3. UI (`tier: ui`)
 - **Implemented.**
 - Angular unit/smoke tests execute through `npm run test:ci`.
+- The Angular UI tier now enforces `100%` coverage for statements, branches, functions, and lines through `ui/karma.conf.cjs`.
 - Root-level integration executes `scripts/check_ui_code_contracts.py`, `npm run build`, and `npm run test:ci` via `bash scripts/run_tests.sh ui`.
 
 ## Code Coverage
 
 - Backend automated test target: 100% coverage on core orchestration code
 - Shared schema and SDK target: 100% coverage on validation and transformation logic
+- Angular UI automated test target: 100% coverage on statements, branches, functions, and lines
 - Bootstrap and dependency-detection flows must also be covered, including success, install-needed, install-failed, and policy-disabled paths
 
 ## Acceptance Criteria
@@ -91,7 +93,7 @@ bash scripts/run_tests.sh
 These commands validate both the visible surface (the CLI) and the internal correctness (the engine tests):
 
 - `run_app.sh` proves the backend can bootstrap and execute the example workflow
-- `scripts/run_tests.sh` proves the implemented backend and SDK scope still satisfies the enforced coverage contract
+- `scripts/run_tests.sh` proves the implemented backend, SDK, and UI scopes still satisfy the enforced coverage contracts
 
 ## Bug Reporting Process
 

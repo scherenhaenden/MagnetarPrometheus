@@ -71,6 +71,7 @@ export class RunHistoryPageComponent {
    * emits immediately upon subscription instead of waiting for the user to change a filter.
    */
   private readonly filterValue$ = this.filterForm.valueChanges.pipe(
+    map(() => this.filterForm.getRawValue()),
     startWith(this.filterForm.getRawValue())
   );
 
@@ -93,9 +94,10 @@ export class RunHistoryPageComponent {
     this.filterValue$
   ]).pipe(
     map(([response, filter]) => {
-      // Clean and normalize the search query (without unrequested .trim() addition)
-      const query = (filter.search ?? '').toLowerCase();
-      const status = filter.status ?? 'all';
+      // The form is built with `nonNullable`, so filter values stay as strings instead of
+      // drifting to null during reset or patch flows.
+      const query = filter.search.toLowerCase();
+      const status = filter.status;
 
       // Filter the items based on the criteria
       const filtered = response.items.filter((item) => {

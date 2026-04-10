@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 11:55 CEST
+**Author:** Codex
+**Entry:** Hardened PR `#170` on `feature/add-example-workflows-10944637492021849479` by making the example math and HTTP steps preserve existing `context['data']` instead of overwriting it, guarding non-mapping context payloads in the math path, and replacing brittle JSON string interpolation in the HTTP mock with `json.dumps`. Expanded the module tests to cover preserved data fields, invalid/non-mapping context payloads, and special-character URL serialization. Verified the touched tests with `pytest --no-cov backend/tests/test_math_module.py backend/tests/test_http_module.py -q`: `12 passed`.
+
+---
 **Timestamp:** 2026-04-09 15:25 CEST
 **Author:** Codex
 **Entry:** Tightened the Angular UI validation tier on branch `feature/add-ui-tests-12952883483010130617` so `npm run test:ci` now enforces `100%` statements/branches/functions/lines via `ui/karma.conf.cjs` instead of only requiring test green status. Closed the remaining coverage gaps by expanding route-loader, job-submission, run-detail, run-history, API-adapter, mock-adapter, and provider tests until the only remaining failures were true uncovered branches rather than missing policy wiring.
@@ -326,6 +331,11 @@ Each entry should use:
 **Timestamp:** 2026-03-30 14:55 UTC
 **Author:** Codex
 **Entry:** Implemented issue `#105` on `fix/issue-105-workflow-loader-yaml-guard` after fast-forwarding local `master` to `origin/master` and branching from the updated base. Hardened `WorkflowLoader` to reject empty or non-mapping YAML roots with a clear filepath-specific `ValueError`, added loader tests for empty/list/scalar YAML inputs, and revalidated with `bash scripts/run_tests.sh`: `69 passed`, `100.00%` coverage.
+
+---
+**Timestamp:** 2026-04-10 12:35 CEST
+**Author:** Codex
+**Entry:** Hardened PR `#172` on `codex/update-application-run-script-for-daemon-mode` by fixing `run_app.sh` daemon argument validation, enforcing `--api` explicitly in daemon mode, forwarding parsed backend flags into the detached API start path, and switching daemon PID/log files to host-and-port-specific defaults with environment overrides. Updated `scripts/run_backend.sh` to `exec` the Python CLI so daemon stop targets the real backend process instead of an intermediate shell wrapper. Aligned `README.md`, `STATUS.md`, and `TESTING.md` with the new repo-root API daemon lifecycle commands.
 
 ---
 **Timestamp:** 2026-03-27 16:09 UTC

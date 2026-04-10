@@ -1,0 +1,20 @@
+id: math_example
+name: Math Workflow Example
+version: 1.0.0
+start_step: start_math
+
+steps:
+  start_math:
+    type: math.add
+    executor: python
+    config:
+      a: 5
+      b: 10
+    next: process_math
+
+  process_math:
+    type: math.multiply
+    executor: python
+    config:
+      factor: 2
+    next: end

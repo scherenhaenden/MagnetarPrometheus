@@ -13,7 +13,7 @@
  * improvements can ship safely before runtime/API wiring is completed.
  */
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 
 type NodeCategory = 'trigger' | 'process' | 'logic' | 'integration';
 
@@ -32,6 +32,17 @@ interface StudioNode {
   summary: string;
   x: number;
   y: number;
+}
+
+interface ThemeOption {
+  id: string;
+  label: string;
+}
+
+interface AccentOption {
+  id: string;
+  label: string;
+  value: string;
 }
 
 @Component({
@@ -62,14 +73,34 @@ export class WorkflowStudioPageComponent implements OnDestroy {
 
   protected readonly workflowSequence = this.nodes.map((node) => node.id);
 
+  protected readonly themeOptions: ThemeOption[] = [
+    { id: 'midnight', label: 'Midnight' },
+    { id: 'graphite', label: 'Graphite' },
+    { id: 'aurora', label: 'Aurora' }
+  ];
+
+  protected readonly accentOptions: AccentOption[] = [
+    { id: 'electric', label: 'Electric Blue', value: '#2563eb' },
+    { id: 'violet', label: 'Violet', value: '#7c3aed' },
+    { id: 'mint', label: 'Mint', value: '#10b981' },
+    { id: 'sunset', label: 'Sunset', value: '#f97316' },
+    { id: 'rose', label: 'Rose', value: '#e11d48' }
+  ];
+
   protected selectedNodeId: string = 'node_ai';
+  protected selectedThemeId = this.themeOptions[0].id;
+  protected selectedAccent = this.accentOptions[0].value;
+
   protected isRunning = false;
   protected activeNodeId: string | null = null;
   protected completedNodeIds = new Set<string>();
+  protected draggingNodeId: string | null = null;
 
   private readonly nodeTypesById = new Map(this.nodeTypes.map((type) => [type.id, type]));
   private readonly nodesById = new Map(this.nodes.map((node) => [node.id, node]));
   private timers: ReturnType<typeof setTimeout>[] = [];
+  private dragStartPointer = { x: 0, y: 0 };
+  private dragStartNode = { x: 0, y: 0 };
 
   protected get selectedNode(): StudioNode | null {
     return this.nodesById.get(this.selectedNodeId) ?? null;
@@ -82,6 +113,55 @@ export class WorkflowStudioPageComponent implements OnDestroy {
 
   protected selectNode(nodeId: string): void {
     this.selectedNodeId = nodeId;
+  }
+
+  protected onThemeChange(themeId: string): void {
+    this.selectedThemeId = themeId;
+  }
+
+  protected onAccentChange(accentValue: string): void {
+    this.selectedAccent = accentValue;
+  }
+
+  protected onNodePointerDown(event: PointerEvent, nodeId: string): void {
+    if (event.button !== 0) {
+      return;
+    }
+
+    const node = this.nodesById.get(nodeId);
+    if (!node) {
+      return;
+    }
+
+    this.draggingNodeId = nodeId;
+    this.selectNode(nodeId);
+    this.dragStartPointer = { x: event.clientX, y: event.clientY };
+    this.dragStartNode = { x: node.x, y: node.y };
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  @HostListener('document:pointermove', ['$event'])
+  protected onDocumentPointerMove(event: PointerEvent): void {
+    if (!this.draggingNodeId) {
+      return;
+    }
+
+    const node = this.nodesById.get(this.draggingNodeId);
+    if (!node) {
+      return;
+    }
+
+    const dx = event.clientX - this.dragStartPointer.x;
+    const dy = event.clientY - this.dragStartPointer.y;
+
+    node.x = this.dragStartNode.x + dx;
+    node.y = this.dragStartNode.y + dy;
+  }
+
+  @HostListener('document:pointerup')
+  protected onDocumentPointerUp(): void {
+    this.draggingNodeId = null;
   }
 
   protected runWorkflow(): void {

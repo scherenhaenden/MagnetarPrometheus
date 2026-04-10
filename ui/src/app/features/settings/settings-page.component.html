@@ -1,0 +1,7 @@
+<mp-page-container>
+  <mp-page-header title="Environment Settings" description="Runtime-mode visibility for frontend transport strategy."></mp-page-header>
+  <mp-panel-card>
+    <p>Transport mode: <strong>{{ environment.useMockDataService ? 'mock' : 'api' }}</strong></p>
+    <p>API base URL: <code>{{ environment.apiBaseUrl }}</code></p>
+  </mp-panel-card>
+</mp-page-container>

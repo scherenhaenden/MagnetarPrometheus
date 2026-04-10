@@ -1,0 +1,24 @@
+/**
+ * frontend-data.provider.ts intent header.
+ *
+ * This file is part of the Angular UI slice and exists to keep the
+ * route/component/service contract explicit for the current product increment.
+ */
+import { Provider } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { ApiFrontendDataService } from './api-frontend-data.service';
+import { FrontendDataService } from './frontend-data.service';
+import { MockFrontendDataService } from './mock-frontend-data.service';
+
+/**
+ * Strategy provider for selecting mock or API transport mode.
+ */
+export const selectFrontendDataServiceClass = (
+  useMockDataService: boolean
+): typeof MockFrontendDataService | typeof ApiFrontendDataService =>
+  useMockDataService ? MockFrontendDataService : ApiFrontendDataService;
+
+export const FRONTEND_DATA_SERVICE_PROVIDER: Provider = {
+  provide: FrontendDataService,
+  useClass: selectFrontendDataServiceClass(environment.useMockDataService)
+};

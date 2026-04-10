@@ -1,0 +1,52 @@
+<mp-page-container>
+  <mp-page-header
+    title="Run History"
+    description="Browse recent workflow runs with status filters and keyword search across run/workflow identifiers."
+  ></mp-page-header>
+
+  <mp-panel-card>
+    <form [formGroup]="filterForm" class="filters">
+      <input
+        aria-label="Search run ID or workflow ID"
+        formControlName="search"
+        placeholder="Search run ID or workflow ID"
+      />
+      <select aria-label="Filter runs by status" formControlName="status">
+        <option value="all">All statuses</option>
+        <option value="queued">Queued</option>
+        <option value="running">Running</option>
+        <option value="succeeded">Succeeded</option>
+        <option value="failed">Failed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </form>
+  </mp-panel-card>
+
+  @if (vm$ | async; as vm) {
+    @if (vm.loading) {
+      <mp-panel-card>Loading run history...</mp-panel-card>
+    }
+    @if (vm.error) {
+      <mp-panel-card>Unable to load run history: {{ vm.error }}</mp-panel-card>
+    }
+    @if (!vm.loading && !vm.error && vm.items.length === 0) {
+      <mp-panel-card>
+        No runs match the current filters.
+      </mp-panel-card>
+    }
+    @if (!vm.loading && !vm.error && vm.items.length > 0) {
+      <mp-data-list-wrapper>
+        @for (run of vm.items; track run.runId) {
+          <mp-panel-card>
+            <div class="run-row">
+              <a [routerLink]="['/runs', run.runId]"><strong>{{ run.runId }}</strong></a>
+              <mp-status-badge [text]="run.status" [tone]="run.status"></mp-status-badge>
+            </div>
+            <div>{{ run.workflowId }} · {{ run.createdAtIso | date:'medium' }}</div>
+            <div>{{ run.summary }}</div>
+          </mp-panel-card>
+        }
+      </mp-data-list-wrapper>
+    }
+  }
+</mp-page-container>

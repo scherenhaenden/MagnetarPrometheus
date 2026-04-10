@@ -1,0 +1,31 @@
+id = "support_ticket_triage"
+name = "Support Ticket Triage"
+version = "1.0.0"
+start_at = "collect_ticket"
+
+[[steps]]
+id = "collect_ticket"
+type = "python"
+action = "collect_ticket"
+next = "classify_priority"
+
+[[steps]]
+id = "classify_priority"
+type = "python"
+action = "classify_priority"
+
+[steps.next]
+urgent = "escalate_ticket"
+default = "draft_reply"
+
+[[steps]]
+id = "escalate_ticket"
+type = "python"
+action = "notify_on_call"
+next = "done"
+
+[[steps]]
+id = "draft_reply"
+type = "python"
+action = "compose_reply"
+next = "done"

@@ -1,200 +1,191 @@
 # MagnetarPrometheus
 
-MagnetarPrometheus is a workflow orchestration platform that follows the Magnetar Canonical Project Model for documentation, planning, and governance. It is not the canonical model repository itself. It is a product repository that uses the canon as its operating standard.
+MagnetarPrometheus is a workflow automation and orchestration platform in the same broad space as tools like n8n: a system for defining flows as data, executing them through a controlled runtime, exposing them through an API, and evolving toward a visual builder UI.
 
-The platform goal is twofold:
+The repository currently contains:
 
-- provide a modular runtime for declarative, stateful, branching workflows
-- evolve toward a visual workflow builder where complete flows can be composed through click, drag, and drop interactions
+- a Python backend runtime and local API server
+- an Angular web UI with mock and API transport modes
+- a desktop shell skeleton
+- shared contracts, tests, and validation scripts
 
-The first implementation target is Python, but the architecture is intentionally split so that the backend runtime, shared SDK/schema contracts, and future visual editor can evolve independently.
+The core product idea is simple: workflows should be modeled, executed, observed, and eventually edited visually without hardwiring every process into application code.
 
-## Purpose
+## What You Can Do Today
 
-MagnetarPrometheus exists to orchestrate business and technical workflows without hardwiring process logic into application code. Workflows should be modeled as data, executed by a controlled engine, observed through structured runtime state, and eventually authored visually through a workflow editor.
+Right now you can:
 
-This repository follows the Magnetar standard for:
+- run the backend workflow engine locally
+- start the local API server
+- open the Angular UI in mock mode or API mode
+- exercise the current UI slices for run history, run detail, job submission, settings, and workflow catalog
 
-- documentation discipline
-- planning and state tracking
-- branching and work-in-progress governance
-- blocker handling and escalation
+Current limitations:
 
-It should be run in an agile way. Progress tracking must not stop at technical implementation details. Daily visibility should include what a user can already do, what changed in the product experience, and what remains blocked from a user-facing perspective.
+- the product is still a proof-of-concept baseline, not a finished n8n-style platform
+- the UI exists and is usable, but the full visual workflow-builder experience is not implemented yet
+- some runtime and API surfaces are still intentionally minimal
 
-The working style for this repository is explicitly user-incremental. Each meaningful round of work should leave behind something new that a user or operator can actually try, observe, or validate, even if the increment is still rough or limited.
+## Quick Start
 
-## Product Boundaries
+### Full Stack
 
-This repository contains a product that uses the canonical model. The canonical model itself is a separate concept used to administer projects.
+From the repository root:
 
-The intended repository split is:
-
-```text
-MagnetarPrometheus/
-  backend/                # Python orchestration engine and runtime
-  sdk/                    # Shared contracts, schemas, and client helpers
-  ui/                     # Future visual workflow builder
-  docs/                   # Supporting documentation and examples
-  projects/               # Canonical machine-readable project records
-  PLAN.md
-  BITACORA.md
-  REQUIREMENTS.md
-  ARCHITECTURE.md
-  RULES.md
-  STATUS.md
-  TESTING.md
-  BLOCKERS.md
-  BRANCHING_MODEL.md
-  WIP_GUIDELINES.md
-  CONTRIBUTING.md
-  PocPlan.md
-  README.md
+```bash
+./run_full_stack.sh
 ```
 
-## How to Use This Repository
+That command:
 
-1. Read [PocPlan.md](/home/edward/Development/MagnetarPrometheus/PocPlan.md) for the architectural intent of the PoC runtime.
-2. Read [ARCHITECTURE.md](/home/edward/Development/MagnetarPrometheus/ARCHITECTURE.md), [REQUIREMENTS.md](/home/edward/Development/MagnetarPrometheus/REQUIREMENTS.md), and [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md) before implementation work.
-3. Use [projects/_template.project.yml](/home/edward/Development/MagnetarPrometheus/projects/_template.project.yml) as the canonical machine-readable project schema reference.
-4. Keep work aligned with [RULES.md](/home/edward/Development/MagnetarPrometheus/RULES.md), [BRANCHING_MODEL.md](/home/edward/Development/MagnetarPrometheus/BRANCHING_MODEL.md), and [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md).
-5. Record every meaningful state change, decision, and exception in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
-6. Use the example repository structure under `backend/`, `sdk/`, and `ui/` to keep runtime, contracts, and visual tooling decoupled.
-7. Use GitHub issues for actionable work items and GitHub discussions for broader architectural, product, and governance conversations.
+- bootstraps the Python environment if needed
+- installs UI dependencies if needed
+- starts the backend API on `127.0.0.1:8000`
+- starts the Angular UI on `http://localhost:4200`
+- stops both when you press `Ctrl+C`
 
-## Run The Application
+### Backend Only
 
-The current runnable product slice is the backend workflow runner. From the repository root, use:
+Run the example workflow:
 
 ```bash
 bash run_app.sh
 ```
 
-That single command will:
-
-- bootstrap the local Python environment if needed
-- install the runtime dependencies required by the PoC
-- execute the example workflow
-- print the resulting workflow state as JSON in the terminal
-
-To run a specific workflow file instead of the default example:
+Start the local API server:
 
 ```bash
-bash run_app.sh --workflow backend/src/magnetar_prometheus/modules/email_module/email_triage.yaml
+bash scripts/run_backend.sh --api --host 127.0.0.1 --port 8000
 ```
 
-At the moment there is no browser-based UI application to launch from this repository. The CLI workflow runner is the current user-facing entrypoint.
+Manage the local API server through the repo-root launcher:
 
-## Project Contents
+```bash
+bash run_app.sh --api --daemon start
+bash run_app.sh --api --daemon status
+bash run_app.sh --api --daemon stop
+```
 
-| File | Purpose |
-| --- | --- |
-| `PLAN.md` | Project tasks, milestones, and planning baseline. |
-| `BITACORA.md` | Chronological logbook of decisions, discoveries, and state changes. |
-| `REQUIREMENTS.md` | Functional and non-functional requirements. |
-| `ARCHITECTURE.md` | System structure, module boundaries, and key technical decisions. |
-| `RULES.md` | Naming rules, workflow rules, and required governance standards. |
-| `STATUS.md` | Current health summary, milestone status, and risks. |
-| `TESTING.md` | Testing strategy, coverage goals, and reporting rules. |
-| `BLOCKERS.md` | Tracked blockers and escalation paths. |
-| `BRANCHING_MODEL.md` | Git branching and merge policy. |
-| `WIP_GUIDELINES.md` | Work-in-progress limits and exception handling. |
-| `CONTRIBUTING.md` | Contributor setup and pull request expectations. |
-| `projects/_template.project.yml` | Canonical machine-readable project schema template. |
+Daemon mode stores host/port-specific PID and log files in the repo root by default.
+You can override those paths with `MAGNETAR_API_PID_FILE` and `MAGNETAR_API_LOG_FILE`.
 
-## Progress Model Overview
+### UI Only
 
-Work is tracked through milestones and tasks. Each task must use one of the allowed state transitions:
+Mock mode:
 
-`planned` -> `ready` -> `in_progress` -> `in_review` -> `done`
+```bash
+cd ui
+npm ci
+npm run start:mock
+```
 
-(Note: "done" must not imply a finished product experience if only an internal slice is complete).
+API mode:
 
-When necessary, tasks may move into `blocked`, but that state must be reflected in [BLOCKERS.md](/home/edward/Development/MagnetarPrometheus/BLOCKERS.md) and summarized in [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md).
+```bash
+cd ui
+npm ci
+npm run start:api
+```
 
-Every state change must be logged in [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
+## Product Overview
 
-In addition, daily status should answer user-facing questions, not just implementation questions:
+MagnetarPrometheus is meant to become a workflow platform with four clear layers:
 
-- what is now possible for a user or operator
-- what is visible in the product or workflow editor
-- what remains missing before a usable increment exists
+1. Workflow runtime
+2. API surface
+3. Web UI
+4. Future visual workflow builder and richer operator experience
 
-The preferred delivery rhythm is:
+Today, the most mature layer is still the runtime. The UI and API are already real enough to run locally, but they are still growing toward the broader product vision.
 
-- every round trip should aim to make one more thing runnable, visible, or testable
-- internal refactors are allowed, but they should be tied to a near-term user-visible increment whenever possible
-- parallel work must be divided by disjoint write ownership
-- documentation must state clearly whether a change is user-visible or internal-only; when a slice is not yet user-visible, the docs must say so directly instead of overstating completion
-
-## YAML Project Schema
-
-The file [projects/_template.project.yml](/home/edward/Development/MagnetarPrometheus/projects/_template.project.yml) defines the canonical machine-readable project schema. It captures:
-
-- metadata
-- stakeholders
-- milestones
-- tasks
-- risks
-- reporting hooks
-
-This repository uses that structure to align human-readable documents with machine-readable planning data.
-
-## Guidance For AI Collaborators
-
-AI collaborators working in this repository should:
-
-- parse the project YAML before acting on planning-sensitive work
-- use [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md) and [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md) to determine current focus
-- respect [RULES.md](/home/edward/Development/MagnetarPrometheus/RULES.md), [WIP_GUIDELINES.md](/home/edward/Development/MagnetarPrometheus/WIP_GUIDELINES.md), and [BRANCHING_MODEL.md](/home/edward/Development/MagnetarPrometheus/BRANCHING_MODEL.md)
-- update [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md) after completing any substantial work
-- keep the distinction clear between this product repository and the separate canonical model concept
-- prefer keeping actionable work represented in GitHub issues and broader open questions in GitHub discussions
-
-## Architecture Flow
+## Repository Structure
 
 ```text
-Magnetar Canonical Model
-        |
-        v
-Governance + Planning Rules
-        |
-        v
-Project Docs + YAML Schema
-        |
-        v
-Backend Runtime <-> SDK/Schema Contracts <-> Visual Workflow UI
-        |
-        v
-Executable Workflows and Managed Project Delivery
+MagnetarPrometheus/
+  backend/                # Python orchestration engine and local API server
+  sdk/                    # Shared contracts and schemas
+  ui/                     # Angular frontend
+  desktop/                # Electron shell skeleton
+  scripts/                # Bootstrap, validation, and helper scripts
+  run_app.sh              # Run the backend workflow path
+  run_full_stack.sh       # Run backend API + Angular UI together
 ```
 
-## Applying This Structure
+## Technology Choices
 
-To use this structure correctly:
+The stack matters because it defines the current implementation shape, but it is not the product story.
 
-1. Keep the repository root as the IDE project root.
-2. Implement the Python runtime inside `backend/`.
-3. Place language-neutral contracts and shared schemas inside `sdk/`.
-4. Build the future workflow designer inside `ui/`.
-5. Instantiate a real project record from [projects/_template.project.yml](/home/edward/Development/MagnetarPrometheus/projects/_template.project.yml).
-6. Establish initial milestones and tasks in [PLAN.md](/home/edward/Development/MagnetarPrometheus/PLAN.md), [STATUS.md](/home/edward/Development/MagnetarPrometheus/STATUS.md), and [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md).
+- Python powers the workflow runtime and local API layer
+- Angular powers the current web UI
+- Electron is present as a lightweight desktop host skeleton
 
-## IDE Recommendation
+These are implementation choices for delivering the workflow product. They are not the main point of the repository.
 
-Open `/home/edward/Development/MagnetarPrometheus` directly in PyCharm. Do not create a second nested top-level project directory. Keep the repo root as the project root and let the Python code live under `backend/src/`.
+## Current Status
 
-This gives you:
+Implemented baseline:
 
-- clean packaging for Python
-- room for a separate UI app later
-- a stable place for shared schemas and SDK code
-- a structure that scales to multiple IDEs without repo surgery
+- backend workflow execution
+- local HTTP API mode
+- Angular UI shell and feature slices
+- mock/API transport switching
+- validation scripts for backend and UI tiers
 
-## Canon Compliance Checklist
+Not implemented yet:
 
-- required governance files exist at the repository root
-- the project YAML follows the canonical schema template
-- [BITACORA.md](/home/edward/Development/MagnetarPrometheus/BITACORA.md) is chronological and append-only by correction
-- active branches follow [BRANCHING_MODEL.md](/home/edward/Development/MagnetarPrometheus/BRANCHING_MODEL.md)
-- testing and blocker handling match [TESTING.md](/home/edward/Development/MagnetarPrometheus/TESTING.md) and [BLOCKERS.md](/home/edward/Development/MagnetarPrometheus/BLOCKERS.md)
+- a full drag-and-drop workflow builder
+- a complete production-grade API surface
+- the broader editor/product ergonomics you would expect from a mature n8n-class platform
+
+## Development And Validation
+
+Repository-level validation:
+
+```bash
+bash scripts/run_tests.sh
+```
+
+UI-only validation:
+
+```bash
+bash scripts/run_tests.sh ui
+```
+
+Backend-only validation:
+
+```bash
+bash scripts/run_tests.sh backend
+```
+
+## Project Docs
+
+The repository also carries governance and planning documents, but those are supporting project-management artifacts, not the product itself.
+
+- [ARCHITECTURE.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/ARCHITECTURE.md)
+- [REQUIREMENTS.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/REQUIREMENTS.md)
+- [PLAN.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/PLAN.md)
+- [STATUS.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/STATUS.md)
+- [BITACORA.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/BITACORA.md)
+- [TESTING.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/TESTING.md)
+- [RULES.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/RULES.md)
+
+If you are trying to understand the product, start with this README and the runnable commands above. If you are trying to understand repository governance, then move into the planning and rules documents.
+
+
+## Plugin-Ready Runtime (New)
+
+MagnetarPrometheus now includes a generic backend plugin layer for step-capability extension.
+
+What this enables today:
+
+- bundled example capabilities are loaded through a plugin manager instead of hard-coded wiring
+- plugin contracts are typed (manifest + runtime handlers) and API-version checked
+- the runtime rejects conflicting step ownership early for deterministic startup
+
+What remains intentionally future-scoped:
+
+- plugin signing and trust policy controls
+- remote plugin distribution/catalog flows
+- richer UI/plugin capability metadata surfaces
+
+This preserves the current local developer experience while opening a clear path for adding new capabilities without repeatedly modifying core engine wiring.

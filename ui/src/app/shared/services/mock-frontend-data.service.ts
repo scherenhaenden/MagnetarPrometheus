@@ -1,0 +1,154 @@
+/**
+ * Mock data adapter for the first UI increments.
+ *
+ * Why keep this explicit instead of hardcoding arrays inside page components:
+ * - We need a stable seam for upcoming API mode work under milestone ms-04/ms-05.
+ * - Feature slices (run history, job submission) can move independently if they consume
+ *   this adapter through the FrontendDataService contract.
+ * - The mock keeps the user flow inspectable before the backend HTTP endpoints are complete.
+ */
+import { Injectable } from '@angular/core';
+import { Observable, delay, map, of } from 'rxjs';
+import {
+  JobSubmissionRequest,
+  JobSubmissionResult,
+  RunDetail,
+  RunListingItem,
+  ServiceHealthSnapshot,
+  WorkflowSummary
+} from '../models/frontend-contracts';
+import { FrontendDataService } from './frontend-data.service';
+
+@Injectable()
+export class MockFrontendDataService extends FrontendDataService {
+  private readonly runHistory: RunListingItem[] = [
+    {
+      runId: 'run-20260407-001',
+      workflowId: 'email-triage',
+      status: 'succeeded',
+      createdAtIso: '2026-04-07T09:00:00Z',
+      completedAtIso: '2026-04-07T09:00:07Z',
+      summary: '3 incoming messages triaged with routing decisions.'
+    },
+    {
+      runId: 'run-20260407-002',
+      workflowId: 'error-module',
+      status: 'failed',
+      createdAtIso: '2026-04-07T10:15:00Z',
+      completedAtIso: '2026-04-07T10:15:02Z',
+      summary: 'Synthetic failure flow confirmed alert behavior.'
+    }
+  ];
+
+  /**
+   * Simulates a health check by returning a 'healthy' snapshot.
+   *
+   * Includes a artificial delay to mimic network latency.
+   *
+   * @returns An Observable of a 'healthy' service snapshot in 'mock' mode.
+   */
+  public getServiceHealth(): Observable<ServiceHealthSnapshot> {
+    const healthSnapshot: ServiceHealthSnapshot = {
+      status: 'healthy',
+      message: 'UI is currently running in mock transport mode.',
+      checkedAtIso: new Date().toISOString(),
+      mode: 'mock'
+    };
+
+    return of(healthSnapshot).pipe(delay(150));
+  }
+
+  /**
+   * Returns the current in-memory run history.
+   *
+   * Returns a shallow copy of the history array to prevent external mutations
+   * from affecting the mock state. Includes a network-simulating delay.
+   *
+   * @returns An Observable of the mock run history.
+   */
+  public getRunHistory(): Observable<ReadonlyArray<RunListingItem>> {
+    return of([...this.runHistory]).pipe(delay(250));
+  }
+
+  /**
+   * Generates mock run details by finding a run in history and enriching it with synthetic steps.
+   *
+   * The enriched steps are dynamically generated based on the run's status to provide
+   * a realistic-looking run detail view.
+   *
+   * @param runId - The ID of the mock run to retrieve.
+   * @returns An Observable of the run detail or null if the ID was not found.
+   */
+  public getRunDetail(runId: string): Observable<RunDetail | null> {
+    return this.getRunHistory().pipe(
+      map((items) => items.find((item) => item.runId === runId) ?? null),
+      map((item) => {
+        if (!item) {
+          return null;
+        }
+        return {
+          runId: item.runId,
+          workflowId: item.workflowId,
+          status: item.status,
+          createdAtIso: item.createdAtIso,
+          completedAtIso: item.completedAtIso,
+          steps: [
+            { name: 'collect-input', state: 'done', detail: 'Input payload validated and normalized.' },
+            { name: 'process-route', state: item.status === 'failed' ? 'failed' : 'done', detail: item.status === 'failed' ? 'Rule evaluation failed in mock branch.' : 'Routing rule selected workflow branch.' },
+            { name: 'persist-summary', state: item.status === 'failed' ? 'pending' : 'done', detail: 'Summary persistence placeholder for transport-agnostic UI.' }
+          ],
+          errorMessage: item.status === 'failed' ? 'Synthetic module failure (mock).' : null,
+          outputPreview: item.summary
+        };
+      })
+    );
+  }
+
+  /**
+   * Returns a static catalog of available mock workflows.
+   *
+   * @returns An Observable of a read-only array of workflow summaries.
+   */
+  public getWorkflowCatalog(): Observable<ReadonlyArray<WorkflowSummary>> {
+    return of([
+      {
+        workflowId: 'email-triage',
+        title: 'Email Triage',
+        description: 'Classify inbound email traffic and route follow-up actions.',
+        tags: ['email', 'support', 'routing'],
+        version: '1.2.0'
+      },
+      {
+        workflowId: 'error-module',
+        title: 'Failure Simulator',
+        description: 'Validate failure handling and observability paths.',
+        tags: ['qa', 'failure', 'testing'],
+        version: '0.9.0'
+      }
+    ]);
+  }
+
+  /**
+   * Simulates a job submission by adding a new 'queued' run to the local mock history.
+   *
+   * @param request - The job submission parameters.
+   * @returns An Observable of a successful job submission result.
+   */
+  public submitJob(request: JobSubmissionRequest): Observable<JobSubmissionResult> {
+    const generatedRunId = `run-${Date.now()}`;
+    this.runHistory.unshift({
+      runId: generatedRunId,
+      workflowId: request.workflowId,
+      status: 'queued',
+      createdAtIso: new Date().toISOString(),
+      completedAtIso: null,
+      summary: `Queued from UI (${request.priority} priority): ${request.reason}`
+    });
+
+    return of({
+      accepted: true,
+      runId: generatedRunId,
+      message: 'Submission accepted by mock adapter. API wiring is the next increment.'
+    }).pipe(delay(250));
+  }
+}

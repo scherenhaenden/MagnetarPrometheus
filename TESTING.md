@@ -33,7 +33,7 @@ What is not covered yet because it does not exist yet:
 
 As the product expands from a backend engine into a visible service and application, validation is organized into explicit tiers. These tiers can be targeted using `bash scripts/run_tests.sh <tier>`.
 
-Today, the default `bash scripts/run_tests.sh` path runs the implemented backend tier and reports the `api` and `ui` tiers as reserved placeholders. Calling `bash scripts/run_tests.sh api` or `bash scripts/run_tests.sh ui` directly should be treated as a non-success result until those tiers are implemented.
+Today, `bash scripts/run_tests.sh` runs backend and UI tiers. The API tier remains placeholder-only and returns non-zero when selected explicitly.
 
 ### 1. Backend (`tier: backend`)
 - Currently active and enforced at 100% code coverage.
@@ -46,13 +46,16 @@ Today, the default `bash scripts/run_tests.sh` path runs the implemented backend
 - Will contain integration and contract tests validating the HTTP service boundary, job submission, and result retrieval.
 
 ### 3. UI (`tier: ui`)
-- *Future placeholder.*
-- Will contain end-to-end browser automation tests validating the visual workflow editor, drag-and-drop operations, and user dashboard.
+- **Implemented.**
+- Angular unit/smoke tests execute through `npm run test:ci`.
+- The Angular UI tier now enforces `100%` coverage for statements, branches, functions, and lines through `ui/karma.conf.cjs`.
+- Root-level integration executes `scripts/check_ui_code_contracts.py`, `npm run build`, and `npm run test:ci` via `bash scripts/run_tests.sh ui`.
 
 ## Code Coverage
 
 - Backend automated test target: 100% coverage on core orchestration code
 - Shared schema and SDK target: 100% coverage on validation and transformation logic
+- Angular UI automated test target: 100% coverage on statements, branches, functions, and lines
 - Bootstrap and dependency-detection flows must also be covered, including success, install-needed, install-failed, and policy-disabled paths
 
 ## Acceptance Criteria
@@ -84,13 +87,17 @@ To validate the product locally from the repository root:
 
 ```bash
 bash run_app.sh
+bash run_app.sh --api --daemon start --port 8010
+bash run_app.sh --api --daemon status --port 8010
+bash run_app.sh --api --daemon stop --port 8010
 bash scripts/run_tests.sh
 ```
 
 These commands validate both the visible surface (the CLI) and the internal correctness (the engine tests):
 
 - `run_app.sh` proves the backend can bootstrap and execute the example workflow
-- `scripts/run_tests.sh` proves the implemented backend and SDK scope still satisfies the enforced coverage contract
+- `run_app.sh --api --daemon ...` proves the repo-root launcher can manage the minimal API lifecycle with explicit local bind controls
+- `scripts/run_tests.sh` proves the implemented backend, SDK, and UI scopes still satisfy the enforced coverage contracts
 
 ## Bug Reporting Process
 

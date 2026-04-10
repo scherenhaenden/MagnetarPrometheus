@@ -1,0 +1,7 @@
+.panel {
+  background: var(--mp-color-surface-raised);
+  border: 1px solid var(--mp-color-border);
+  border-radius: var(--mp-radius-lg);
+  padding: var(--mp-space-4);
+  box-shadow: var(--mp-elevation-1);
+}

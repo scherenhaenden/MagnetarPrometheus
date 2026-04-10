@@ -1,0 +1,13 @@
+{
+  "name": "magnetar-prometheus-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "echo 'Desktop packaging skeleton: integrate electron-builder in a later increment.'"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0"
+  }
+}

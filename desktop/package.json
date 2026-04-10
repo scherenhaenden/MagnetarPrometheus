@@ -8,6 +8,6 @@
     "build": "echo 'Desktop packaging skeleton: integrate electron-builder in a later increment.'"
   },
   "devDependencies": {
-    "electron": "^30.0.0"
+    "electron": "^41.2.0"
   }
 }

@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 15:55 CEST
+**Author:** Gemini CLI
+**Entry:** Achieved 100.00% code coverage for the UI slice on branch `codex/plan-plugin-architecture-for-extensibility`. Expanded `workflow-studio-page.component.spec.ts` with comprehensive unit tests covering all remaining statements, branches, and edge cases in `WorkflowStudioPageComponent`. Specifically addressed `fakeAsync` timing for `runWorkflow`, defensive `localStorage` access paths, project loading fallbacks, and component lifecycle cleanup. Verified all 102 UI tests pass with full statement, branch, function, and line coverage.
+
+---
 **Timestamp:** 2026-04-10 14:45 CEST
 **Author:** Gemini CLI
 **Entry:** Completed review follow-up for PR `#175`. Extracted `build_plugin_manager` to a shared bootstrap module to remove duplication across the CLI and API server. Hardened `PluginManager.discover_entrypoint_plugins` with robust error handling, type checks, and logging. Standardized "step-capability" hyphenation across `README.md`, `ARCHITECTURE.md`, and `STATUS.md`. Simplified the backward-compatible `register_all_example_steps` helper. All 118 backend tests pass with 100.00% total coverage.

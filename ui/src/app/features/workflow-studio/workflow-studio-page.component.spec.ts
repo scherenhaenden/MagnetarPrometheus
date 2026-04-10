@@ -57,4 +57,42 @@ describe('WorkflowStudioPageComponent', () => {
     expect(studio.projectName).toBe('My Local Project');
     expect(studio.selectedNode?.label ?? '').toBe('Edited Name');
   });
+
+  it('should ignore null entries when restoring saved projects from local storage', () => {
+    localStorage.setItem(
+      'mp.workflowStudio.projects.v1',
+      JSON.stringify([
+        null,
+        {
+          id: 'project_valid',
+          name: 'Recovered Project',
+          updatedAtIso: '2026-04-10T10:00:00.000Z',
+          selectedNodeId: 'node_ai',
+          nodes: [
+            { id: 'node_ai', typeId: 'process_ai', label: 'AI Engine', summary: 'Analyze lead context', x: 0, y: 0 }
+          ]
+        }
+      ])
+    );
+
+    const restoredFixture = TestBed.createComponent(WorkflowStudioPageComponent);
+    const restoredComponent = restoredFixture.componentInstance as any;
+    restoredFixture.detectChanges();
+
+    expect(restoredComponent.savedProjects.length).toBe(1);
+    expect(restoredComponent.savedProjects[0].id).toBe('project_valid');
+    expect(restoredComponent.statusMessage).toContain('Found 1 locally saved project');
+  });
+
+  it('should use crypto.randomUUID when creating a new project id', () => {
+    const generatedUuid = '00000000-0000-4000-8000-000000000000';
+    const randomUuidSpy = spyOn(globalThis.crypto, 'randomUUID').and.returnValue(generatedUuid);
+    const studio = component as any;
+
+    studio.saveProject();
+
+    expect(randomUuidSpy).toHaveBeenCalled();
+    expect(studio.selectedProjectId).toBe(generatedUuid);
+    expect(studio.savedProjects[0].id).toBe(generatedUuid);
+  });
 });

@@ -229,7 +229,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   }
 
   private restoreProjects(): void {
-    const stored = localStorage.getItem(this.storageKey);
+    const stored = globalThis.localStorage?.getItem(this.storageKey);
     if (!stored) {
       return;
     }
@@ -237,7 +237,13 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     try {
       const parsed = JSON.parse(stored) as StudioProject[];
       this.savedProjects = Array.isArray(parsed)
-        ? parsed.filter((entry) => Array.isArray(entry.nodes) && typeof entry.id === 'string')
+        ? parsed.filter(
+            (entry): entry is StudioProject =>
+              !!entry &&
+              typeof entry === 'object' &&
+              Array.isArray((entry as StudioProject).nodes) &&
+              typeof (entry as StudioProject).id === 'string'
+          )
         : [];
       if (this.savedProjects.length > 0) {
         this.statusMessage = `Found ${this.savedProjects.length} locally saved project(s).`;
@@ -249,11 +255,15 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   }
 
   private persistProjects(): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.savedProjects));
+    globalThis.localStorage?.setItem(this.storageKey, JSON.stringify(this.savedProjects));
   }
 
   private createProjectId(): string {
-    return `project_${Date.now()}`;
+    if (typeof globalThis.crypto?.randomUUID === 'function') {
+      return globalThis.crypto.randomUUID();
+    }
+
+    return `project_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
   }
 
   private clearTimers(): void {

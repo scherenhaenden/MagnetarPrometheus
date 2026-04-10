@@ -58,6 +58,17 @@ Start the local API server:
 bash scripts/run_backend.sh --api --host 127.0.0.1 --port 8000
 ```
 
+Manage the local API server through the repo-root launcher:
+
+```bash
+bash run_app.sh --api --daemon start
+bash run_app.sh --api --daemon status
+bash run_app.sh --api --daemon stop
+```
+
+Daemon mode stores host/port-specific PID and log files in the repo root by default.
+You can override those paths with `MAGNETAR_API_PID_FILE` and `MAGNETAR_API_LOG_FILE`.
+
 ### UI Only
 
 Mock mode:
@@ -159,3 +170,22 @@ The repository also carries governance and planning documents, but those are sup
 - [RULES.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/RULES.md)
 
 If you are trying to understand the product, start with this README and the runnable commands above. If you are trying to understand repository governance, then move into the planning and rules documents.
+
+
+## Plugin-Ready Runtime (New)
+
+MagnetarPrometheus now includes a generic backend plugin layer for step-capability extension.
+
+What this enables today:
+
+- bundled example capabilities are loaded through a plugin manager instead of hard-coded wiring
+- plugin contracts are typed (manifest + runtime handlers) and API-version checked
+- the runtime rejects conflicting step ownership early for deterministic startup
+
+What remains intentionally future-scoped:
+
+- plugin signing and trust policy controls
+- remote plugin distribution/catalog flows
+- richer UI/plugin capability metadata surfaces
+
+This preserves the current local developer experience while opening a clear path for adding new capabilities without repeatedly modifying core engine wiring.

@@ -6,12 +6,17 @@
  */
 import { Component } from '@angular/core';
 
+/**
+ * PageContainerComponent provides the structural foundation for top-level feature views.
+ *
+ * It acts as a primary layout wrapper, ensuring consistent horizontal constraints (max-width),
+ * centering, and vertical rhythm (gap spacing) across all distinct pages within the application shell.
+ * It is meant to be the outermost element used within the template of a routed feature component.
+ */
 @Component({
   selector: 'mp-page-container',
   standalone: true,
-  template: '<section class="page-container"><ng-content></ng-content></section>',
-  styles: [
-    '.page-container{display:flex;flex-direction:column;gap:var(--mp-space-4);max-width:1200px;margin:0 auto;width:100%;}'
-  ]
+  templateUrl: './page-container.component.html',
+  styleUrl: './page-container.component.css'
 })
 export class PageContainerComponent {}

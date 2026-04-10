@@ -9,13 +9,15 @@ What is real today:
 - A Python workflow engine can load a YAML workflow, execute registered steps, evaluate conditional routing, and return a structured `RunContext`.
 - A bootstrap path can prepare the local Python runtime and install the dependencies required by the current proof-of-concept slice.
 - A one-command local launcher exists: `bash run_app.sh`.
+- The local API server can now also be managed through repo-root daemon lifecycle commands.
 - An example workflow, `email_triage`, runs end to end and produces deterministic JSON output.
 - CI and local test execution enforce `100%` coverage for the implemented backend and SDK scope.
+- The Angular UI tier now also enforces `100%` coverage for statements, branches, functions, and lines.
 
 What is not real yet:
 
-- There is no long-running backend service.
-- There is no HTTP API for job submission or run inspection.
+- There is no production-grade long-running backend service with persistence, queueing, or worker management.
+- There is no complete HTTP API for job submission or run inspection.
 - A first Angular web shell exists in mock mode (`ui/`), upgraded to Angular 21, but it is not API-backed yet.
 - There is no desktop UI.
 - There is no operator dashboard, queue manager, or persistent run history.
@@ -44,13 +46,14 @@ the repository will:
 4. print the resulting workflow state as JSON
 5. exit
 
-That means the current user experience is batch-style CLI execution, not an interactive app session.
+That means the current user experience is primarily batch-style CLI execution, with a minimal local API mode available for development and validation.
 
 ## What A User Can Do Right Now
 
 - Run the current proof-of-concept workflow engine locally from the repository root.
 - Execute the built-in example workflow and inspect the final workflow state.
 - Point the CLI at another compatible workflow YAML file.
+- Start, stop, and inspect the status of the minimal local API server from the repository root.
 - Inspect how the engine resolves steps, branching, evaluator logic, and context aggregation.
 - Validate changes through the local test path and CI-oriented scripts.
 
@@ -94,6 +97,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - Serial workflow execution with step-by-step context accumulation.
 - Conditional routing through the evaluator path.
 - Step registration and Python executor routing.
+- Plugin-manager-based step-capability loading with bundled core example plugin metadata.
 - Structured context/result output for completed runs.
 - Example email-triage module with manifest, workflow, and step handlers.
 - Runtime bootstrap with dependency checking and policy-driven install behavior.
@@ -107,7 +111,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - There is no scheduler, queue, or worker pool.
 - Workflow definitions are still authored manually rather than through a product interface.
 - The UI graph schema is a contract artifact only; it is not backed by a functioning editor.
-- The current module surface is demonstrative, not yet a mature plug-and-play module system.
+- A first generic backend plugin runtime now exists for step-capability extension, but policy controls, signing, and remote distribution are still future work.
 - Release automation currently produces metadata/version-stamp outputs, not a complete distribution pipeline.
 
 ## Immediate Delivery Focus
@@ -150,7 +154,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 | 19 | Frontend testing + doc guards | 100% |
 | 20 | Frontend local run flow | 100% |
 
-Residual constraint: UI dependency installation is blocked in this environment due npm registry `403`, so executable validation commands are documented with exact failure notes instead of green runs.
+Residual constraint: some Codex sandbox environments cannot bind Karma's local port `9876`, so local browser-test failures there should not be confused with the actual repository coverage policy. On a normal developer machine and in GitHub Actions, the UI tier now runs with explicit `100%` coverage enforcement.
 
 ## CI and Release Automation
 
@@ -164,7 +168,7 @@ Steps enforced:
 1. **Runtime toolchain setup** — installs Python `3.11`, Node `22.12.0`, and the UI dependencies from `ui/package-lock.json` so both backend and Angular validation paths run against declared toolchain versions.
 2. **Bootstrap validation** — runs `scripts/bootstrap_python.sh` to verify a clean environment can be prepared.
 3. **Backend run-path validation** — runs `scripts/run_backend.sh` (no extra arguments) to verify the example workflow loads and executes end to end.
-4. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope, then the implemented UI validation tier. Backend coverage remains enforced via the threshold in `backend/pyproject.toml`.
+4. **Test execution with coverage enforcement** — runs `scripts/run_tests.sh` which invokes `pytest` for the backend and SDK scope, then the implemented UI validation tier. Backend coverage remains enforced via the threshold in `backend/pyproject.toml`, and the Angular UI tier now enforces `100%` coverage through `ui/karma.conf.cjs`.
 
 ### Release Metadata Workflow (`release.yml`)
 

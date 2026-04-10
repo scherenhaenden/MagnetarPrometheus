@@ -1,0 +1,56 @@
+<mp-page-container>
+  <mp-page-header
+    title="Job Submission"
+    description="Submit a workflow job with validation, clear submission-state transitions, and transport abstraction."
+  ></mp-page-header>
+
+  <mp-panel-card>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <label for="workflow">Workflow</label>
+      <select id="workflow" formControlName="workflowId">
+        <option value="">Select workflow</option>
+        @for (workflow of (workflows$ | async); track workflow.workflowId) {
+          <option [value]="workflow.workflowId">{{workflow.title}} (v{{workflow.version}})</option>
+        }
+      </select>
+      @if (form.controls.workflowId.invalid && form.controls.workflowId.touched) {
+        <small>Workflow selection is required.</small>
+      }
+
+      <label for="reason">Reason</label>
+      <input id="reason" formControlName="reason" maxlength="200" />
+      @if (form.controls.reason.errors?.['required'] && form.controls.reason.touched) {
+        <small>Reason is required.</small>
+      }
+      @if (form.controls.reason.errors?.['minlength'] && form.controls.reason.touched) {
+        <small>Reason must be at least 10 characters.</small>
+      }
+
+      <label for="priority">Priority</label>
+      <select id="priority" formControlName="priority">
+        <option value="low">Low</option>
+        <option value="normal">Normal</option>
+        <option value="high">High</option>
+      </select>
+
+      <button type="submit" [disabled]="form.invalid || (submitVm$ | async)?.state === 'submitting'">Submit Job</button>
+    </form>
+  </mp-panel-card>
+
+  @if (submitVm$ | async; as vm) {
+    <mp-panel-card>
+      @if (vm.state === 'idle') {
+        <p>Submission is idle. Complete the form and submit when ready.</p>
+      }
+      @if (vm.state === 'submitting') {
+        <p>Submitting job request...</p>
+      }
+      @if (vm.state === 'success') {
+        <p>Success: {{ vm.message }}</p>
+      }
+      @if (vm.state === 'error') {
+        <p>Error: {{ vm.message }}</p>
+      }
+    </mp-panel-card>
+  }
+</mp-page-container>

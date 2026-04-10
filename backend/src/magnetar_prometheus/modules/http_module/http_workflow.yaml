@@ -1,0 +1,17 @@
+id: http_example
+name: HTTP Mock Workflow Example
+version: 1.0.0
+start_step: start_http
+
+steps:
+  start_http:
+    type: http.get
+    executor: python
+    config:
+      url: "https://api.example.com/data"
+    next: process_http
+
+  process_http:
+    type: json.parse
+    executor: python
+    next: end

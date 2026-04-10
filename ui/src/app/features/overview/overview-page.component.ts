@@ -9,23 +9,17 @@ import { PageContainerComponent } from '../../shared/ui/page-container.component
 import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
+/**
+ * OverviewPageComponent serves as the landing or home page for the application.
+ *
+ * It provides users with a high-level summary of the platform's capabilities
+ * and acts as an entry point explaining what features are available within
+ * the MagnetarPrometheus UI shell (Run History, Job Submission, Catalog, Environment).
+ *
+ * This component is currently entirely static and does not require any data fetching logic.
+ */
 @Component({
-    imports: [PageContainerComponent, PageHeaderComponent, PanelCardComponent],
-    template: `
-    <mp-page-container>
-      <mp-page-header
-        title="Platform Overview"
-        description="MagnetarPrometheus UI shell for operations, observability, and workflow job dispatch."
-      ></mp-page-header>
-      <mp-panel-card>
-        <ul>
-          <li><strong>Run History:</strong> inspect execution lifecycle, filter status, and drill into details.</li>
-          <li><strong>Job Submission:</strong> submit new workflow runs using validated input contracts.</li>
-          <li><strong>Workflow Catalog:</strong> browse available workflows and metadata summaries.</li>
-          <li><strong>Environment:</strong> confirm transport mode and runtime integration assumptions.</li>
-        </ul>
-      </mp-panel-card>
-    </mp-page-container>
-  `
+  imports: [PageContainerComponent, PageHeaderComponent, PanelCardComponent],
+  templateUrl: './overview-page.component.html'
 })
 export class OverviewPageComponent {}

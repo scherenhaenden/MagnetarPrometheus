@@ -13,81 +13,67 @@ import { PageContainerComponent } from '../../shared/ui/page-container.component
 import { PageHeaderComponent } from '../../shared/ui/page-header.component';
 import { PanelCardComponent } from '../../shared/ui/panel-card.component';
 
+/**
+ * JobSubmissionPageComponent provides a form interface for users to manually trigger new workflow runs.
+ *
+ * Responsibilities include:
+ * - Fetching the list of available workflows to populate a dropdown selection.
+ * - Managing a reactive form for job parameters (workflow ID, reason, priority) with built-in validation.
+ * - Orchestrating the submission process, cleanly transitioning through states: idle, submitting, success, error.
+ * - Disabling submission when the form is invalid or a request is currently in flight.
+ */
 @Component({
-    imports: [ReactiveFormsModule, AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent],
-    template: `
-    <mp-page-container>
-      <mp-page-header
-        title="Job Submission"
-        description="Submit a workflow job with validation, clear submission-state transitions, and transport abstraction."
-      ></mp-page-header>
-
-      <mp-panel-card>
-        <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
-          <label for="workflow">Workflow</label>
-          <select id="workflow" formControlName="workflowId">
-            <option value="">Select workflow</option>
-            @for (workflow of (workflows$ | async); track workflow.workflowId) {
-              <option [value]="workflow.workflowId">{{workflow.title}} (v{{workflow.version}})</option>
-            }
-          </select>
-          @if (form.controls.workflowId.invalid && form.controls.workflowId.touched) {
-            <small>Workflow selection is required.</small>
-          }
-
-          <label for="reason">Reason</label>
-          <input id="reason" formControlName="reason" maxlength="200" />
-          @if (form.controls.reason.errors?.['required'] && form.controls.reason.touched) {
-            <small>Reason is required.</small>
-          }
-          @if (form.controls.reason.errors?.['minlength'] && form.controls.reason.touched) {
-            <small>Reason must be at least 10 characters.</small>
-          }
-
-          <label for="priority">Priority</label>
-          <select id="priority" formControlName="priority">
-            <option value="low">Low</option>
-            <option value="normal">Normal</option>
-            <option value="high">High</option>
-          </select>
-
-          <button type="submit" [disabled]="form.invalid || (submitVm$ | async)?.state === 'submitting'">Submit Job</button>
-        </form>
-      </mp-panel-card>
-
-      @if (submitVm$ | async; as vm) {
-        <mp-panel-card>
-          @if (vm.state === 'idle') {
-            <p>Submission is idle. Complete the form and submit when ready.</p>
-          }
-          @if (vm.state === 'submitting') {
-            <p>Submitting job request...</p>
-          }
-          @if (vm.state === 'success') {
-            <p>Success: {{ vm.message }}</p>
-          }
-          @if (vm.state === 'error') {
-            <p>Error: {{ vm.message }}</p>
-          }
-        </mp-panel-card>
-      }
-    </mp-page-container>
-    `,
-    styles: ['.form-grid{display:grid;grid-template-columns:1fr;gap:var(--mp-space-2);}small{color:#ffb9b9;}']
+  imports: [ReactiveFormsModule, AsyncPipe, PageContainerComponent, PageHeaderComponent, PanelCardComponent],
+  templateUrl: './job-submission-page.component.html',
+  styleUrl: './job-submission-page.component.css'
 })
 export class JobSubmissionPageComponent {
+  /**
+   * FormBuilder is used to declaratively define the structure and validation rules of the form.
+   */
   private readonly fb = inject(FormBuilder);
+
+  /**
+   * FrontendDataService is injected to fetch workflows and submit the resulting job request to the backend.
+   */
   private readonly dataService = inject(FrontendDataService);
+
+  /**
+   * A BehaviorSubject that acts as a trigger for the submission process.
+   * It holds a numerical value acting as a counter. Every time the form is successfully submitted,
+   * this counter is incremented, signaling the `submitVm$` pipeline to execute a new request.
+   * A value of 0 indicates the initial 'idle' state.
+   */
   private readonly submitSignal$ = new BehaviorSubject(0);
 
+  /**
+   * Observable stream that fetches the catalog of workflows to populate the "Workflow" `<select>` element.
+   */
   protected readonly workflows$ = this.dataService.getWorkflowCatalog();
 
+  /**
+   * The reactive form model defining the schema for a job submission.
+   * `nonNullable` is used to enforce that resetting the form reverts to the defined default values
+   * instead of `null`, providing stronger type safety.
+   */
   protected readonly form = this.fb.nonNullable.group({
     workflowId: ['', Validators.required],
     reason: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
     priority: ['normal' as const, Validators.required]
   });
 
+  /**
+   * A reactive view-model that handles the entire lifecycle of a job submission.
+   *
+   * Flow:
+   * 1. Listens to `submitSignal$`.
+   * 2. If the signal is 0, it outputs an 'idle' state.
+   * 3. When the signal increments (meaning a submission was triggered), it maps the raw form values
+   *    and initiates a `submitJob` request via the data service.
+   * 4. While the request is pending, it yields a 'submitting' state (via the inner `startWith`).
+   * 5. Upon receiving a result, it determines success or error and maps to the appropriate state.
+   * 6. It catches network or service errors and yields an 'error' state, preventing the stream from dying.
+   */
   protected readonly submitVm$ = this.submitSignal$.pipe(
     switchMap((count) => {
       if (count === 0) {
@@ -105,6 +91,13 @@ export class JobSubmissionPageComponent {
     startWith({ state: 'idle' as const, message: '' })
   );
 
+  /**
+   * Triggered when the user clicks the submit button.
+   *
+   * It forces all form controls to be marked as touched, which immediately reveals any validation
+   * errors in the UI. If the form passes validation, it increments the `submitSignal$`, which in turn
+   * kicks off the `submitVm$` observable pipeline.
+   */
   protected submit(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) {

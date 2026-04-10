@@ -38,6 +38,11 @@ export const routes: Routes = [
           import('./features/workflow-catalog/workflow-catalog-page.component').then((m) => m.WorkflowCatalogPageComponent)
       },
       {
+        path: 'studio',
+        loadComponent: () =>
+          import('./features/workflow-studio/workflow-studio-page.component').then((m) => m.WorkflowStudioPageComponent)
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('./features/settings/settings-page.component').then((m) => m.SettingsPageComponent)

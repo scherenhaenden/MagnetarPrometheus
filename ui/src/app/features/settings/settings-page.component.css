@@ -1,0 +1,11 @@
+.grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--mp-space-2);
+  margin-top: var(--mp-space-3);
+}
+
+.label {
+  font-weight: 600;
+  color: var(--mp-color-text-muted);
+}

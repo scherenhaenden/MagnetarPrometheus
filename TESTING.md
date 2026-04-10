@@ -87,12 +87,16 @@ To validate the product locally from the repository root:
 
 ```bash
 bash run_app.sh
+bash run_app.sh --api --daemon start --port 8010
+bash run_app.sh --api --daemon status --port 8010
+bash run_app.sh --api --daemon stop --port 8010
 bash scripts/run_tests.sh
 ```
 
 These commands validate both the visible surface (the CLI) and the internal correctness (the engine tests):
 
 - `run_app.sh` proves the backend can bootstrap and execute the example workflow
+- `run_app.sh --api --daemon ...` proves the repo-root launcher can manage the minimal API lifecycle with explicit local bind controls
 - `scripts/run_tests.sh` proves the implemented backend, SDK, and UI scopes still satisfy the enforced coverage contracts
 
 ## Bug Reporting Process

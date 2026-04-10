@@ -58,6 +58,17 @@ Start the local API server:
 bash scripts/run_backend.sh --api --host 127.0.0.1 --port 8000
 ```
 
+Manage the local API server through the repo-root launcher:
+
+```bash
+bash run_app.sh --api --daemon start
+bash run_app.sh --api --daemon status
+bash run_app.sh --api --daemon stop
+```
+
+Daemon mode stores host/port-specific PID and log files in the repo root by default.
+You can override those paths with `MAGNETAR_API_PID_FILE` and `MAGNETAR_API_LOG_FILE`.
+
 ### UI Only
 
 Mock mode:

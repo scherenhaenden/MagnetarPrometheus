@@ -58,19 +58,61 @@ p {
   flex-wrap: wrap;
 }
 
-.workflow-rail {
+.canvas-container {
+  grid-area: canvas;
+  position: relative;
   display: flex;
-  gap: var(--mp-space-2);
-  overflow-x: auto;
-  padding: var(--mp-space-2);
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.workflow-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4rem;
+  z-index: 40;
+  background: var(--studio-surface-raised);
+  border-right: 1px solid var(--studio-border);
+  border-radius: var(--mp-radius-lg) 0 0 var(--mp-radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mp-space-1);
+  padding: var(--mp-space-2) 0;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.workflow-rail:hover {
+  width: 14rem;
 }
 
 .rail-item {
-  min-width: 100px;
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
   align-items: center;
+  gap: var(--mp-space-3);
+  padding: var(--mp-space-2) var(--mp-space-3);
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--studio-text-primary);
+  text-align: left;
+}
+
+.rail-item:hover {
+  background: color-mix(in srgb, var(--mp-color-accent) 18%, transparent);
+}
+
+.rail-item small {
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+
+.workflow-rail:hover .rail-item small {
+  opacity: 1;
 }
 
 .icon {
@@ -149,10 +191,11 @@ textarea {
 }
 
 .canvas {
-  grid-area: canvas;
+  flex: 1;
+  margin-left: 4rem;
   position: relative;
-  min-height: 500px;
   overflow: hidden;
+  width: calc(100% - 4rem);
 }
 
 .canvas-grid {

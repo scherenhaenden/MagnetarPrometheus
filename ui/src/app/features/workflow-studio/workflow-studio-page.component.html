@@ -44,15 +44,6 @@
     </div>
   </header>
 
-  <nav class="workflow-rail panel-surface" aria-label="Workflow shortcuts">
-    @for (type of nodeTypes; track type.id) {
-      <button type="button" class="rail-item" [attr.aria-label]="type.label">
-        <span class="icon" [ngClass]="type.accent">{{ type.icon }}</span>
-        <small>{{ type.label }}</small>
-      </button>
-    }
-  </nav>
-
   <section class="project-tabs panel-surface" aria-label="Open projects">
     <div class="tabs">
       @for (tab of openProjectTabs; track tab.id) {
@@ -79,6 +70,16 @@
   <p class="status-message">{{ statusMessage }}</p>
 
   <div class="studio-layout">
+    <div class="canvas-container">
+      <aside class="workflow-rail group panel-surface" aria-label="Workflow shortcuts">
+        @for (type of nodeTypes; track type.id) {
+          <button type="button" class="rail-item" [attr.aria-label]="type.label">
+            <span class="icon" [ngClass]="type.accent">{{ type.icon }}</span>
+            <small>{{ type.label }}</small>
+          </button>
+        }
+      </aside>
+
     <main class="canvas panel-surface" aria-label="Workflow Canvas" [ngClass]="{ dragging: !!draggingNodeId }">
       <div class="canvas-grid"></div>
 
@@ -120,6 +121,7 @@
         </article>
       }
     </main>
+    </div>
 
     <aside class="yaml-panel panel-surface">
       <h4>Workflow Source</h4>

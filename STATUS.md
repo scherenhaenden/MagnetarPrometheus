@@ -97,6 +97,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - Serial workflow execution with step-by-step context accumulation.
 - Conditional routing through the evaluator path.
 - Step registration and Python executor routing.
+- Plugin-manager-based step capability loading with bundled core example plugin metadata.
 - Structured context/result output for completed runs.
 - Example email-triage module with manifest, workflow, and step handlers.
 - Runtime bootstrap with dependency checking and policy-driven install behavior.
@@ -110,7 +111,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - There is no scheduler, queue, or worker pool.
 - Workflow definitions are still authored manually rather than through a product interface.
 - The UI graph schema is a contract artifact only; it is not backed by a functioning editor.
-- The current module surface is demonstrative, not yet a mature plug-and-play module system.
+- A first generic backend plugin runtime now exists for step-capability extension, but policy controls, signing, and remote distribution are still future work.
 - Release automation currently produces metadata/version-stamp outputs, not a complete distribution pipeline.
 
 ## Immediate Delivery Focus

@@ -40,7 +40,8 @@ from magnetar_prometheus.core.engine import Engine
 from magnetar_prometheus.core.executor_router import ExecutorRouter
 from magnetar_prometheus.core.workflow_loader import WorkflowLoader
 from magnetar_prometheus.executors.python_executor import PythonExecutor
-from magnetar_prometheus.modules.example_registry import register_all_example_steps
+from magnetar_prometheus.modules.example_registry import get_builtin_plugins
+from magnetar_prometheus.plugins.manager import PluginManager
 from magnetar_prometheus.registry.step_registry import StepRegistry
 
 
@@ -183,7 +184,9 @@ def main():
         sys.exit(1)
 
     registry = StepRegistry()
-    register_all_example_steps(registry)
+    plugin_manager = PluginManager()
+    plugin_manager.register_many(get_builtin_plugins())
+    plugin_manager.register_into(registry)
 
     executor = PythonExecutor(registry)
     router = ExecutorRouter()

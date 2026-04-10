@@ -52,6 +52,7 @@ Execution strategy for upcoming slices:
 | `task-112` | `ms-01` | Define Bitacora retention and archival flow | Edward + AI | 3 | 14 | `planned` | Move `BITACORA.md` entries older than 2 days into durable GitHub surfaces such as Discussions and the wiki so the repo logbook stays current and scannable. |
 | `task-113` | `ms-04` | Implement HTTP API and local persistence for job submission | Unassigned | 5 | 24 | `planned` | User increment: A user can start a backend service, submit workflow runs via HTTP rather than CLI, and inspect run outcomes. |
 | `task-114` | `ms-05` | Develop a minimal web UI for observing workflows | Unassigned | 5 | 24 | `planned` | User increment: A user can open a browser and view persistent run history and job statuses without reading raw JSON. |
+| `task-115` | `ms-04` | Introduce generic backend plugin runtime for step capability extension | Edward + AI | 5 | 24 | `done` | Added typed plugin contracts, a plugin manager, bundled example plugin manifest, and startup wiring through plugin registration so new capabilities can be added without core-engine rewrites. |
 
 ## Preserved Historical Task Records
 

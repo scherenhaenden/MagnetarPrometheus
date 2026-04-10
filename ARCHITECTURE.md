@@ -28,6 +28,7 @@ Current implemented slice:
 - execution engine
 - evaluator
 - executor routing
+- plugin contract loading and step-capability registration
 - context accumulation
 - shared SDK models and schema documents
 
@@ -54,6 +55,7 @@ Responsibility:
 - workflow loading and validation
 - orchestration engine
 - executor routing
+- plugin contract loading and step-capability registration
 - runtime context management
 - logging and persistence
 - runtime bootstrap and dependency readiness checks

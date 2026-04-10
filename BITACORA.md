@@ -38,6 +38,26 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 13:30 CEST
+**Author:** Gemini CLI
+**Entry:** Resolved UI code contract and build failures on `codex/add-functionality-to-save-and-load-workflows` to unblock PR `#176`. Added explicit `public` access modifiers to `ngOnInit` and `ngOnDestroy` in `WorkflowStudioPageComponent` as required by the repository's UI contract guard. Increased the `anyComponentStyle` budget in `ui/angular.json` to 10kb/20kb to accommodate the redesigned Workflow Studio styles. Verified the fixes by running the UI test tier: contract and build checks now pass. Updated PR `#176` with labels (`✨ feature`, `🎨 ux`, `🧪 tests`, `♻️ code quality`, `area:ui`, `Level 3 (Visual Model)`) and linked it to issue `#7`.
+
+---
+**Timestamp:** 2026-04-10 13:45 CEST
+**Author:** Codex
+**Entry:** Completed the remaining PR `#176` Workflow Studio review follow-up on `codex/add-functionality-to-save-and-load-workflows`. Saving an existing local project now moves it back to the top of the selector so the most recently updated snapshot stays easiest to reach, and storage access is now wrapped defensively so unavailable or failing browser storage degrades into explicit status messages instead of silently assuming persistence succeeded. Added focused specs for reorder-on-save plus failing read/write storage scenarios and updated the branch-local review record to mark the review items as closed in code.
+
+---
+**Timestamp:** 2026-04-10 13:25 CEST
+**Author:** Codex
+**Entry:** On `codex/add-functionality-to-save-and-load-workflows`, tightened Workflow Studio local-project persistence after PR `#176` review triage. Hardened project restore against corrupt `localStorage` entries such as `null`, switched project ID generation to `crypto.randomUUID()` with a compatibility fallback, and added focused specs covering both the corrupt-storage recovery path and the UUID generation path. Also recorded an explicit branch-local review in `branches/codex/add-functionality-to-save-and-load-workflows/review.md` so the remaining open review items stay visible.
+
+---
+**Timestamp:** 2026-04-10 11:55 CEST
+**Author:** Codex
+**Entry:** Hardened PR `#170` on `feature/add-example-workflows-10944637492021849479` by making the example math and HTTP steps preserve existing `context['data']` instead of overwriting it, guarding non-mapping context payloads in the math path, and replacing brittle JSON string interpolation in the HTTP mock with `json.dumps`. Expanded the module tests to cover preserved data fields, invalid/non-mapping context payloads, and special-character URL serialization. Verified the touched tests with `pytest --no-cov backend/tests/test_math_module.py backend/tests/test_http_module.py -q`: `12 passed`.
+
+---
 **Timestamp:** 2026-04-10 11:20 CEST
 **Author:** Codex
 **Entry:** On `codex/redesign-application-ui-using-provided-react-design`, hardened the Workflow Studio implementation after local compile/build investigation. Fixed the Angular template parse failure caused by literal JSON braces in the inspector preview, centralized node-sequence/state lookup in the component to avoid drift and repeated O(N) template work, restored explicit standalone component metadata for the lazy-loaded route target, and moved the redesigned Studio styling back onto repository design tokens instead of local hardcoded palette values.

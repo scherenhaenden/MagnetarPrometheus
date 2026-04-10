@@ -20,6 +20,32 @@
     <section class="panel canvas" aria-label="Workflow Canvas">
       <h3>Canvas</h3>
       <p>The visual graph with pan, zoom, connections, and grouping will be built here.</p>
+
+      <div class="example-browser">
+        <h4>Saved Example Workflow</h4>
+        <p>Reference flow persisted in multiple formats for import/export validation.</p>
+
+        <div class="example-tabs" role="tablist" aria-label="Workflow example format">
+          @for (example of examples; track example.path) {
+            <button
+              type="button"
+              class="example-tab"
+              [class.active]="selectedExample.path === example.path"
+              (click)="selectExample(example)">
+              {{ example.label }}
+            </button>
+          }
+        </div>
+
+        @if (loadingExample) {
+          <p>Loading workflow example...</p>
+        } @else if (exampleError) {
+          <p class="error">{{ exampleError }}</p>
+        } @else {
+          <pre><code>{{ exampleContent }}</code></pre>
+          <a [href]="selectedExample.path" target="_blank" rel="noopener">Open raw {{ selectedExample.label }} file</a>
+        }
+      </div>
     </section>
 
     <aside class="panel inspector" aria-label="Properties">

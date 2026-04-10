@@ -170,3 +170,22 @@ The repository also carries governance and planning documents, but those are sup
 - [RULES.md](/Users/edwardflores/Projects/Development/MagnetarPrometheus/RULES.md)
 
 If you are trying to understand the product, start with this README and the runnable commands above. If you are trying to understand repository governance, then move into the planning and rules documents.
+
+
+## Plugin-Ready Runtime (New)
+
+MagnetarPrometheus now includes a generic backend plugin layer for step-capability extension.
+
+What this enables today:
+
+- bundled example capabilities are loaded through a plugin manager instead of hard-coded wiring
+- plugin contracts are typed (manifest + runtime handlers) and API-version checked
+- the runtime rejects conflicting step ownership early for deterministic startup
+
+What remains intentionally future-scoped:
+
+- plugin signing and trust policy controls
+- remote plugin distribution/catalog flows
+- richer UI/plugin capability metadata surfaces
+
+This preserves the current local developer experience while opening a clear path for adding new capabilities without repeatedly modifying core engine wiring.

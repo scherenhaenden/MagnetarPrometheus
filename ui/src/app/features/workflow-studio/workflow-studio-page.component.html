@@ -27,13 +27,31 @@
         </select>
       </label>
 
-      <button type="button">Executions</button>
+      <label class="project-name-field" for="project-name-input">
+        Project
+        <input id="project-name-input" type="text" [(ngModel)]="projectName" />
+      </label>
+
+      <label class="project-selector" for="saved-projects-select">
+        Saved
+        <select id="saved-projects-select" [ngModel]="selectedProjectId" (ngModelChange)="loadProject($event)">
+          <option [ngValue]="null">Select project</option>
+          <option *ngFor="let project of savedProjects" [ngValue]="project.id">
+            {{ project.name }}
+          </option>
+        </select>
+      </label>
+
+      <button type="button" (click)="newProject()">New</button>
+      <button type="button" (click)="saveProject()">Save Local</button>
       <button type="button">Import</button>
       <button type="button" [ngClass]="{ primary: !isRunning, danger: isRunning }" (click)="isRunning ? stopWorkflow() : runWorkflow()">
         {{ isRunning ? 'Stop' : 'Run Workflow' }}
       </button>
     </div>
   </header>
+
+  <p class="status-message">{{ statusMessage }}</p>
 
   <div class="studio-layout">
     <aside class="library panel-surface" aria-label="Node Library">
@@ -88,12 +106,12 @@
 
         <label>
           Node Name
-          <input type="text" [value]="selectedNode.label" readonly />
+          <input type="text" [value]="selectedNode.label" (input)="updateSelectedNodeLabel($any($event.target).value)" />
         </label>
 
         <label>
           Description
-          <textarea rows="4" [value]="selectedNode.summary" readonly></textarea>
+          <textarea rows="4" [value]="selectedNode.summary" (input)="updateSelectedNodeSummary($any($event.target).value)"></textarea>
         </label>
 
         <div class="json-preview">
@@ -110,6 +128,7 @@
       <h3>Debug · Logs · Run Timeline</h3>
       <ul>
         <li>Execution mode: {{ isRunning ? 'running' : 'idle' }}</li>
+        <li>Current project: {{ selectedProjectId ? projectName : 'unsaved draft' }}</li>
         <li>Selected node: {{ selectedNodeId }}</li>
         <li>Completed steps: {{ completedNodeIds.size }}</li>
       </ul>

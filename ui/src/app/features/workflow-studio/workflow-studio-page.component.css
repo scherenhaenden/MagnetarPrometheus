@@ -57,6 +57,27 @@ p {
   gap: var(--mp-space-2);
 }
 
+
+.project-name-field,
+.project-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--mp-color-text-muted);
+}
+
+.project-name-field input,
+.project-selector select {
+  min-width: 168px;
+}
+
+.status-message {
+  margin: 0;
+  color: var(--mp-color-text-muted);
+  font-size: 0.82rem;
+}
+
 button {
   border: 1px solid var(--mp-color-border);
   background: var(--mp-color-surface);

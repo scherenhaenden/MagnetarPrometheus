@@ -22,8 +22,8 @@ from magnetar_prometheus.modules.error_module.steps import start_error, trigger_
 from magnetar_prometheus.modules.http_module.steps import http_get, json_parse
 from magnetar_prometheus.modules.linear_module.steps import process_linear, start_linear
 from magnetar_prometheus.modules.math_module.steps import math_add, math_multiply
-from magnetar_prometheus.plugins.manager import PluginManager
 from magnetar_prometheus.plugins.models import PluginManifest, PluginRuntime
+from magnetar_prometheus.registry.step_registry import StepRegistry
 
 
 def get_builtin_plugins() -> list[PluginRuntime]:
@@ -73,8 +73,11 @@ def get_builtin_plugins() -> list[PluginRuntime]:
     return [core_plugin]
 
 
-def register_all_example_steps(registry) -> None:
-    """Backward-compatible helper that registers every bundled example step."""
-    plugin_manager = PluginManager()
-    plugin_manager.register_many(get_builtin_plugins())
-    plugin_manager.register_into(registry)
+def register_all_example_steps(registry: StepRegistry) -> None:
+    """Backward-compatible helper that registers every bundled example step.
+
+    This stays a direct, easy-to-read helper and does not depend on PluginManager.
+    """
+    for plugin in get_builtin_plugins():
+        for step_type, handler in plugin.step_handlers.items():
+            registry.register(step_type, handler)

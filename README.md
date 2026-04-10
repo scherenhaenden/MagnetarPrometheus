@@ -174,7 +174,7 @@ If you are trying to understand the product, start with this README and the runn
 
 ## Plugin-Ready Runtime (New)
 
-MagnetarPrometheus now includes a generic backend plugin layer for step capability extension.
+MagnetarPrometheus now includes a generic backend plugin layer for step-capability extension.
 
 What this enables today:
 

@@ -12,11 +12,14 @@ Why this file exists in this form:
 
 from __future__ import annotations
 
+import logging
 from importlib.metadata import entry_points
 from typing import Dict, Iterable, List
 
 from magnetar_prometheus.plugins.models import PluginRuntime
 from magnetar_prometheus.registry.step_registry import StepRegistry
+
+logger = logging.getLogger(__name__)
 
 PLUGIN_API_VERSION = "1"
 PLUGIN_ENTRYPOINT_GROUP = "magnetar_prometheus.plugins"
@@ -83,8 +86,44 @@ class PluginManager:
         """
         discovered_plugins: List[PluginRuntime] = []
         for ep in entry_points(group=PLUGIN_ENTRYPOINT_GROUP):
-            provider = ep.load()
-            plugin = provider()
+            try:
+                provider = ep.load()
+            except Exception as exc:  # pragma: no cover - defensive error wrapping
+                logger.error(
+                    "Failed to load plugin entry point %r from group %r: %s",
+                    ep.name,
+                    PLUGIN_ENTRYPOINT_GROUP,
+                    exc,
+                )
+                continue
+
+            if not callable(provider):
+                logger.error(
+                    "Plugin entry point %r from group %r did not resolve to a callable provider, got %r",
+                    ep.name,
+                    PLUGIN_ENTRYPOINT_GROUP,
+                    type(provider),
+                )
+                continue
+
+            try:
+                plugin = provider()
+            except Exception as exc:  # pragma: no cover - defensive error wrapping
+                logger.error(
+                    "Plugin provider for entry point %r raised an exception during plugin instantiation: %s",
+                    ep.name,
+                    exc,
+                )
+                continue
+
+            if not isinstance(plugin, PluginRuntime):
+                logger.error(
+                    "Plugin provider for entry point %r returned %r, expected PluginRuntime",
+                    ep.name,
+                    type(plugin),
+                )
+                continue
+
             discovered_plugins.append(plugin)
         return discovered_plugins
 

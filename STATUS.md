@@ -97,7 +97,7 @@ The tracked planning baseline is marked complete for the currently defined `44 /
 - Serial workflow execution with step-by-step context accumulation.
 - Conditional routing through the evaluator path.
 - Step registration and Python executor routing.
-- Plugin-manager-based step capability loading with bundled core example plugin metadata.
+- Plugin-manager-based step-capability loading with bundled core example plugin metadata.
 - Structured context/result output for completed runs.
 - Example email-triage module with manifest, workflow, and step handlers.
 - Runtime bootstrap with dependency checking and policy-driven install behavior.

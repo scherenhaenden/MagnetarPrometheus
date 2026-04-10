@@ -115,26 +115,49 @@ def test_plugin_manager_rejects_duplicate_plugin_id_registration():
         manager.register_plugin(plugin)
 
 
-def test_plugin_manager_discovers_entrypoint_plugins(monkeypatch):
-    """Verify that plugins can be discovered via entry points."""
+def test_plugin_manager_discovers_entrypoint_plugins(monkeypatch, caplog):
+    """Verify that plugins can be discovered via entry points with robust error handling."""
     mock_plugin = _make_test_plugin("plugin.discovered", "step.discovered")
 
     class MockEntryPoint:
+        def __init__(self, name, behavior="success"):
+            self.name = name
+            self.behavior = behavior
+
         def load(self):
+            if self.behavior == "load_fail":
+                raise RuntimeError("load failed")
+            if self.behavior == "not_callable":
+                return "not a callable"
+            if self.behavior == "call_fail":
+                return lambda: exec('raise RuntimeError("call failed")')
+            if self.behavior == "wrong_type":
+                return lambda: "not a plugin runtime"
             return lambda: mock_plugin
 
     def mock_entry_points(group=None):
         if group == "magnetar_prometheus.plugins":
-            return [MockEntryPoint()]
+            return [
+                MockEntryPoint("valid"),
+                MockEntryPoint("bad_load", "load_fail"),
+                MockEntryPoint("bad_provider", "not_callable"),
+                MockEntryPoint("bad_call", "call_fail"),
+                MockEntryPoint("bad_type", "wrong_type"),
+            ]
         return []
 
     monkeypatch.setattr("magnetar_prometheus.plugins.manager.entry_points", mock_entry_points)
 
     manager = PluginManager()
-    discovered = manager.discover_entrypoint_plugins()
+    with caplog.at_level("ERROR"):
+        discovered = manager.discover_entrypoint_plugins()
 
     assert len(discovered) == 1
     assert discovered[0].manifest.plugin_id == "plugin.discovered"
+    assert "Failed to load plugin entry point 'bad_load'" in caplog.text
+    assert "did not resolve to a callable provider" in caplog.text
+    assert "raised an exception during plugin instantiation" in caplog.text
+    assert "returned <class 'str'>, expected PluginRuntime" in caplog.text
 
 
 def test_plugin_manager_provides_step_ownership_diagnostics():

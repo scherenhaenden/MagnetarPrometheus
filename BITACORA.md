@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 11:20 CEST
+**Author:** Codex
+**Entry:** On `codex/redesign-application-ui-using-provided-react-design`, hardened the Workflow Studio implementation after local compile/build investigation. Fixed the Angular template parse failure caused by literal JSON braces in the inspector preview, centralized node-sequence/state lookup in the component to avoid drift and repeated O(N) template work, restored explicit standalone component metadata for the lazy-loaded route target, and moved the redesigned Studio styling back onto repository design tokens instead of local hardcoded palette values.
+
+---
 **Timestamp:** 2026-04-09 15:25 CEST
 **Author:** Codex
 **Entry:** Tightened the Angular UI validation tier on branch `feature/add-ui-tests-12952883483010130617` so `npm run test:ci` now enforces `100%` statements/branches/functions/lines via `ui/karma.conf.cjs` instead of only requiring test green status. Closed the remaining coverage gaps by expanding route-loader, job-submission, run-detail, run-history, API-adapter, mock-adapter, and provider tests until the only remaining failures were true uncovered branches rather than missing policy wiring.

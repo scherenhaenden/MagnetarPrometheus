@@ -2,9 +2,9 @@
  * Workflow Studio page.
  *
  * This component provides a local-first workflow project editing experience.
- * Users can edit node metadata, save snapshots as local projects, reload
- * those projects from browser storage, and inspect concrete example workflows
- * from bundled assets while backend-powered graph editing remains in progress.
+ * It now includes functional project tabs, searchable local persistence, a
+ * dedicated workflow rail, and explicit edge rendering so node connections
+ * are visible and never hidden behind source previews.
  */
 import { HttpClient } from '@angular/common/http';
 import { NgClass } from '@angular/common';
@@ -57,6 +57,19 @@ interface WorkflowExampleAsset {
   readonly path: string;
 }
 
+interface ProjectTab {
+  id: string;
+  name: string;
+}
+
+interface CanvasEdge {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
 const WORKFLOW_EXAMPLES: ReadonlyArray<WorkflowExampleAsset> = [
   { format: 'yaml', label: 'YAML', path: '/assets/workflows/examples/support-ticket-triage.yaml' },
   { format: 'json', label: 'JSON', path: '/assets/workflows/examples/support-ticket-triage.json' },
@@ -85,15 +98,14 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   ];
 
   protected readonly defaultNodes: StudioNode[] = [
-    { id: 'node_trigger', typeId: 'trigger_http', label: 'New Lead Form', summary: 'POST /api/leads/new', x: 72, y: 128 },
-    { id: 'node_ai', typeId: 'process_ai', label: 'Enrich & Score', summary: 'Analyze lead context', x: 384, y: 128 },
-    { id: 'node_logic', typeId: 'logic_if', label: 'Is High Quality?', summary: 'Score >= 80', x: 696, y: 128 },
-    { id: 'node_db', typeId: 'integration_db', label: 'Save VIP Lead', summary: 'salesforce_leads', x: 1008, y: 48 },
-    { id: 'node_email', typeId: 'integration_email', label: 'Nurture Drip', summary: 'template: nurture_1', x: 1008, y: 232 }
+    { id: 'node_trigger', typeId: 'trigger_http', label: 'Webhook HTTP', summary: 'Formulario de Lead', x: 72, y: 150 },
+    { id: 'node_ai', typeId: 'process_ai', label: 'Motor de IA', summary: 'Enriquecer y puntuar', x: 420, y: 150 },
+    { id: 'node_logic', typeId: 'logic_if', label: '¿Lead calificado?', summary: 'Score >= 80', x: 768, y: 150 }
   ];
 
   protected nodes: StudioNode[] = this.cloneNodes(this.defaultNodes);
   protected workflowSequence: string[] = this.nodes.map((node) => node.id);
+  protected visibleConnections: CanvasEdge[] = this.buildConnections();
 
   protected readonly themeOptions: ThemeOption[] = [
     { id: 'midnight', label: 'Midnight' },
@@ -118,16 +130,18 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   protected selectedNodeId = 'node_ai';
   protected selectedThemeId = this.themeOptions[0].id;
   protected selectedAccent = this.accentOptions[0].value;
+  protected projectName = 'Untitled Workflow';
+  protected selectedProjectId: string | null = null;
+  protected savedProjects: StudioProject[] = [];
+  protected openProjectTabs: ProjectTab[] = [{ id: 'draft', name: 'Draft' }];
+  protected activeTabId = 'draft';
+  protected projectSearch = '';
+  protected statusMessage = 'Local mode ready. Save your first project.';
 
   protected isRunning = false;
   protected activeNodeId: string | null = null;
   protected completedNodeIds = new Set<string>();
   protected draggingNodeId: string | null = null;
-
-  protected projectName = 'Untitled Workflow';
-  protected selectedProjectId: string | null = null;
-  protected savedProjects: StudioProject[] = [];
-  protected statusMessage = 'Local mode ready. Save your first project.';
 
   private readonly storageKey = 'mp.workflowStudio.projects.v1';
   private readonly nodeTypesById = new Map(this.nodeTypes.map((type) => [type.id, type]));
@@ -141,6 +155,15 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.restoreProjects();
     this.loadExample(this.selectedExample);
+  }
+
+  protected get filteredProjects(): StudioProject[] {
+    const query = this.projectSearch.trim().toLowerCase();
+    if (!query) {
+      return this.savedProjects;
+    }
+
+    return this.savedProjects.filter((project) => project.name.toLowerCase().includes(query));
   }
 
   protected get selectedNode(): StudioNode | null {
@@ -169,6 +192,24 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     this.loadExample(example);
   }
 
+  protected openTab(tabId: string): void {
+    this.activeTabId = tabId;
+    if (tabId === 'draft') {
+      return;
+    }
+    this.loadProject(tabId);
+  }
+
+  protected closeTab(tabId: string): void {
+    if (tabId === 'draft') {
+      return;
+    }
+    this.openProjectTabs = this.openProjectTabs.filter((tab) => tab.id !== tabId);
+    if (this.activeTabId === tabId) {
+      this.openTab('draft');
+    }
+  }
+
   protected onNodePointerDown(event: PointerEvent, nodeId: string): void {
     if (event.button !== 0) {
       return;
@@ -192,8 +233,6 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Prevent default browser behavior (e.g., selection, scrolling) while we are
-    // actively tracking a potential or ongoing node drag.
     if (event.cancelable) {
       event.preventDefault();
     }
@@ -216,6 +255,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
     node.x = Math.max(0, this.dragStartNode.x + dx);
     node.y = Math.max(0, this.dragStartNode.y + dy);
+    this.visibleConnections = this.buildConnections();
   }
 
   @HostListener('document:pointerup')
@@ -266,6 +306,8 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
     this.selectedProjectId = project.id;
     this.projectName = project.name;
+    this.upsertTab(project);
+
     if (this.persistProjects()) {
       this.statusMessage = `Saved '${project.name}' locally at ${new Date(project.updatedAtIso).toLocaleTimeString()}.`;
     } else {
@@ -285,12 +327,15 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
     this.nodes = this.cloneNodes(project.nodes);
     this.workflowSequence = this.nodes.map((node) => node.id);
+    this.visibleConnections = this.buildConnections();
     this.selectedNodeId = this.nodes.some((node) => node.id === project.selectedNodeId)
       ? project.selectedNodeId
       : this.nodes[0]?.id ?? '';
 
     this.selectedProjectId = project.id;
     this.projectName = project.name;
+    this.activeTabId = project.id;
+    this.upsertTab(project);
     this.statusMessage = `Loaded '${project.name}' from local storage.`;
     this.stopWorkflow();
   }
@@ -299,9 +344,11 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     this.stopWorkflow();
     this.nodes = this.cloneNodes(this.defaultNodes);
     this.workflowSequence = this.nodes.map((node) => node.id);
+    this.visibleConnections = this.buildConnections();
     this.selectedNodeId = this.nodes[0]?.id ?? '';
     this.selectedProjectId = null;
     this.projectName = 'Untitled Workflow';
+    this.activeTabId = 'draft';
     this.statusMessage = 'Started a new unsaved workflow project.';
   }
 
@@ -333,7 +380,6 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         complete: () => {
-          // Final delay for the last node completion
           setTimeout(() => {
             if (this.isRunning && this.workflowSequence.length > 0) {
               this.completedNodeIds.add(this.workflowSequence[this.workflowSequence.length - 1]);
@@ -373,6 +419,38 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.stopWorkflow();
+  }
+
+  private upsertTab(project: StudioProject): void {
+    if (!this.openProjectTabs.some((tab) => tab.id === project.id)) {
+      this.openProjectTabs.push({ id: project.id, name: project.name });
+      return;
+    }
+
+    this.openProjectTabs = this.openProjectTabs.map((tab) =>
+      tab.id === project.id ? { ...tab, name: project.name } : tab
+    );
+  }
+
+  private buildConnections(): CanvasEdge[] {
+    return this.workflowSequence
+      .slice(0, -1)
+      .map((nodeId, index) => {
+        const source = this.nodes.find((node) => node.id === nodeId);
+        const target = this.nodes.find((node) => node.id === this.workflowSequence[index + 1]);
+        if (!source || !target) {
+          return null;
+        }
+
+        return {
+          id: `${source.id}_${target.id}`,
+          x1: source.x + 220,
+          y1: source.y + 42,
+          x2: target.x,
+          y2: target.y + 42
+        };
+      })
+      .filter((edge): edge is CanvasEdge => edge !== null);
   }
 
   private loadExample(example: WorkflowExampleAsset): void {

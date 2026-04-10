@@ -25,9 +25,7 @@ describe('AppShellComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [AppShellComponent, RouterTestingModule],
-      providers: [
-        { provide: FrontendDataService, useValue: mockDataService }
-      ]
+      providers: [{ provide: FrontendDataService, useValue: mockDataService }]
     }).compileComponents();
   });
 
@@ -48,6 +46,13 @@ describe('AppShellComponent', () => {
   it('should render the health label', () => {
     const element: HTMLElement = fixture.nativeElement;
     expect(element.querySelector('.status')?.textContent).toContain('healthy · MOCK · Mock service is healthy');
+  });
+
+  it('should render primary navigation in top workflow bar', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    const links = Array.from(element.querySelectorAll('.workflow-nav a')).map((item) => item.textContent?.trim());
+    expect(links).toContain('Workflow Studio');
+    expect(links).toContain('Run History');
   });
 
   it('should expose the healthy tone after the service health resolves', async () => {

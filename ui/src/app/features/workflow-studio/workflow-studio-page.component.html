@@ -8,7 +8,7 @@
       <span class="brand-mark">⚡</span>
       <div>
         <h2>Workflow Studio</h2>
-        <p>Visual editor workspace for building, testing, and debugging workflows.</p>
+        <p>Editor visual funcional para diseñar, conectar y ejecutar workflows.</p>
       </div>
     </div>
 
@@ -36,50 +36,63 @@
         <input id="project-name-input" type="text" [(ngModel)]="projectName" />
       </label>
 
-      <label class="project-selector" for="saved-projects-select">
-        Saved
-        <select id="saved-projects-select" [ngModel]="selectedProjectId" (ngModelChange)="loadProject($event)">
-          <option [ngValue]="null">Select project</option>
-          @for (project of savedProjects; track project.id) {
-            <option [ngValue]="project.id">
-              {{ project.name }}
-            </option>
-          }
-        </select>
-      </label>
-
       <button type="button" (click)="newProject()">New</button>
       <button type="button" (click)="saveProject()">Save Local</button>
-      <button type="button">Import</button>
       <button type="button" [ngClass]="{ primary: !isRunning, danger: isRunning }" (click)="isRunning ? stopWorkflow() : runWorkflow()">
         {{ isRunning ? 'Stop' : 'Run Workflow' }}
       </button>
     </div>
   </header>
 
+  <nav class="workflow-rail panel-surface" aria-label="Workflow shortcuts">
+    @for (type of nodeTypes; track type.id) {
+      <button type="button" class="rail-item" [attr.aria-label]="type.label">
+        <span class="icon" [ngClass]="type.accent">{{ type.icon }}</span>
+        <small>{{ type.label }}</small>
+      </button>
+    }
+  </nav>
+
+  <section class="project-tabs panel-surface" aria-label="Open projects">
+    <div class="tabs">
+      @for (tab of openProjectTabs; track tab.id) {
+        <button type="button" class="tab" [class.active]="activeTabId === tab.id" (click)="openTab(tab.id)">
+          {{ tab.name }}
+          @if (tab.id !== 'draft') {
+            <span class="close" (click)="$event.stopPropagation(); closeTab(tab.id)">×</span>
+          }
+        </button>
+      }
+    </div>
+
+    <div class="project-search">
+      <input type="text" [(ngModel)]="projectSearch" placeholder="Buscar guardados..." aria-label="Search saved projects" />
+      <select [ngModel]="selectedProjectId" (ngModelChange)="loadProject($event)">
+        <option [ngValue]="null">Selecciona proyecto guardado</option>
+        @for (project of filteredProjects; track project.id) {
+          <option [ngValue]="project.id">{{ project.name }}</option>
+        }
+      </select>
+    </div>
+  </section>
+
   <p class="status-message">{{ statusMessage }}</p>
 
   <div class="studio-layout">
-    <aside class="library panel-surface" aria-label="Node Library">
-      <header>
-        <h3>Add Node</h3>
-        <span>{{ nodeTypes.length }} available</span>
-      </header>
-      <div class="library-list">
-        @for (type of nodeTypes; track type.id) {
-          <button type="button" class="library-item">
-            <span class="icon" [ngClass]="type.accent">{{ type.icon }}</span>
-            <span class="meta">
-              <strong>{{ type.label }}</strong>
-              <small>{{ type.category }}</small>
-            </span>
-          </button>
-        }
-      </div>
-    </aside>
-
     <main class="canvas panel-surface" aria-label="Workflow Canvas" [ngClass]="{ dragging: !!draggingNodeId }">
       <div class="canvas-grid"></div>
+
+      <svg class="connections" aria-hidden="true">
+        <defs>
+          <marker id="arrow-head" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L8,3 L0,6 Z"></path>
+          </marker>
+        </defs>
+        @for (edge of visibleConnections; track edge.id) {
+          <line [attr.x1]="edge.x1" [attr.y1]="edge.y1" [attr.x2]="edge.x2" [attr.y2]="edge.y2" marker-end="url(#arrow-head)"></line>
+        }
+      </svg>
+
       @for (node of nodes; track node.id) {
         <article
           class="studio-node"
@@ -106,55 +119,39 @@
           </div>
         </article>
       }
-
-      <section class="example-browser">
-        <h4>Saved Example Workflow</h4>
-        <p>Reference flow persisted in multiple formats for import/export validation.</p>
-
-        <div class="example-tabs" role="tablist" aria-label="Workflow example format">
-          @for (example of examples; track example.path) {
-            <button
-              type="button"
-              role="tab"
-              class="example-tab"
-              [class.active]="selectedExample.path === example.path"
-              [attr.aria-selected]="selectedExample.path === example.path"
-              [attr.aria-controls]="'example-panel-' + example.format"
-              [attr.id]="'example-tab-' + example.format"
-              (click)="selectExample(example)">
-              {{ example.label }}
-            </button>
-          }
-        </div>
-
-        @if (loadingExample) {
-          <p>Loading workflow example...</p>
-        } @else if (exampleError) {
-          <p class="error">{{ exampleError }}</p>
-        } @else {
-          <div
-            role="tabpanel"
-            [attr.id]="'example-panel-' + selectedExample.format"
-            [attr.aria-labelledby]="'example-tab-' + selectedExample.format">
-            <pre><code>{{ exampleContent }}</code></pre>
-            <a [href]="selectedExample.path" target="_blank" rel="noopener">Open raw {{ selectedExample.label }} file</a>
-          </div>
-        }
-      </section>
     </main>
+
+    <aside class="yaml-panel panel-surface">
+      <h4>Workflow Source</h4>
+      <p>Panel separado para que YAML/JSON/TOML no tape nodos.</p>
+
+      <div class="example-tabs" role="tablist" aria-label="Workflow example format">
+        @for (example of examples; track example.path) {
+          <button
+            type="button"
+            role="tab"
+            class="example-tab"
+            [class.active]="selectedExample.path === example.path"
+            [attr.aria-selected]="selectedExample.path === example.path"
+            (click)="selectExample(example)">
+            {{ example.label }}
+          </button>
+        }
+      </div>
+
+      @if (loadingExample) {
+        <p>Loading workflow example...</p>
+      } @else if (exampleError) {
+        <p class="error">{{ exampleError }}</p>
+      } @else {
+        <pre><code>{{ exampleContent }}</code></pre>
+      }
+    </aside>
 
     <aside class="inspector panel-surface" aria-label="Properties">
       @if (selectedNode && selectedNodeType) {
         <section class="inspector-content">
           <h3>Inspector</h3>
-          <div class="selected-node">
-            <span [ngClass]="selectedNodeType.accent">{{ selectedNodeType.icon }}</span>
-            <div>
-              <h4>{{ selectedNodeType.label }}</h4>
-              <p>{{ selectedNode.id }}</p>
-            </div>
-          </div>
-
           <label>
             Node Name
             <input type="text" [value]="selectedNode.label" (input)="updateSelectedNodeLabel($any($event.target).value)" />
@@ -164,14 +161,6 @@
             Description
             <textarea rows="4" [value]="selectedNode.summary" (input)="updateSelectedNodeSummary($any($event.target).value)"></textarea>
           </label>
-
-          <div class="json-preview">
-            <p>Last execution output</p>
-            <pre>{{ '{' }}
-  "node": "{{ selectedNode.id }}",
-  "status": "{{ isCompleted(selectedNode.id) ? 'completed' : (isActive(selectedNode.id) ? 'running' : 'idle') }}"
-{{ '}' }}</pre>
-          </div>
         </section>
       }
     </aside>

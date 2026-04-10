@@ -95,4 +95,50 @@ describe('WorkflowStudioPageComponent', () => {
     expect(studio.selectedProjectId).toBe(generatedUuid);
     expect(studio.savedProjects[0].id).toBe(generatedUuid);
   });
+
+  it('should move an updated project to the top of the saved list', () => {
+    const studio = component as any;
+
+    studio.projectName = 'First Project';
+    studio.saveProject();
+    const firstProjectId = studio.selectedProjectId;
+
+    studio.newProject();
+    studio.projectName = 'Second Project';
+    studio.saveProject();
+    expect(studio.savedProjects.map((project: any) => project.name)).toEqual(['Second Project', 'First Project']);
+
+    studio.loadProject(firstProjectId);
+    studio.projectName = 'First Project Updated';
+    studio.saveProject();
+
+    expect(studio.savedProjects[0].id).toBe(firstProjectId);
+    expect(studio.savedProjects[0].name).toBe('First Project Updated');
+  });
+
+  it('should recover with an empty project list when local storage access fails during restore', () => {
+    const getItemSpy = spyOn(Storage.prototype, 'getItem').and.throwError('blocked');
+
+    const restoredFixture = TestBed.createComponent(WorkflowStudioPageComponent);
+    const restoredComponent = restoredFixture.componentInstance as any;
+    restoredFixture.detectChanges();
+
+    expect(restoredComponent.savedProjects).toEqual([]);
+    expect(restoredComponent.statusMessage).toContain('Could not access saved projects');
+
+    getItemSpy.and.callThrough();
+  });
+
+  it('should surface a storage-unavailable message when saving fails', () => {
+    const setItemSpy = spyOn(Storage.prototype, 'setItem').and.throwError('quota exceeded');
+    const studio = component as any;
+
+    studio.projectName = 'Blocked Save';
+    studio.saveProject();
+
+    expect(studio.statusMessage).toContain('Could not save');
+    expect(studio.savedProjects[0].name).toBe('Blocked Save');
+
+    setItemSpy.and.callThrough();
+  });
 });

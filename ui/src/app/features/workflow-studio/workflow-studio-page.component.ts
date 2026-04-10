@@ -129,15 +129,17 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
     const existingIndex = this.savedProjects.findIndex((savedProject) => savedProject.id === nextId);
     if (existingIndex >= 0) {
-      this.savedProjects[existingIndex] = project;
-    } else {
-      this.savedProjects.unshift(project);
+      this.savedProjects.splice(existingIndex, 1);
     }
+    this.savedProjects.unshift(project);
 
     this.selectedProjectId = project.id;
     this.projectName = project.name;
-    this.persistProjects();
-    this.statusMessage = `Saved '${project.name}' locally at ${new Date(project.updatedAtIso).toLocaleTimeString()}.`;
+    if (this.persistProjects()) {
+      this.statusMessage = `Saved '${project.name}' locally at ${new Date(project.updatedAtIso).toLocaleTimeString()}.`;
+    } else {
+      this.statusMessage = `Could not save '${project.name}' locally. Browser storage is unavailable.`;
+    }
   }
 
   protected loadProject(projectId: string | null): void {
@@ -229,7 +231,22 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   }
 
   private restoreProjects(): void {
-    const stored = globalThis.localStorage?.getItem(this.storageKey);
+    const storage = this.getLocalStorage();
+    if (!storage) {
+      this.savedProjects = [];
+      this.statusMessage = 'Local storage is unavailable. Starting with an empty project list.';
+      return;
+    }
+
+    let stored: string | null;
+    try {
+      stored = storage.getItem(this.storageKey);
+    } catch {
+      this.savedProjects = [];
+      this.statusMessage = 'Could not access saved projects. Starting with an empty project list.';
+      return;
+    }
+
     if (!stored) {
       return;
     }
@@ -254,8 +271,18 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private persistProjects(): void {
-    globalThis.localStorage?.setItem(this.storageKey, JSON.stringify(this.savedProjects));
+  private persistProjects(): boolean {
+    const storage = this.getLocalStorage();
+    if (!storage) {
+      return false;
+    }
+
+    try {
+      storage.setItem(this.storageKey, JSON.stringify(this.savedProjects));
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private createProjectId(): string {
@@ -269,6 +296,10 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   private clearTimers(): void {
     this.timers.forEach((timer) => clearTimeout(timer));
     this.timers = [];
+  }
+
+  private getLocalStorage(): Storage | null {
+    return typeof globalThis.localStorage === 'undefined' ? null : globalThis.localStorage;
   }
 
   private cloneNodes(nodes: StudioNode[]): StudioNode[] {

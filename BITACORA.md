@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 13:25 CEST
+**Author:** Codex
+**Entry:** On `codex/add-functionality-to-save-and-load-workflows`, tightened Workflow Studio local-project persistence after PR `#176` review triage. Hardened project restore against corrupt `localStorage` entries such as `null`, switched project ID generation to `crypto.randomUUID()` with a compatibility fallback, and added focused specs covering both the corrupt-storage recovery path and the UUID generation path. Also recorded an explicit branch-local review in `branches/codex/add-functionality-to-save-and-load-workflows/review.md` so the remaining open review items stay visible.
+
+---
 **Timestamp:** 2026-04-10 11:55 CEST
 **Author:** Codex
 **Entry:** Hardened PR `#170` on `feature/add-example-workflows-10944637492021849479` by making the example math and HTTP steps preserve existing `context['data']` instead of overwriting it, guarding non-mapping context payloads in the math path, and replacing brittle JSON string interpolation in the HTTP mock with `json.dumps`. Expanded the module tests to cover preserved data fields, invalid/non-mapping context payloads, and special-character URL serialization. Verified the touched tests with `pytest --no-cov backend/tests/test_math_module.py backend/tests/test_http_module.py -q`: `12 passed`.

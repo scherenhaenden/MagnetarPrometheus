@@ -79,7 +79,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   private readonly nodeTypesById = new Map(this.nodeTypes.map((type) => [type.id, type]));
   private timers: ReturnType<typeof setTimeout>[] = [];
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.restoreProjects();
   }
 
@@ -226,7 +226,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     return this.completedNodeIds.has(nodeId);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.clearTimers();
   }
 

@@ -103,3 +103,44 @@ def test_plugin_manager_rejects_manifest_handler_mismatch():
     )
     with pytest.raises(ValueError, match="undeclared handlers"):
         manager.register_plugin(extra_handler_plugin)
+
+
+def test_plugin_manager_rejects_duplicate_plugin_id_registration():
+    """Verify that a plugin ID can only be registered once."""
+    manager = PluginManager()
+    plugin = _make_test_plugin("plugin.duplicate", "step.one")
+    manager.register_plugin(plugin)
+
+    with pytest.raises(ValueError, match="already registered"):
+        manager.register_plugin(plugin)
+
+
+def test_plugin_manager_discovers_entrypoint_plugins(monkeypatch):
+    """Verify that plugins can be discovered via entry points."""
+    mock_plugin = _make_test_plugin("plugin.discovered", "step.discovered")
+
+    class MockEntryPoint:
+        def load(self):
+            return lambda: mock_plugin
+
+    def mock_entry_points(group=None):
+        if group == "magnetar_prometheus.plugins":
+            return [MockEntryPoint()]
+        return []
+
+    monkeypatch.setattr("magnetar_prometheus.plugins.manager.entry_points", mock_entry_points)
+
+    manager = PluginManager()
+    discovered = manager.discover_entrypoint_plugins()
+
+    assert len(discovered) == 1
+    assert discovered[0].manifest.plugin_id == "plugin.discovered"
+
+
+def test_plugin_manager_provides_step_ownership_diagnostics():
+    """Verify that the manager can report step-type ownership."""
+    manager = PluginManager()
+    manager.register_plugin(_make_test_plugin("plugin.owner", "step.owned"))
+
+    owners = manager.describe_step_owners()
+    assert owners == {"step.owned": "plugin.owner"}

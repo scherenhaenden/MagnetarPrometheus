@@ -4,11 +4,12 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BOOTSTRAP_SCRIPT="${ROOT_DIR}/scripts/bootstrap_python.sh"
 RUN_SCRIPT="${ROOT_DIR}/scripts/run_backend.sh"
-PID_FILE="${ROOT_DIR}/.magnetar_api.pid"
-LOG_FILE="${ROOT_DIR}/.magnetar_api.log"
+PID_FILE="${MAGNETAR_API_PID_FILE:-}"
+LOG_FILE="${MAGNETAR_API_LOG_FILE:-}"
 
 MODE="run"
 DAEMON=0
+API_MODE=0
 HOST="127.0.0.1"
 PORT="8000"
 FORWARD_ARGS=()
@@ -25,12 +26,36 @@ Usage:
 Notes:
   - Default mode runs the one-shot workflow execution path.
   - Daemon mode is only supported with --api.
+  - Daemon PID/log files default to host/port-specific filenames unless
+    MAGNETAR_API_PID_FILE or MAGNETAR_API_LOG_FILE override them.
 USAGE
 }
 
 is_pid_running() {
     local pid="$1"
     kill -0 "${pid}" 2>/dev/null
+}
+
+require_option_value() {
+    local option_name="$1"
+
+    if [ "$#" -lt 2 ] || [ -z "${2:-}" ] || [[ "${2:-}" == --* ]]; then
+        echo "Error: ${option_name} requires a value."
+        exit 1
+    fi
+}
+
+set_daemon_file_paths() {
+    local host_slug
+    host_slug="$(printf '%s' "${HOST}" | tr -c 'A-Za-z0-9._-' '_')"
+
+    if [ -z "${PID_FILE}" ]; then
+        PID_FILE="${ROOT_DIR}/.magnetar_api_${host_slug}_${PORT}.pid"
+    fi
+
+    if [ -z "${LOG_FILE}" ]; then
+        LOG_FILE="${ROOT_DIR}/.magnetar_api_${host_slug}_${PORT}.log"
+    fi
 }
 
 start_daemon() {
@@ -46,7 +71,7 @@ start_daemon() {
     fi
 
     echo "Starting MagnetarPrometheus API daemon on http://${HOST}:${PORT} ..."
-    nohup bash "${RUN_SCRIPT}" --api --host "${HOST}" --port "${PORT}" >"${LOG_FILE}" 2>&1 &
+    nohup bash "${RUN_SCRIPT}" "${FORWARD_ARGS[@]}" >"${LOG_FILE}" 2>&1 &
     local daemon_pid=$!
     echo "${daemon_pid}" > "${PID_FILE}"
     echo "MagnetarPrometheus API daemon started with PID ${daemon_pid}."
@@ -117,6 +142,7 @@ while (($#)); do
     case "$1" in
         --api)
             MODE="api"
+            API_MODE=1
             FORWARD_ARGS+=("$1")
             shift
             ;;
@@ -134,12 +160,14 @@ while (($#)); do
             fi
             ;;
         --host)
-            HOST="${2:-}"
+            require_option_value "$@"
+            HOST="$2"
             FORWARD_ARGS+=("$1" "${HOST}")
             shift 2
             ;;
         --port)
-            PORT="${2:-}"
+            require_option_value "$@"
+            PORT="$2"
             FORWARD_ARGS+=("$1" "${PORT}")
             shift 2
             ;;
@@ -154,6 +182,8 @@ while (($#)); do
     esac
 done
 
+set_daemon_file_paths
+
 echo "Starting MagnetarPrometheus..."
 
 if [ ! -x "${BOOTSTRAP_SCRIPT}" ]; then
@@ -166,11 +196,7 @@ if [ ! -x "${RUN_SCRIPT}" ]; then
     exit 1
 fi
 
-if ! { [ "${DAEMON}" -eq 1 ] && [[ "${MODE}" == "stop" || "${MODE}" == "status" ]]; }; then
-    bash "${BOOTSTRAP_SCRIPT}"
-fi
-
-if [ "${DAEMON}" -eq 1 ] && [ "${MODE}" != "api" ] && [ "${MODE}" != "start" ] && [ "${MODE}" != "stop" ] && [ "${MODE}" != "status" ]; then
+if [ "${DAEMON}" -eq 1 ] && [ "${API_MODE}" -ne 1 ]; then
     echo "Daemon mode requires --api and one of: start, stop, status"
     exit 1
 fi
@@ -180,7 +206,13 @@ if [ "${DAEMON}" -eq 1 ]; then
         echo "Daemon mode requires one of: start, stop, status"
         exit 1
     fi
+fi
 
+if ! { [ "${DAEMON}" -eq 1 ] && [[ "${MODE}" == "stop" || "${MODE}" == "status" ]]; }; then
+    bash "${BOOTSTRAP_SCRIPT}"
+fi
+
+if [ "${DAEMON}" -eq 1 ]; then
     case "${MODE}" in
         start)
             start_daemon

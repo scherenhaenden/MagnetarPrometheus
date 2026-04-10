@@ -6,7 +6,7 @@
  * those projects from browser storage without requiring backend integration.
  */
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 type NodeCategory = 'trigger' | 'process' | 'logic' | 'integration';
@@ -26,6 +26,17 @@ interface StudioNode {
   summary: string;
   x: number;
   y: number;
+}
+
+interface ThemeOption {
+  id: string;
+  label: string;
+}
+
+interface AccentOption {
+  id: string;
+  label: string;
+  value: string;
 }
 
 interface StudioProject {
@@ -65,10 +76,28 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   protected nodes: StudioNode[] = this.cloneNodes(this.defaultNodes);
   protected workflowSequence: string[] = this.nodes.map((node) => node.id);
 
+  protected readonly themeOptions: ThemeOption[] = [
+    { id: 'midnight', label: 'Midnight' },
+    { id: 'graphite', label: 'Graphite' },
+    { id: 'aurora', label: 'Aurora' }
+  ];
+
+  protected readonly accentOptions: AccentOption[] = [
+    { id: 'electric', label: 'Electric Blue', value: '#2563eb' },
+    { id: 'violet', label: 'Violet', value: '#7c3aed' },
+    { id: 'mint', label: 'Mint', value: '#10b981' },
+    { id: 'sunset', label: 'Sunset', value: '#f97316' },
+    { id: 'rose', label: 'Rose', value: '#e11d48' }
+  ];
+
   protected selectedNodeId = 'node_ai';
+  protected selectedThemeId = this.themeOptions[0].id;
+  protected selectedAccent = this.accentOptions[0].value;
+
   protected isRunning = false;
   protected activeNodeId: string | null = null;
   protected completedNodeIds = new Set<string>();
+  protected draggingNodeId: string | null = null;
 
   protected projectName = 'Untitled Workflow';
   protected selectedProjectId: string | null = null;
@@ -78,6 +107,11 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   private readonly storageKey = 'mp.workflowStudio.projects.v1';
   private readonly nodeTypesById = new Map(this.nodeTypes.map((type) => [type.id, type]));
   private timers: ReturnType<typeof setTimeout>[] = [];
+  private dragStartPointer = { x: 0, y: 0 };
+  private dragStartNode = { x: 0, y: 0 };
+  private dragPointerId: number | null = null;
+  private isActuallyDragging = false;
+  private readonly dragThreshold = 5;
 
   public ngOnInit(): void {
     this.restoreProjects();
@@ -94,6 +128,72 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
   protected selectNode(nodeId: string): void {
     this.selectedNodeId = nodeId;
+  }
+
+  protected onThemeChange(themeId: string): void {
+    this.selectedThemeId = themeId;
+  }
+
+  protected onAccentChange(accentValue: string): void {
+    this.selectedAccent = accentValue;
+  }
+
+  protected onNodePointerDown(event: PointerEvent, nodeId: string): void {
+    if (event.button !== 0) {
+      return;
+    }
+
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (!node) {
+      return;
+    }
+
+    this.draggingNodeId = nodeId;
+    this.dragPointerId = event.pointerId;
+    this.isActuallyDragging = false;
+    this.dragStartPointer = { x: event.clientX, y: event.clientY };
+    this.dragStartNode = { x: node.x, y: node.y };
+    
+    // We don't preventDefault/stopPropagation yet to allow clicks/focus to work.
+    // We will do it in pointermove if a drag is detected.
+  }
+
+  @HostListener('document:pointermove', ['$event'])
+  protected onDocumentPointerMove(event: PointerEvent): void {
+    if (!this.draggingNodeId || event.pointerId !== this.dragPointerId) {
+      return;
+    }
+
+    const node = this.nodes.find((n) => n.id === this.draggingNodeId);
+    if (!node) {
+      return;
+    }
+
+    const dx = event.clientX - this.dragStartPointer.x;
+    const dy = event.clientY - this.dragStartPointer.y;
+
+    if (!this.isActuallyDragging) {
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < this.dragThreshold) {
+        return;
+      }
+      this.isActuallyDragging = true;
+    }
+
+    // Now that we are dragging, prevent default behaviors like text selection
+    event.preventDefault();
+
+    node.x = Math.max(0, this.dragStartNode.x + dx);
+    node.y = Math.max(0, this.dragStartNode.y + dy);
+  }
+
+  @HostListener('document:pointerup')
+  @HostListener('document:pointercancel')
+  @HostListener('window:blur')
+  protected onDocumentPointerUp(): void {
+    this.draggingNodeId = null;
+    this.dragPointerId = null;
+    this.isActuallyDragging = false;
   }
 
   protected updateSelectedNodeLabel(value: string): void {

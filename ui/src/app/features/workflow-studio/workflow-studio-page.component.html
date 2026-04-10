@@ -1,4 +1,8 @@
-<section class="studio-shell" aria-label="Workflow Studio">
+<section
+  class="studio-shell"
+  aria-label="Workflow Studio"
+  [attr.data-theme]="selectedThemeId"
+  [style.--mp-color-accent]="selectedAccent">
   <header class="topbar panel-surface">
     <div class="brand-block">
       <span class="brand-mark">⚡</span>
@@ -9,6 +13,20 @@
     </div>
 
     <div class="toolbar-actions">
+      <label class="toolbar-select" for="studio-theme">
+        Theme
+        <select id="studio-theme" [value]="selectedThemeId" (change)="onThemeChange($any($event.target).value)">
+          <option *ngFor="let theme of themeOptions" [value]="theme.id">{{ theme.label }}</option>
+        </select>
+      </label>
+
+      <label class="toolbar-select" for="studio-accent">
+        Accent
+        <select id="studio-accent" [value]="selectedAccent" (change)="onAccentChange($any($event.target).value)">
+          <option *ngFor="let accent of accentOptions" [value]="accent.value">{{ accent.label }}</option>
+        </select>
+      </label>
+
       <label class="project-name-field" for="project-name-input">
         Project
         <input id="project-name-input" type="text" [(ngModel)]="projectName" />
@@ -52,7 +70,7 @@
       </div>
     </aside>
 
-    <main class="canvas panel-surface" aria-label="Workflow Canvas">
+    <main class="canvas panel-surface" aria-label="Workflow Canvas" [ngClass]="{ dragging: !!draggingNodeId }">
       <div class="canvas-grid"></div>
       <article
         class="studio-node"
@@ -63,9 +81,16 @@
           getNodeType(node.typeId).accent,
           isSelected(node.id) ? 'selected' : '',
           isActive(node.id) ? 'active' : '',
-          isCompleted(node.id) ? 'completed' : ''
+          isCompleted(node.id) ? 'completed' : '',
+          draggingNodeId === node.id ? 'dragging' : ''
         ]"
-        (click)="selectNode(node.id)">
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'Workflow node: ' + node.label"
+        (click)="selectNode(node.id)"
+        (keydown.enter)="selectNode(node.id)"
+        (keydown.space)="selectNode(node.id); $event.preventDefault()"
+        (pointerdown)="onNodePointerDown($event, node.id)">
         <span class="node-icon">{{ getNodeType(node.typeId).icon }}</span>
         <div>
           <h4>{{ node.label }}</h4>

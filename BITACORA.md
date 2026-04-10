@@ -38,6 +38,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 17:00 CEST
+**Author:** Gemini CLI
+**Entry:** Hardened Workflow Studio UX and Accessibility on branch `codex/improve-ui-design-and-theme-options` (PR `#174`). Addressed review feedback by implementing `dragPointerId` tracking, a 5px drag threshold, and boundary clamping to ensure robust and predictable node movement. Enhanced accessibility with `tabindex`, `role="button"`, and keyboard handlers for node selection. Improved visual stacking with dynamic `z-index` during dragging. Maintained 100.00% statement and branch coverage with 110 total UI tests.
+
+---
+**Timestamp:** 2026-04-10 16:40 CEST
+**Author:** Gemini CLI
+**Entry:** Merged `codex/redesign-application-ui-using-provided-react-design` into `codex/improve-ui-design-and-theme-options` (PR `#174`). Resolved significant conflicts in `WorkflowStudioPageComponent` across CSS, HTML, and TypeScript, successfully integrating theme options and accent selectors with the recently added local project persistence and editing features. Expanded UI unit tests to 108 total specs, covering new theme state and drag-and-drop logic to maintain 100.00% statement, branch, and line coverage. Verified all 118 backend and 108 UI tests pass.
+
+---
 **Timestamp:** 2026-04-10 16:15 CEST
 **Author:** Gemini CLI
 **Entry:** Finalized PR `#175` hardening pass. Achieved 100.00% code coverage for both Backend and UI slices (fixing the prior Chrome Headless coverage failure). Extracted a shared `build_plugin_manager` bootstrap helper to remove duplication, hardened plugin discovery with defensive error handling and logging, and standardized hyphenation in core documentation. Verified all 118 backend and 102 UI tests pass with full branch and statement coverage. Updated PR description to reflect the improved technical baseline.

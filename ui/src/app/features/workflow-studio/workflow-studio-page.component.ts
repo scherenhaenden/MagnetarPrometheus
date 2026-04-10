@@ -109,6 +109,9 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   private timers: ReturnType<typeof setTimeout>[] = [];
   private dragStartPointer = { x: 0, y: 0 };
   private dragStartNode = { x: 0, y: 0 };
+  private dragPointerId: number | null = null;
+  private isActuallyDragging = false;
+  private readonly dragThreshold = 5;
 
   public ngOnInit(): void {
     this.restoreProjects();
@@ -146,16 +149,18 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     }
 
     this.draggingNodeId = nodeId;
-    this.selectNode(nodeId);
+    this.dragPointerId = event.pointerId;
+    this.isActuallyDragging = false;
     this.dragStartPointer = { x: event.clientX, y: event.clientY };
     this.dragStartNode = { x: node.x, y: node.y };
-    event.preventDefault();
-    event.stopPropagation();
+    
+    // We don't preventDefault/stopPropagation yet to allow clicks/focus to work.
+    // We will do it in pointermove if a drag is detected.
   }
 
   @HostListener('document:pointermove', ['$event'])
   protected onDocumentPointerMove(event: PointerEvent): void {
-    if (!this.draggingNodeId) {
+    if (!this.draggingNodeId || event.pointerId !== this.dragPointerId) {
       return;
     }
 
@@ -167,13 +172,28 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     const dx = event.clientX - this.dragStartPointer.x;
     const dy = event.clientY - this.dragStartPointer.y;
 
-    node.x = this.dragStartNode.x + dx;
-    node.y = this.dragStartNode.y + dy;
+    if (!this.isActuallyDragging) {
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < this.dragThreshold) {
+        return;
+      }
+      this.isActuallyDragging = true;
+    }
+
+    // Now that we are dragging, prevent default behaviors like text selection
+    event.preventDefault();
+
+    node.x = Math.max(0, this.dragStartNode.x + dx);
+    node.y = Math.max(0, this.dragStartNode.y + dy);
   }
 
   @HostListener('document:pointerup')
+  @HostListener('document:pointercancel')
+  @HostListener('window:blur')
   protected onDocumentPointerUp(): void {
     this.draggingNodeId = null;
+    this.dragPointerId = null;
+    this.isActuallyDragging = false;
   }
 
   protected updateSelectedNodeLabel(value: string): void {

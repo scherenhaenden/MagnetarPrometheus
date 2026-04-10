@@ -84,6 +84,12 @@
           isCompleted(node.id) ? 'completed' : '',
           draggingNodeId === node.id ? 'dragging' : ''
         ]"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'Workflow node: ' + node.label"
+        (click)="selectNode(node.id)"
+        (keydown.enter)="selectNode(node.id)"
+        (keydown.space)="selectNode(node.id); $event.preventDefault()"
         (pointerdown)="onNodePointerDown($event, node.id)">
         <span class="node-icon">{{ getNodeType(node.typeId).icon }}</span>
         <div>

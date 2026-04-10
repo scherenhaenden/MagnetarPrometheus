@@ -253,6 +253,7 @@ button.danger {
 .studio-node.dragging {
   cursor: grabbing;
   opacity: 0.95;
+  z-index: 10;
 }
 
 .studio-node.completed {

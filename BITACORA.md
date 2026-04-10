@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 17:00 CEST
+**Author:** Gemini CLI
+**Entry:** Hardened Workflow Studio UX and Accessibility on branch `codex/improve-ui-design-and-theme-options` (PR `#174`). Addressed review feedback by implementing `dragPointerId` tracking, a 5px drag threshold, and boundary clamping to ensure robust and predictable node movement. Enhanced accessibility with `tabindex`, `role="button"`, and keyboard handlers for node selection. Improved visual stacking with dynamic `z-index` during dragging. Maintained 100.00% statement and branch coverage with 110 total UI tests.
+
+---
 **Timestamp:** 2026-04-10 16:40 CEST
 **Author:** Gemini CLI
 **Entry:** Merged `codex/redesign-application-ui-using-provided-react-design` into `codex/improve-ui-design-and-theme-options` (PR `#174`). Resolved significant conflicts in `WorkflowStudioPageComponent` across CSS, HTML, and TypeScript, successfully integrating theme options and accent selectors with the recently added local project persistence and editing features. Expanded UI unit tests to 108 total specs, covering new theme state and drag-and-drop logic to maintain 100.00% statement, branch, and line coverage. Verified all 118 backend and 108 UI tests pass.

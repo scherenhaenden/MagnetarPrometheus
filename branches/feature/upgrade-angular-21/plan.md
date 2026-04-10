@@ -27,7 +27,7 @@ The UI application in `ui/` is still pinned to Angular 17.3.x. The goal of this 
 ## Status Updates
 - Executed `ng update` from Angular 17 -> 18 -> 19 -> 20 -> 21.
 - Ensured migration to Angular 21 compatible syntax and configuration blocks was successfully applied to existing component models.
-- Re-installed dependancies and verified all core building checks via `npm run build`, `npm run test:ci`, and `npm run check:docs`.
+- Re-installed dependencies and verified all core building checks via `npm run build`, `npm run test:ci`, and `npm run check:docs`.
 - Verified changes passed properly.
 
 ## Notes

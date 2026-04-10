@@ -35,6 +35,11 @@ METHOD_DECLARATION_RE = re.compile(
     r"(?:(?:readonly|static|abstract|override)\s+)*"
     r"(?:async\s+)?(?:get\s+|set\s+)?[A-Za-z_]\w*\s*\("
 )
+SETTER_DECLARATION_RE = re.compile(
+    r"^(?:(?:public|private|protected)\s+)"
+    r"(?:(?:readonly|static|abstract|override)\s+)*"
+    r"set\s+[A-Za-z_]\w*\s*\("
+)
 DECORATOR_PREFIX_RE = re.compile(r"^(?:@\w+(?:\([^)]*\))?\s*)+")
 MODIFIERLESS_MEMBER_RE = re.compile(
     r"^(?:(?:readonly|static|abstract|override)\s+)*"
@@ -221,7 +226,11 @@ def process_class_statement(statement: str, rel: Path, lineno: int, errors: list
         return
     if statement_needs_access_modifier(compact) and not ACCESS_MODIFIER_RE.match(compact):
         errors.append(f"{rel}:{lineno} class member missing access modifier")
-    if statement_is_method(compact) and not has_explicit_return_type(compact):
+    if (
+        statement_is_method(compact)
+        and not SETTER_DECLARATION_RE.match(compact)
+        and not has_explicit_return_type(compact)
+    ):
         errors.append(f"{rel}:{lineno} method missing explicit return type")
 
 

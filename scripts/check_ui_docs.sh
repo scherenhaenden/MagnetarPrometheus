@@ -16,7 +16,8 @@ for file in "${required_files[@]}"; do
     matcher=(grep -Eq '^/\*\*')
   fi
 
-  if ! head -n 5 "${file}" | "${matcher[@]}"; then
+  first_non_empty_line="$(head -n 5 "${file}" | awk 'NF { print; exit }')"
+  if [[ -z "${first_non_empty_line}" ]] || ! "${matcher[@]}" <<<"${first_non_empty_line}"; then
     echo "Missing top-of-file intent comment in ${file}" >&2
     exit 1
   fi

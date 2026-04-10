@@ -46,6 +46,16 @@ const createMainWindow = () => {
 
   const devServerUrl = process.env.MP_UI_DEV_SERVER_URL;
   if (devServerUrl) {
+    const parsedUrl = new URL(devServerUrl);
+    const isLocalDevUrl =
+      !app.isPackaged &&
+      ['http:', 'https:'].includes(parsedUrl.protocol) &&
+      ['localhost', '127.0.0.1'].includes(parsedUrl.hostname);
+
+    if (!isLocalDevUrl) {
+      throw new Error('MP_UI_DEV_SERVER_URL must target a local development server.');
+    }
+
     window.loadURL(devServerUrl);
   } else {
     window.loadFile(resolveRendererEntry());

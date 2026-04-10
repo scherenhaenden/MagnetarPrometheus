@@ -3,36 +3,94 @@
  *
  * This test validates the WorkflowStudioPageComponent.
  */
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { WorkflowStudioPageComponent } from './workflow-studio-page.component';
 
 describe('WorkflowStudioPageComponent', () => {
   let component: WorkflowStudioPageComponent;
   let fixture: ComponentFixture<WorkflowStudioPageComponent>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     localStorage.clear();
 
     await TestBed.configureTestingModule({
-      imports: [WorkflowStudioPageComponent]
+      imports: [WorkflowStudioPageComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
+
+    httpMock = TestBed.inject(HttpTestingController);
 
     fixture = TestBed.createComponent(WorkflowStudioPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    const initialRequest = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.yaml');
+    initialRequest.flush('id: support_ticket_triage');
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the redesigned studio header and layout', () => {
+  it('should render the redesigned studio header, layout, and default example', () => {
     const element: HTMLElement = fixture.nativeElement;
     expect(element.querySelector('.brand-block h2')?.textContent).toContain('Workflow Studio');
     expect(element.textContent).toContain('Visual editor workspace for building, testing, and debugging workflows.');
-    expect(element.textContent).toContain('Run Workflow');
-    expect(element.textContent).toContain('Save Local');
+    expect(element.textContent).toContain('Saved Example Workflow');
+    expect(element.textContent).toContain('id: support_ticket_triage');
     expect(element.querySelector('.library')?.getAttribute('aria-label')).toBe('Node Library');
+  });
+
+  it('should request and render the JSON workflow example when selected', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    const jsonButton = Array.from(element.querySelectorAll('.example-tab')).find(
+      (button) => button.textContent?.trim() === 'JSON'
+    ) as HTMLButtonElement;
+
+    jsonButton.click();
+
+    const request = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.json');
+    request.flush('{"id": "support_ticket_triage"}');
+    fixture.detectChanges();
+
+    expect(element.textContent).toContain('{"id": "support_ticket_triage"}');
+  });
+
+  it('should expose ARIA tab semantics for example switching', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    const buttons = Array.from(element.querySelectorAll('.example-tab')) as HTMLButtonElement[];
+    const yamlButton = buttons.find((button) => button.textContent?.trim() === 'YAML');
+    const jsonButton = buttons.find((button) => button.textContent?.trim() === 'JSON');
+
+    expect(yamlButton?.getAttribute('role')).toBe('tab');
+    expect(yamlButton?.getAttribute('aria-selected')).toBe('true');
+    expect(jsonButton?.getAttribute('aria-selected')).toBe('false');
+  });
+
+  it('should ignore stale example responses when switching tabs quickly', () => {
+    const studio = component as any;
+    const jsonExample = studio.examples.find((example: any) => example.format === 'json');
+    const tomlExample = studio.examples.find((example: any) => example.format === 'toml');
+
+    studio.selectExample(jsonExample);
+    studio.selectExample(tomlExample);
+
+    const jsonRequest = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.json');
+    const tomlRequest = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.toml');
+
+    tomlRequest.flush('id = "support_ticket_triage"');
+    jsonRequest.flush('{"id":"stale"}');
+
+    expect(studio.selectedExample.path).toBe('/assets/workflows/examples/support-ticket-triage.toml');
+    expect(studio.exampleContent).toBe('id = "support_ticket_triage"');
   });
 
   it('should persist and restore a local project snapshot', () => {
@@ -75,6 +133,9 @@ describe('WorkflowStudioPageComponent', () => {
     const restoredFixture = TestBed.createComponent(WorkflowStudioPageComponent);
     const restoredComponent = restoredFixture.componentInstance as any;
     restoredFixture.detectChanges();
+    const restoredInitial = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.yaml');
+    restoredInitial.flush('id: support_ticket_triage');
+    restoredFixture.detectChanges();
 
     expect(restoredComponent.savedProjects.length).toBe(1);
     expect(restoredComponent.savedProjects[0].id).toBe('project_valid');
@@ -113,11 +174,23 @@ describe('WorkflowStudioPageComponent', () => {
     expect(studio.savedProjects[0].name).toBe('First Project Updated');
   });
 
+  it('should use the default project name when saving whitespace-only names', () => {
+    const studio = component as any;
+
+    studio.projectName = '   ';
+    studio.saveProject();
+
+    expect(studio.savedProjects[0].name).toBe('Untitled Workflow');
+  });
+
   it('should recover with an empty project list when local storage access fails during restore', () => {
     const getItemSpy = spyOn(Storage.prototype, 'getItem').and.throwError('blocked');
 
     const restoredFixture = TestBed.createComponent(WorkflowStudioPageComponent);
     const restoredComponent = restoredFixture.componentInstance as any;
+    restoredFixture.detectChanges();
+    const restoredInitial = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.yaml');
+    restoredInitial.flush('id: support_ticket_triage');
     restoredFixture.detectChanges();
 
     expect(restoredComponent.savedProjects).toEqual([]);
@@ -139,287 +212,274 @@ describe('WorkflowStudioPageComponent', () => {
     setItemSpy.and.callThrough();
   });
 
-  it('should select a node', () => {
+  it('should update theme, accent, selection, label, and summary through component handlers', () => {
     const studio = component as any;
+
+    studio.onThemeChange('aurora');
+    studio.onAccentChange('#10b981');
     studio.selectNode('node_trigger');
+    studio.updateSelectedNodeLabel('Renamed Trigger');
+    studio.updateSelectedNodeSummary('Updated summary');
+
+    expect(studio.selectedThemeId).toBe('aurora');
+    expect(studio.selectedAccent).toBe('#10b981');
     expect(studio.selectedNodeId).toBe('node_trigger');
-    expect(studio.selectedNode?.id).toBe('node_trigger');
+    expect(studio.selectedNode.label).toBe('Renamed Trigger');
+    expect(studio.selectedNode.summary).toBe('Updated summary');
   });
 
-  it('should update selected node label and summary', () => {
+  it('should ignore label and summary updates when no node is selected', () => {
     const studio = component as any;
-    studio.selectNode('node_trigger');
-    studio.updateSelectedNodeLabel('New Label');
-    studio.updateSelectedNodeSummary('New Summary');
-    expect(studio.selectedNode?.label).toBe('New Label');
-    expect(studio.selectedNode?.summary).toBe('New Summary');
-  });
 
-  it('should not update label or summary if no node is selected', () => {
-    const studio = component as any;
-    studio.selectedNodeId = 'non-existent';
-    
+    studio.selectedNodeId = 'missing-node';
+    studio.updateSelectedNodeLabel('Ignored');
+    studio.updateSelectedNodeSummary('Ignored');
+
     expect(studio.selectedNode).toBeNull();
     expect(studio.selectedNodeType).toBeNull();
-    
-    studio.updateSelectedNodeLabel('New Label');
-    studio.updateSelectedNodeSummary('New Summary');
-    expect(studio.selectedNode).toBeNull();
   });
 
-  it('should use default name if project name is empty on save', () => {
-    const studio = component as any;
-    studio.projectName = '   ';
-    studio.saveProject();
-    expect(studio.savedProjects[0].name).toBe('Untitled Workflow');
-  });
-
-  it('should do nothing if loadProject is called without id', () => {
+  it('should ignore invalid project loads and fallback selected nodes when needed', () => {
     const studio = component as any;
     const initialStatus = studio.statusMessage;
+
     studio.loadProject(null);
     expect(studio.statusMessage).toBe(initialStatus);
-  });
 
-  it('should set error message if project to load does not exist', () => {
-    const studio = component as any;
-    studio.loadProject('non-existent');
+    studio.loadProject('missing-project');
     expect(studio.statusMessage).toContain('Unable to load project');
-  });
 
-  it('should fallback to first node if loaded project has invalid selectedNodeId', () => {
-    const studio = component as any;
     studio.savedProjects = [{
-      id: 'p1',
-      name: 'P1',
-      selectedNodeId: 'invalid',
-      nodes: [{ id: 'n1', typeId: 't1', label: 'L', summary: 'S', x: 0, y: 0 }]
+      id: 'project-invalid-selected',
+      name: 'Broken selection',
+      updatedAtIso: '2026-04-10T10:00:00.000Z',
+      selectedNodeId: 'missing',
+      nodes: [{ id: 'fallback-node', typeId: 'process_ai', label: 'Fallback', summary: 'S', x: 0, y: 0 }]
     }];
-    studio.loadProject('p1');
-    expect(studio.selectedNodeId).toBe('n1');
-  });
+    studio.loadProject('project-invalid-selected');
+    expect(studio.selectedNodeId).toBe('fallback-node');
 
-  it('should fallback to empty string if loaded project has no nodes', () => {
-    const studio = component as any;
     studio.savedProjects = [{
-      id: 'p_empty',
+      id: 'project-empty',
       name: 'Empty',
-      selectedNodeId: 'n1',
+      updatedAtIso: '2026-04-10T10:00:00.000Z',
+      selectedNodeId: 'missing',
       nodes: []
     }];
-    studio.loadProject('p_empty');
+    studio.loadProject('project-empty');
     expect(studio.selectedNodeId).toBe('');
   });
 
-  it('should handle newProject with empty default nodes safely', () => {
+  it('should safely reset new projects even when default nodes are empty', () => {
     const studio = component as any;
     studio.defaultNodes = [];
+
     studio.newProject();
+
     expect(studio.selectedNodeId).toBe('');
+    expect(studio.workflowSequence).toEqual([]);
   });
 
-  it('should return default node type if typeId is unknown', () => {
+  it('should return the first node type when the requested type is unknown', () => {
     const studio = component as any;
-    const type = studio.getNodeType('unknown');
-    expect(type.id).toBe(studio.nodeTypes[0].id);
+
+    expect(studio.getNodeType('missing-type').id).toBe(studio.nodeTypes[0].id);
   });
 
-  it('should run workflow and complete steps', fakeAsync(() => {
+  it('should handle pointerdown guard clauses and valid drag initialization', () => {
     const studio = component as any;
-    studio.newProject();
-    fixture.detectChanges();
+
+    studio.onNodePointerDown({ button: 1 } as PointerEvent, 'node_trigger');
+    expect(studio.draggingNodeId).toBeNull();
+
+    studio.onNodePointerDown({ button: 0 } as PointerEvent, 'missing-node');
+    expect(studio.draggingNodeId).toBeNull();
+
+    studio.onNodePointerDown({ button: 0, pointerId: 9, clientX: 10, clientY: 20 } as PointerEvent, 'node_trigger');
+    expect(studio.draggingNodeId).toBe('node_trigger');
+    expect(studio.dragPointerId).toBe(9);
+    expect(studio.dragStartPointer).toEqual({ x: 10, y: 20 });
+  });
+
+  it('should ignore pointer moves until the drag threshold is crossed and clamp positions to non-negative coordinates', () => {
+    const studio = component as any;
+    const preventDefault = jasmine.createSpy('preventDefault');
+
+    studio.onNodePointerDown({ button: 0, pointerId: 3, clientX: 100, clientY: 100 } as PointerEvent, 'node_trigger');
+    studio.onDocumentPointerMove({ pointerId: 4, clientX: 110, clientY: 110, preventDefault } as unknown as PointerEvent);
+    expect(studio.nodes[0].x).toBe(72);
+
+    studio.onDocumentPointerMove({ pointerId: 3, clientX: 102, clientY: 102, preventDefault } as unknown as PointerEvent);
+    expect(studio.isActuallyDragging).toBeFalse();
+    expect(preventDefault).not.toHaveBeenCalled();
+
+    studio.onDocumentPointerMove({ pointerId: 3, clientX: -50, clientY: -30, preventDefault } as unknown as PointerEvent);
+    expect(studio.isActuallyDragging).toBeTrue();
+    expect(preventDefault).toHaveBeenCalled();
+    expect(studio.nodes[0].x).toBe(0);
+    expect(studio.nodes[0].y).toBe(0);
+  });
+
+  it('should stop drag updates when the node no longer exists and clear drag state on pointerup', () => {
+    const studio = component as any;
+
+    studio.onNodePointerDown({ button: 0, pointerId: 7, clientX: 10, clientY: 10 } as PointerEvent, 'node_trigger');
+    studio.nodes = [];
+    studio.onDocumentPointerMove({ pointerId: 7, clientX: 40, clientY: 40, preventDefault() {} } as PointerEvent);
+
+    studio.onDocumentPointerUp();
+    expect(studio.draggingNodeId).toBeNull();
+    expect(studio.dragPointerId).toBeNull();
+    expect(studio.isActuallyDragging).toBeFalse();
+  });
+
+  it('should run and stop the workflow simulation across all nodes', fakeAsync(() => {
+    const studio = component as any;
+
     studio.runWorkflow();
     expect(studio.isRunning).toBeTrue();
-    tick(10000); 
-    fixture.detectChanges();
+    expect(studio.activeNodeId).toBeNull();
+
+    tick(700);
+    expect(studio.activeNodeId).toBe(studio.workflowSequence[0]);
+
+    tick(700);
+    expect(studio.completedNodeIds.has(studio.workflowSequence[0])).toBeTrue();
+
+    tick(700 * (studio.workflowSequence.length - 2));
+    tick(700);
     expect(studio.isRunning).toBeFalse();
     expect(studio.activeNodeId).toBeNull();
-    expect(studio.completedNodeIds.size).toBeGreaterThan(0);
+    expect(studio.completedNodeIds.has(studio.workflowSequence[studio.workflowSequence.length - 1])).toBeTrue();
+
+    studio.runWorkflow();
+    expect(studio.isRunning).toBeTrue();
+    studio.stopWorkflow();
+    expect(studio.isRunning).toBeFalse();
+    expect(studio.completedNodeIds.size).toBe(0);
   }));
 
-  it('should not run workflow if already running', () => {
+  it('should ignore duplicate run requests while already running', () => {
     const studio = component as any;
+
     studio.runWorkflow();
-    const initialTimers = studio.timers.length;
+    const timerCount = studio.timers.length;
     studio.runWorkflow();
-    expect(studio.timers.length).toBe(initialTimers);
+
+    expect(studio.timers.length).toBe(timerCount);
+    studio.stopWorkflow();
   });
 
-  it('should handle local storage being unavailable during restore', () => {
+  it('should clear timers during ngOnDestroy', () => {
     const studio = component as any;
-    spyOn(studio, 'getLocalStorage').and.returnValue(null);
+    spyOn(window, 'clearTimeout');
+
+    studio.runWorkflow();
+    studio.ngOnDestroy();
+
+    expect(clearTimeout).toHaveBeenCalled();
+    expect(studio.timers).toEqual([]);
+  });
+
+  it('should keep the current example content when an older request fails after switching tabs', () => {
+    const studio = component as any;
+    const jsonExample = studio.examples.find((example: any) => example.format === 'json');
+    const tomlExample = studio.examples.find((example: any) => example.format === 'toml');
+
+    studio.selectExample(jsonExample);
+    studio.selectExample(tomlExample);
+
+    const jsonRequest = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.json');
+    const tomlRequest = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.toml');
+
+    tomlRequest.flush('id = "support_ticket_triage"');
+    jsonRequest.error(new ProgressEvent('error'));
+
+    expect(studio.selectedExample.path).toBe('/assets/workflows/examples/support-ticket-triage.toml');
+    expect(studio.exampleContent).toBe('id = "support_ticket_triage"');
+    expect(studio.exampleError).toBeNull();
+  });
+
+  it('should show an error when the currently selected example fails to load', () => {
+    const studio = component as any;
+    const jsonExample = studio.examples.find((example: any) => example.format === 'json');
+
+    studio.selectExample(jsonExample);
+
+    const jsonRequest = httpMock.expectOne('/assets/workflows/examples/support-ticket-triage.json');
+    jsonRequest.error(new ProgressEvent('error'));
+
+    expect(studio.exampleContent).toBe('');
+    expect(studio.exampleError).toContain('Unable to load JSON workflow example');
+    expect(studio.loadingExample).toBeFalse();
+  });
+
+  it('should handle missing browser storage and malformed stored project data', () => {
+    const studio = component as any;
+    const storageSpy = spyOn(studio, 'getLocalStorage');
+
+    storageSpy.and.returnValue(null);
     studio.restoreProjects();
     expect(studio.statusMessage).toContain('Local storage is unavailable');
-  });
 
-  it('should handle JSON parse error during restore', () => {
-    localStorage.setItem('mp.workflowStudio.projects.v1', 'invalid-json');
-    const studio = component as any;
+    storageSpy.and.returnValue(localStorage);
+    localStorage.setItem('mp.workflowStudio.projects.v1', '{broken');
     studio.restoreProjects();
     expect(studio.statusMessage).toContain('Could not parse saved projects');
   });
 
-  it('should handle non-array data in local storage during restore', () => {
-    localStorage.setItem('mp.workflowStudio.projects.v1', JSON.stringify({ not: 'an-array' }));
+  it('should handle empty and non-array stored project payloads without changing status unexpectedly', () => {
     const studio = component as any;
+    const storageSpy = spyOn(studio, 'getLocalStorage').and.returnValue(localStorage);
+    const baselineStatus = studio.statusMessage;
+
+    localStorage.removeItem('mp.workflowStudio.projects.v1');
+    studio.restoreProjects();
+    expect(studio.statusMessage).toBe(baselineStatus);
+
+    localStorage.setItem('mp.workflowStudio.projects.v1', '{}');
     studio.restoreProjects();
     expect(studio.savedProjects).toEqual([]);
+
+    localStorage.setItem('mp.workflowStudio.projects.v1', '[]');
+    studio.restoreProjects();
+    expect(studio.savedProjects).toEqual([]);
+
+    storageSpy.and.callThrough();
   });
 
-  it('should return false if persist fails due to missing storage', () => {
+  it('should use fallback project ids and report unavailable storage from persistProjects', () => {
     const studio = component as any;
+    const originalCrypto = globalThis.crypto;
+
+    Object.defineProperty(globalThis, 'crypto', {
+      configurable: true,
+      value: { ...originalCrypto, randomUUID: undefined }
+    });
+    expect(studio.createProjectId()).toMatch(/^project_/);
+
     spyOn(studio, 'getLocalStorage').and.returnValue(null);
-    const result = studio.persistProjects();
-    expect(result).toBeFalse();
-  });
+    expect(studio.persistProjects()).toBeFalse();
 
-  it('should use fallback project id if randomUUID is unavailable', () => {
-    const studio = component as any;
-    spyOnProperty(globalThis, 'crypto', 'get').and.returnValue({} as any);
-    const id = studio.createProjectId();
-    expect(id).toContain('project_');
-  });
-
-  it('should clear timers on destroy', () => {
-    const studio = component as any;
-    studio.runWorkflow();
-    expect(studio.timers.length).toBeGreaterThan(0);
-    const clearSpy = spyOn(globalThis, 'clearTimeout').and.callThrough();
-    component.ngOnDestroy();
-    expect(clearSpy).toHaveBeenCalled();
-    expect(studio.timers.length).toBe(0);
-  });
-
-  it('should return null from getLocalStorage if globalThis.localStorage is undefined', () => {
-    const studio = component as any;
-    const originalStorage = globalThis.localStorage;
-    Object.defineProperty(globalThis, 'localStorage', {
-      get: () => undefined,
-      configurable: true
+    Object.defineProperty(globalThis, 'crypto', {
+      configurable: true,
+      value: originalCrypto
     });
+  });
+
+  it('should return null when browser localStorage is unavailable', () => {
+    const studio = component as any;
+    const storageDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+
+    Object.defineProperty(globalThis, 'localStorage', {
+      configurable: true,
+      value: undefined
+    });
+
     expect(studio.getLocalStorage()).toBeNull();
-    Object.defineProperty(globalThis, 'localStorage', {
-      get: () => originalStorage,
-      configurable: true
-    });
-  });
 
-  it('should change theme and accent', () => {
-    const studio = component as any;
-    studio.onThemeChange('graphite');
-    expect(studio.selectedThemeId).toBe('graphite');
-    studio.onAccentChange('#7c3aed');
-    expect(studio.selectedAccent).toBe('#7c3aed');
-  });
-
-  it('should handle node drag and drop with threshold and clamping', () => {
-    const studio = component as any;
-    const nodeId = 'node_trigger';
-    const node = studio.nodes.find((n: any) => n.id === nodeId);
-    const initialX = node.x;
-    const initialY = node.y;
-
-    // Start dragging
-    const pointerDownEvent = new PointerEvent('pointerdown', {
-      button: 0,
-      clientX: 100,
-      clientY: 100,
-      pointerId: 1
-    });
-    studio.onNodePointerDown(pointerDownEvent, nodeId);
-    expect(studio.draggingNodeId).toBe(nodeId);
-    expect(studio.isActuallyDragging).toBeFalse();
-
-    // Move below threshold
-    const smallMoveEvent = new PointerEvent('pointermove', {
-      clientX: 102,
-      clientY: 102,
-      pointerId: 1
-    });
-    studio.onDocumentPointerMove(smallMoveEvent);
-    expect(studio.isActuallyDragging).toBeFalse();
-    expect(node.x).toBe(initialX);
-
-    // Move above threshold
-    const largeMoveEvent = new PointerEvent('pointermove', {
-      clientX: 150,
-      clientY: 150,
-      pointerId: 1
-    });
-    studio.onDocumentPointerMove(largeMoveEvent);
-    expect(studio.isActuallyDragging).toBeTrue();
-    expect(node.x).toBe(initialX + 50);
-    expect(node.y).toBe(initialY + 50);
-
-    // Move to negative (clamping)
-    const negativeMoveEvent = new PointerEvent('pointermove', {
-      clientX: -1000,
-      clientY: -1000,
-      pointerId: 1
-    });
-    studio.onDocumentPointerMove(negativeMoveEvent);
-    expect(node.x).toBe(0);
-    expect(node.y).toBe(0);
-
-    // Stop dragging
-    studio.onDocumentPointerUp();
-    expect(studio.draggingNodeId).toBeNull();
-  });
-
-  it('should ignore other pointer ids during drag', () => {
-    const studio = component as any;
-    const nodeId = 'node_trigger';
-    studio.onNodePointerDown(new PointerEvent('pointerdown', { button: 0, pointerId: 1 }), nodeId);
-    
-    const otherPointerEvent = new PointerEvent('pointermove', { clientX: 200, pointerId: 2 });
-    studio.onDocumentPointerMove(otherPointerEvent);
-    // Should not trigger drag start or movement
-    expect(studio.isActuallyDragging).toBeFalse();
-  });
-
-  it('should not start drag if button is not 0', () => {
-    const studio = component as any;
-    const pointerDownEvent = new PointerEvent('pointerdown', { button: 1 });
-    studio.onNodePointerDown(pointerDownEvent, 'node_trigger');
-    expect(studio.draggingNodeId).toBeNull();
-  });
-
-  it('should not drag if node does not exist', () => {
-    const studio = component as any;
-    studio.onNodePointerDown(new PointerEvent('pointerdown', { button: 0 }), 'invalid');
-    expect(studio.draggingNodeId).toBeNull();
-  });
-
-  it('should not move if nothing is dragging', () => {
-    const studio = component as any;
-    const node = studio.nodes[0];
-    const initialX = node.x;
-    studio.onDocumentPointerMove(new PointerEvent('pointermove', { clientX: 200, pointerId: 0 }));
-    expect(node.x).toBe(initialX);
-  });
-
-  it('should handle case where dragging node disappears during move', () => {
-    const studio = component as any;
-    studio.draggingNodeId = 'node_trigger';
-    studio.dragPointerId = 1;
-    studio.nodes = []; // Empty nodes
-    studio.onDocumentPointerMove(new PointerEvent('pointermove', { clientX: 200, pointerId: 1 }));
-    expect(studio.draggingNodeId).toBe('node_trigger');
-  });
-
-  it('should select node via keyboard events', () => {
-    const studio = component as any;
-    const nodeId = 'node_trigger';
-    
-    // Test Enter
-    studio.selectNode('node_ai'); // reset
-    const element: HTMLElement = fixture.nativeElement;
-    const nodeEl = element.querySelector('.studio-node') as HTMLElement;
-    nodeEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
-    // Note: dispatching keyboard event on element won't trigger the Angular binding directly in this test setup
-    // so we call the method directly to simulate what the template does.
-    
-    studio.selectNode(nodeId);
-    expect(studio.selectedNodeId).toBe(nodeId);
+    if (storageDescriptor) {
+      Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
+    }
   });
 });

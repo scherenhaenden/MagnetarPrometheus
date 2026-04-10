@@ -2,11 +2,14 @@
  * Workflow Studio page.
  *
  * This component provides a local-first workflow project editing experience.
- * Users can edit node metadata, save snapshots as local projects, and reload
- * those projects from browser storage without requiring backend integration.
+ * Users can edit node metadata, save snapshots as local projects, reload
+ * those projects from browser storage, and inspect concrete example workflows
+ * from bundled assets while backend-powered graph editing remains in progress.
  */
+import { HttpClient } from '@angular/common/http';
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 type NodeCategory = 'trigger' | 'process' | 'logic' | 'integration';
@@ -47,6 +50,18 @@ interface StudioProject {
   nodes: StudioNode[];
 }
 
+interface WorkflowExampleAsset {
+  readonly format: 'yaml' | 'json' | 'toml';
+  readonly label: string;
+  readonly path: string;
+}
+
+const WORKFLOW_EXAMPLES: ReadonlyArray<WorkflowExampleAsset> = [
+  { format: 'yaml', label: 'YAML', path: '/assets/workflows/examples/support-ticket-triage.yaml' },
+  { format: 'json', label: 'JSON', path: '/assets/workflows/examples/support-ticket-triage.json' },
+  { format: 'toml', label: 'TOML', path: '/assets/workflows/examples/support-ticket-triage.toml' }
+];
+
 @Component({
   standalone: true,
   imports: [NgFor, NgIf, NgClass, FormsModule],
@@ -54,6 +69,9 @@ interface StudioProject {
   styleUrl: './workflow-studio-page.component.css'
 })
 export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
+  private readonly http = inject(HttpClient);
+  private readonly destroyRef = inject(DestroyRef);
+
   protected readonly nodeTypes: StudioNodeType[] = [
     { id: 'trigger_http', label: 'HTTP Webhook', icon: '🌐', category: 'trigger', accent: 'violet' },
     { id: 'trigger_cron', label: 'Schedule', icon: '⏰', category: 'trigger', accent: 'blue' },
@@ -90,6 +108,12 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     { id: 'rose', label: 'Rose', value: '#e11d48' }
   ];
 
+  protected readonly examples = WORKFLOW_EXAMPLES;
+  protected selectedExample: WorkflowExampleAsset = this.examples[0];
+  protected exampleContent = '';
+  protected loadingExample = true;
+  protected exampleError: string | null = null;
+
   protected selectedNodeId = 'node_ai';
   protected selectedThemeId = this.themeOptions[0].id;
   protected selectedAccent = this.accentOptions[0].value;
@@ -115,6 +139,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.restoreProjects();
+    this.loadExample(this.selectedExample);
   }
 
   protected get selectedNode(): StudioNode | null {
@@ -138,12 +163,17 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     this.selectedAccent = accentValue;
   }
 
+  protected selectExample(example: WorkflowExampleAsset): void {
+    this.selectedExample = example;
+    this.loadExample(example);
+  }
+
   protected onNodePointerDown(event: PointerEvent, nodeId: string): void {
     if (event.button !== 0) {
       return;
     }
 
-    const node = this.nodes.find((n) => n.id === nodeId);
+    const node = this.nodes.find((candidate) => candidate.id === nodeId);
     if (!node) {
       return;
     }
@@ -153,9 +183,6 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     this.isActuallyDragging = false;
     this.dragStartPointer = { x: event.clientX, y: event.clientY };
     this.dragStartNode = { x: node.x, y: node.y };
-    
-    // We don't preventDefault/stopPropagation yet to allow clicks/focus to work.
-    // We will do it in pointermove if a drag is detected.
   }
 
   @HostListener('document:pointermove', ['$event'])
@@ -164,7 +191,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const node = this.nodes.find((n) => n.id === this.draggingNodeId);
+    const node = this.nodes.find((candidate) => candidate.id === this.draggingNodeId);
     if (!node) {
       return;
     }
@@ -180,7 +207,6 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
       this.isActuallyDragging = true;
     }
 
-    // Now that we are dragging, prevent default behaviors like text selection
     event.preventDefault();
 
     node.x = Math.max(0, this.dragStartNode.x + dx);
@@ -328,6 +354,32 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.clearTimers();
+  }
+
+  private loadExample(example: WorkflowExampleAsset): void {
+    this.loadingExample = true;
+    this.exampleError = null;
+
+    this.http
+      .get(example.path, { responseType: 'text' })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (content) => {
+          if (this.selectedExample.path !== example.path) {
+            return;
+          }
+          this.exampleContent = content;
+          this.loadingExample = false;
+        },
+        error: () => {
+          if (this.selectedExample.path !== example.path) {
+            return;
+          }
+          this.exampleContent = '';
+          this.exampleError = `Unable to load ${example.label} workflow example from ${example.path}.`;
+          this.loadingExample = false;
+        }
+      });
   }
 
   private restoreProjects(): void {

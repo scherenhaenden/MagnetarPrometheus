@@ -38,6 +38,16 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 18:00 CEST
+**Author:** Codex
+**Entry:** Cerré la brecha de pruebas que quedaba en `codex/add-example-workflow-display` para que la integración del Workflow Studio con el navegador de ejemplos no rebajara el estándar del repositorio. Añadí cobertura específica sobre persistencia local, carga de ejemplos con respuestas stale, generación de IDs, drag state, ejecución/stop del flujo, y ramas defensivas de storage y nombres vacíos. Verificado con `npm run test:ci`: 104/104 tests UI en verde y 100.00% en statements, branches, functions y lines.
+
+---
+**Timestamp:** 2026-04-10 14:25 CEST
+**Author:** Codex
+**Entry:** Resolved the active merge on `codex/add-example-workflow-display` by integrating the example-workflow browser into the newer Workflow Studio shell instead of keeping two divergent page implementations. The merged result preserves the saved example asset tabs inside the current Studio canvas, adds ARIA tab semantics to the format switcher, replaces the example error hardcode with the semantic danger token, and hardens example loading against stale asynchronous responses so quick tab switches cannot overwrite the current preview with an older response.
+
+---
 **Timestamp:** 2026-04-10 17:00 CEST
 **Author:** Gemini CLI
 **Entry:** Hardened Workflow Studio UX and Accessibility on branch `codex/improve-ui-design-and-theme-options` (PR `#174`). Addressed review feedback by implementing `dragPointerId` tracking, a 5px drag threshold, and boundary clamping to ensure robust and predictable node movement. Enhanced accessibility with `tabindex`, `role="button"`, and keyboard handlers for node selection. Improved visual stacking with dynamic `z-index` during dragging. Maintained 100.00% statement and branch coverage with 110 total UI tests.

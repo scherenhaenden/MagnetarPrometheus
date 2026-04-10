@@ -97,6 +97,41 @@
           <p>{{ node.summary }}</p>
         </div>
       </article>
+
+      <section class="example-browser">
+        <h4>Saved Example Workflow</h4>
+        <p>Reference flow persisted in multiple formats for import/export validation.</p>
+
+        <div class="example-tabs" role="tablist" aria-label="Workflow example format">
+          @for (example of examples; track example.path) {
+            <button
+              type="button"
+              role="tab"
+              class="example-tab"
+              [class.active]="selectedExample.path === example.path"
+              [attr.aria-selected]="selectedExample.path === example.path"
+              [attr.aria-controls]="'example-panel-' + example.format"
+              [attr.id]="'example-tab-' + example.format"
+              (click)="selectExample(example)">
+              {{ example.label }}
+            </button>
+          }
+        </div>
+
+        @if (loadingExample) {
+          <p>Loading workflow example...</p>
+        } @else if (exampleError) {
+          <p class="error">{{ exampleError }}</p>
+        } @else {
+          <div
+            role="tabpanel"
+            [attr.id]="'example-panel-' + selectedExample.format"
+            [attr.aria-labelledby]="'example-tab-' + selectedExample.format">
+            <pre><code>{{ exampleContent }}</code></pre>
+            <a [href]="selectedExample.path" target="_blank" rel="noopener">Open raw {{ selectedExample.label }} file</a>
+          </div>
+        }
+      </section>
     </main>
 
     <aside class="inspector panel-surface" aria-label="Properties">

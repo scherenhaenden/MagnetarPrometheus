@@ -38,6 +38,21 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 16:15 CEST
+**Author:** Gemini CLI
+**Entry:** Finalized PR `#175` hardening pass. Achieved 100.00% code coverage for both Backend and UI slices (fixing the prior Chrome Headless coverage failure). Extracted a shared `build_plugin_manager` bootstrap helper to remove duplication, hardened plugin discovery with defensive error handling and logging, and standardized hyphenation in core documentation. Verified all 118 backend and 102 UI tests pass with full branch and statement coverage. Updated PR description to reflect the improved technical baseline.
+
+---
+**Timestamp:** 2026-04-10 14:45 CEST
+**Author:** Gemini CLI
+**Entry:** Completed review follow-up for PR `#175`. Extracted `build_plugin_manager` to a shared bootstrap module to remove duplication across the CLI and API server. Hardened `PluginManager.discover_entrypoint_plugins` with robust error handling, type checks, and logging. Standardized "step-capability" hyphenation across `README.md`, `ARCHITECTURE.md`, and `STATUS.md`. Simplified the backward-compatible `register_all_example_steps` helper. All 118 backend tests pass with 100.00% total coverage.
+
+---
+**Timestamp:** 2026-04-10 14:15 CEST
+**Author:** Gemini CLI
+**Entry:** Restored 100% code coverage for the backend on branch `codex/plan-plugin-architecture-for-extensibility` (PR `#175`). Added missing test cases in `backend/tests/test_plugins.py` to cover `PluginManager` duplicate registration, entrypoint discovery (via monkeypatching), and step ownership diagnostics. Verified all 118 backend tests pass with 100.00% total coverage.
+
+---
 **Timestamp:** 2026-04-10 13:30 CEST
 **Author:** Gemini CLI
 **Entry:** Resolved UI code contract and build failures on `codex/add-functionality-to-save-and-load-workflows` to unblock PR `#176`. Added explicit `public` access modifiers to `ngOnInit` and `ngOnDestroy` in `WorkflowStudioPageComponent` as required by the repository's UI contract guard. Increased the `anyComponentStyle` budget in `ui/angular.json` to 10kb/20kb to accommodate the redesigned Workflow Studio styles. Verified the fixes by running the UI test tier: contract and build checks now pass. Updated PR `#176` with labels (`✨ feature`, `🎨 ux`, `🧪 tests`, `♻️ code quality`, `area:ui`, `Level 3 (Visual Model)`) and linked it to issue `#7`.

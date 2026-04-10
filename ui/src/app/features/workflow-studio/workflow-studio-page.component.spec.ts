@@ -3,7 +3,7 @@
  *
  * This test validates the WorkflowStudioPageComponent.
  */
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { WorkflowStudioPageComponent } from './workflow-studio-page.component';
 
 describe('WorkflowStudioPageComponent', () => {
@@ -16,9 +16,7 @@ describe('WorkflowStudioPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [WorkflowStudioPageComponent]
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(WorkflowStudioPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -28,10 +26,9 @@ describe('WorkflowStudioPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the redesigned studio shell in English', () => {
+  it('should render the redesigned studio header and layout', () => {
     const element: HTMLElement = fixture.nativeElement;
-
-    expect(element.querySelector('h2')?.textContent).toContain('Workflow Studio');
+    expect(element.querySelector('.brand-block h2')?.textContent).toContain('Workflow Studio');
     expect(element.textContent).toContain('Visual editor workspace for building, testing, and debugging workflows.');
     expect(element.textContent).toContain('Run Workflow');
     expect(element.textContent).toContain('Save Local');
@@ -140,5 +137,175 @@ describe('WorkflowStudioPageComponent', () => {
     expect(studio.savedProjects[0].name).toBe('Blocked Save');
 
     setItemSpy.and.callThrough();
+  });
+
+  it('should select a node', () => {
+    const studio = component as any;
+    studio.selectNode('node_trigger');
+    expect(studio.selectedNodeId).toBe('node_trigger');
+    expect(studio.selectedNode?.id).toBe('node_trigger');
+  });
+
+  it('should update selected node label and summary', () => {
+    const studio = component as any;
+    studio.selectNode('node_trigger');
+    studio.updateSelectedNodeLabel('New Label');
+    studio.updateSelectedNodeSummary('New Summary');
+    expect(studio.selectedNode?.label).toBe('New Label');
+    expect(studio.selectedNode?.summary).toBe('New Summary');
+  });
+
+  it('should not update label or summary if no node is selected', () => {
+    const studio = component as any;
+    studio.selectedNodeId = 'non-existent';
+    
+    // Trigger branch where selectedNode is null
+    expect(studio.selectedNode).toBeNull();
+    expect(studio.selectedNodeType).toBeNull();
+    
+    studio.updateSelectedNodeLabel('New Label');
+    studio.updateSelectedNodeSummary('New Summary');
+    // Still null
+    expect(studio.selectedNode).toBeNull();
+  });
+
+  it('should use default name if project name is empty on save', () => {
+    const studio = component as any;
+    studio.projectName = '   ';
+    studio.saveProject();
+    expect(studio.savedProjects[0].name).toBe('Untitled Workflow');
+  });
+
+  it('should do nothing if loadProject is called without id', () => {
+    const studio = component as any;
+    const initialStatus = studio.statusMessage;
+    studio.loadProject(null);
+    expect(studio.statusMessage).toBe(initialStatus);
+  });
+
+  it('should set error message if project to load does not exist', () => {
+    const studio = component as any;
+    studio.loadProject('non-existent');
+    expect(studio.statusMessage).toContain('Unable to load project');
+  });
+
+  it('should fallback to first node if loaded project has invalid selectedNodeId', () => {
+    const studio = component as any;
+    studio.savedProjects = [{
+      id: 'p1',
+      name: 'P1',
+      selectedNodeId: 'invalid',
+      nodes: [{ id: 'n1', typeId: 't1', label: 'L', summary: 'S', x: 0, y: 0 }]
+    }];
+    studio.loadProject('p1');
+    expect(studio.selectedNodeId).toBe('n1');
+  });
+
+  it('should fallback to empty string if loaded project has no nodes', () => {
+    const studio = component as any;
+    studio.savedProjects = [{
+      id: 'p_empty',
+      name: 'Empty',
+      selectedNodeId: 'n1',
+      nodes: []
+    }];
+    studio.loadProject('p_empty');
+    expect(studio.selectedNodeId).toBe('');
+  });
+
+  it('should handle newProject with empty default nodes safely', () => {
+    const studio = component as any;
+    studio.defaultNodes = [];
+    studio.newProject();
+    expect(studio.selectedNodeId).toBe('');
+  });
+
+  it('should return default node type if typeId is unknown', () => {
+    const studio = component as any;
+    const type = studio.getNodeType('unknown');
+    expect(type.id).toBe(studio.nodeTypes[0].id);
+  });
+
+  it('should run workflow and complete steps', fakeAsync(() => {
+    const studio = component as any;
+    studio.newProject();
+    fixture.detectChanges();
+    studio.runWorkflow();
+    expect(studio.isRunning).toBeTrue();
+    tick(10000); 
+    fixture.detectChanges();
+    expect(studio.isRunning).toBeFalse();
+    expect(studio.activeNodeId).toBeNull();
+    expect(studio.completedNodeIds.size).toBeGreaterThan(0);
+  }));
+
+  it('should not run workflow if already running', () => {
+    const studio = component as any;
+    studio.runWorkflow();
+    const initialTimers = studio.timers.length;
+    studio.runWorkflow();
+    expect(studio.timers.length).toBe(initialTimers);
+  });
+
+  it('should handle local storage being unavailable during restore', () => {
+    const studio = component as any;
+    spyOn(studio, 'getLocalStorage').and.returnValue(null);
+    studio.restoreProjects();
+    expect(studio.statusMessage).toContain('Local storage is unavailable');
+  });
+
+  it('should handle JSON parse error during restore', () => {
+    localStorage.setItem('mp.workflowStudio.projects.v1', 'invalid-json');
+    const studio = component as any;
+    studio.restoreProjects();
+    expect(studio.statusMessage).toContain('Could not parse saved projects');
+  });
+
+  it('should handle non-array data in local storage during restore', () => {
+    localStorage.setItem('mp.workflowStudio.projects.v1', JSON.stringify({ not: 'an-array' }));
+    const studio = component as any;
+    studio.restoreProjects();
+    expect(studio.savedProjects).toEqual([]);
+  });
+
+  it('should return false if persist fails due to missing storage', () => {
+    const studio = component as any;
+    spyOn(studio, 'getLocalStorage').and.returnValue(null);
+    const result = studio.persistProjects();
+    expect(result).toBeFalse();
+  });
+
+  it('should use fallback project id if randomUUID is unavailable', () => {
+    const studio = component as any;
+    spyOnProperty(globalThis, 'crypto', 'get').and.returnValue({} as any);
+    const id = studio.createProjectId();
+    expect(id).toContain('project_');
+  });
+
+  it('should clear timers on destroy', () => {
+    const studio = component as any;
+    studio.runWorkflow();
+    expect(studio.timers.length).toBeGreaterThan(0);
+    const clearSpy = spyOn(globalThis, 'clearTimeout').and.callThrough();
+    component.ngOnDestroy();
+    expect(clearSpy).toHaveBeenCalled();
+    expect(studio.timers.length).toBe(0);
+  });
+
+  it('should return null from getLocalStorage if globalThis.localStorage is undefined', () => {
+    const studio = component as any;
+    const originalStorage = globalThis.localStorage;
+    Object.defineProperty(globalThis, 'localStorage', {
+      get: () => undefined,
+      configurable: true
+    });
+    
+    expect(studio.getLocalStorage()).toBeNull();
+    
+    // Restore
+    Object.defineProperty(globalThis, 'localStorage', {
+      get: () => originalStorage,
+      configurable: true
+    });
   });
 });

@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 11:55 CEST
+**Author:** Codex
+**Entry:** Hardened PR `#170` on `feature/add-example-workflows-10944637492021849479` by making the example math and HTTP steps preserve existing `context['data']` instead of overwriting it, guarding non-mapping context payloads in the math path, and replacing brittle JSON string interpolation in the HTTP mock with `json.dumps`. Expanded the module tests to cover preserved data fields, invalid/non-mapping context payloads, and special-character URL serialization. Verified the touched tests with `pytest --no-cov backend/tests/test_math_module.py backend/tests/test_http_module.py -q`: `12 passed`.
+
+---
 **Timestamp:** 2026-04-09 15:25 CEST
 **Author:** Codex
 **Entry:** Tightened the Angular UI validation tier on branch `feature/add-ui-tests-12952883483010130617` so `npm run test:ci` now enforces `100%` statements/branches/functions/lines via `ui/karma.conf.cjs` instead of only requiring test green status. Closed the remaining coverage gaps by expanding route-loader, job-submission, run-detail, run-history, API-adapter, mock-adapter, and provider tests until the only remaining failures were true uncovered branches rather than missing policy wiring.

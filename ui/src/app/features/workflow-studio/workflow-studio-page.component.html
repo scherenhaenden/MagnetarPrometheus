@@ -57,38 +57,34 @@
     </main>
 
     <aside class="inspector panel-surface" aria-label="Properties">
-      <ng-container *ngIf="selectedNodeId as selectedId">
-        <ng-container *ngFor="let node of nodes">
-          <section *ngIf="node.id === selectedId" class="inspector-content">
-            <h3>Inspector</h3>
-            <div class="selected-node">
-              <span [ngClass]="getNodeType(node.typeId).accent">{{ getNodeType(node.typeId).icon }}</span>
-              <div>
-                <h4>{{ getNodeType(node.typeId).label }}</h4>
-                <p>{{ node.id }}</p>
-              </div>
-            </div>
+      <section *ngIf="selectedNode && selectedNodeType" class="inspector-content">
+        <h3>Inspector</h3>
+        <div class="selected-node">
+          <span [ngClass]="selectedNodeType.accent">{{ selectedNodeType.icon }}</span>
+          <div>
+            <h4>{{ selectedNodeType.label }}</h4>
+            <p>{{ selectedNode.id }}</p>
+          </div>
+        </div>
 
-            <label>
-              Node Name
-              <input type="text" [value]="node.label" readonly />
-            </label>
+        <label>
+          Node Name
+          <input type="text" [value]="selectedNode.label" readonly />
+        </label>
 
-            <label>
-              Description
-              <textarea rows="4" readonly>{{ node.summary }}</textarea>
-            </label>
+        <label>
+          Description
+          <textarea rows="4" [value]="selectedNode.summary" readonly></textarea>
+        </label>
 
-            <div class="json-preview">
-              <p>Last execution output</p>
-              <pre>{
-  "node": "{{ node.id }}",
-  "status": "{{ isCompleted(node.id) ? 'completed' : (isActive(node.id) ? 'running' : 'idle') }}"
-}</pre>
-            </div>
-          </section>
-        </ng-container>
-      </ng-container>
+        <div class="json-preview">
+          <p>Last execution output</p>
+          <pre>{{ '{' }}
+  "node": "{{ selectedNode.id }}",
+  "status": "{{ isCompleted(selectedNode.id) ? 'completed' : (isActive(selectedNode.id) ? 'running' : 'idle') }}"
+{{ '}' }}</pre>
+        </div>
+      </section>
     </aside>
 
     <section class="diagnostics panel-surface" aria-label="Debug and Run Data">

@@ -35,6 +35,7 @@ interface StudioNode {
 }
 
 @Component({
+  standalone: true,
   imports: [NgFor, NgIf, NgClass],
   templateUrl: './workflow-studio-page.component.html',
   styleUrl: './workflow-studio-page.component.css'
@@ -59,12 +60,25 @@ export class WorkflowStudioPageComponent implements OnDestroy {
     { id: 'node_email', typeId: 'integration_email', label: 'Nurture Drip', summary: 'template: nurture_1', x: 1008, y: 232 }
   ];
 
+  protected readonly workflowSequence = this.nodes.map((node) => node.id);
+
   protected selectedNodeId: string = 'node_ai';
   protected isRunning = false;
   protected activeNodeId: string | null = null;
   protected completedNodeIds = new Set<string>();
 
+  private readonly nodeTypesById = new Map(this.nodeTypes.map((type) => [type.id, type]));
+  private readonly nodesById = new Map(this.nodes.map((node) => [node.id, node]));
   private timers: ReturnType<typeof setTimeout>[] = [];
+
+  protected get selectedNode(): StudioNode | null {
+    return this.nodesById.get(this.selectedNodeId) ?? null;
+  }
+
+  protected get selectedNodeType(): StudioNodeType | null {
+    const node = this.selectedNode;
+    return node ? this.getNodeType(node.typeId) : null;
+  }
 
   protected selectNode(nodeId: string): void {
     this.selectedNodeId = nodeId;
@@ -79,15 +93,14 @@ export class WorkflowStudioPageComponent implements OnDestroy {
     this.activeNodeId = null;
     this.completedNodeIds.clear();
 
-    const sequence = ['node_trigger', 'node_ai', 'node_logic', 'node_db'];
-    sequence.forEach((nodeId, index) => {
+    this.workflowSequence.forEach((nodeId, index) => {
       const timer = setTimeout(() => {
         this.activeNodeId = nodeId;
         if (index > 0) {
-          this.completedNodeIds.add(sequence[index - 1]);
+          this.completedNodeIds.add(this.workflowSequence[index - 1]);
         }
 
-        if (index === sequence.length - 1) {
+        if (index === this.workflowSequence.length - 1) {
           const endTimer = setTimeout(() => {
             this.completedNodeIds.add(nodeId);
             this.activeNodeId = null;
@@ -108,10 +121,7 @@ export class WorkflowStudioPageComponent implements OnDestroy {
   }
 
   protected getNodeType(typeId: string): StudioNodeType {
-    return (
-      this.nodeTypes.find((type) => type.id === typeId) ??
-      this.nodeTypes[0]
-    );
+    return this.nodeTypesById.get(typeId) ?? this.nodeTypes[0];
   }
 
   protected isSelected(nodeId: string): boolean {

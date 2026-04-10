@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 13:45 CEST
+**Author:** Codex
+**Entry:** Completed the remaining PR `#176` Workflow Studio review follow-up on `codex/add-functionality-to-save-and-load-workflows`. Saving an existing local project now moves it back to the top of the selector so the most recently updated snapshot stays easiest to reach, and storage access is now wrapped defensively so unavailable or failing browser storage degrades into explicit status messages instead of silently assuming persistence succeeded. Added focused specs for reorder-on-save plus failing read/write storage scenarios and updated the branch-local review record to mark the review items as closed in code.
+
+---
 **Timestamp:** 2026-04-10 13:25 CEST
 **Author:** Codex
 **Entry:** On `codex/add-functionality-to-save-and-load-workflows`, tightened Workflow Studio local-project persistence after PR `#176` review triage. Hardened project restore against corrupt `localStorage` entries such as `null`, switched project ID generation to `crypto.randomUUID()` with a compatibility fallback, and added focused specs covering both the corrupt-storage recovery path and the UUID generation path. Also recorded an explicit branch-local review in `branches/codex/add-functionality-to-save-and-load-workflows/review.md` so the remaining open review items stay visible.

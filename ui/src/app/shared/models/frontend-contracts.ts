@@ -14,7 +14,8 @@ export type FrontendRunStatus =
   | 'running'
   | 'succeeded'
   | 'failed'
-  | 'cancelled';
+  | 'cancelled'
+  | 'unknown';
 
 /**
  * Represents the execution state of an individual step within a run.

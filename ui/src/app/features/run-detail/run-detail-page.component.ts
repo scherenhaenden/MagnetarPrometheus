@@ -24,6 +24,7 @@ import { StatusBadgeComponent } from '../../shared/ui/status-badge.component';
  * - Handling loading and error states securely, ensuring users aren't left on broken pages.
  */
 @Component({
+  standalone: true,
   imports: [AsyncPipe, DatePipe, RouterLink, PageContainerComponent, PageHeaderComponent, PanelCardComponent, StatusBadgeComponent],
   templateUrl: './run-detail-page.component.html',
   styleUrl: './run-detail-page.component.css'

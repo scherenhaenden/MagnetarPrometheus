@@ -34,7 +34,7 @@ const normalizeRunStatus = (value: string): FrontendRunStatus => {
   ) {
     return normalized;
   }
-  return 'failed';
+  return 'unknown';
 };
 
 const normalizeStepState = (value: string): FrontendStepState => {
@@ -67,20 +67,27 @@ export const mapRunListItemApiResponseToRunListingItem = (
   summary: response.summary
 });
 
-export const mapRunDetailApiResponseToRunDetail = (response: RunDetailApiResponse): RunDetail => ({
-  runId: response.run_id,
-  workflowId: response.workflow_id,
-  status: normalizeRunStatus(response.status),
-  createdAtIso: response.created_at,
-  completedAtIso: response.completed_at,
-  steps: response.steps.map((step) => ({
-    name: step.name,
-    state: normalizeStepState(step.state),
-    detail: step.detail ?? 'No additional step detail returned by API.'
-  })),
-  errorMessage: response.error_message,
-  outputPreview: response.output_preview
-});
+export const mapRunDetailApiResponseToRunDetail = (
+  response: RunDetailApiResponse | null
+): RunDetail | null => {
+  if (!response) {
+    return null;
+  }
+  return {
+    runId: response.run_id,
+    workflowId: response.workflow_id,
+    status: normalizeRunStatus(response.status),
+    createdAtIso: response.created_at,
+    completedAtIso: response.completed_at,
+    steps: response.steps.map((step) => ({
+      name: step.name,
+      state: normalizeStepState(step.state),
+      detail: step.detail ?? 'No additional step detail returned by API.'
+    })),
+    errorMessage: response.error_message,
+    outputPreview: response.output_preview
+  };
+};
 
 export const mapWorkflowSummaryApiResponseToWorkflowSummary = (
   response: WorkflowSummaryApiResponse

@@ -31,7 +31,7 @@ describe('Frontend API Mappers', () => {
   });
 
   describe('mapRunListItemApiResponseToRunListingItem', () => {
-    it('should normalize unknown run statuses to failed', () => {
+    it('should normalize unknown run statuses to unknown', () => {
       expect(mapRunListItemApiResponseToRunListingItem({
         run_id: 'run-1',
         workflow_id: 'workflow-a',
@@ -42,15 +42,30 @@ describe('Frontend API Mappers', () => {
       })).toEqual({
         runId: 'run-1',
         workflowId: 'workflow-a',
-        status: 'failed',
+        status: 'unknown',
         createdAtIso: '2026-01-01T00:00:00Z',
         completedAtIso: null,
         summary: 'Summary'
       });
     });
+
+    it('should normalize known run statuses correctly', () => {
+      expect(mapRunListItemApiResponseToRunListingItem({
+        run_id: 'run-1',
+        workflow_id: 'workflow-a',
+        status: 'RUNNING',
+        created_at: '2026-01-01T00:00:00Z',
+        completed_at: null,
+        summary: 'Summary'
+      }).status).toBe('running');
+    });
   });
 
   describe('mapRunDetailApiResponseToRunDetail', () => {
+    it('should return null if response is null', () => {
+      expect(mapRunDetailApiResponseToRunDetail(null)).toBeNull();
+    });
+
     it('should map step detail defaults and normalize states', () => {
       expect(mapRunDetailApiResponseToRunDetail({
         run_id: 'run-1',

@@ -89,6 +89,27 @@ describe('ApiFrontendDataService', () => {
     request.flush(null);
   });
 
+  it('should return null when getRunDetail receives a 404 error', () => {
+    service.getRunDetail('run-missing').subscribe((detail) => {
+      expect(detail).toBeNull();
+    });
+
+    const request = httpMock.expectOne('/api/runs/run-missing');
+    request.flush('Not Found', { status: 404, statusText: 'Not Found' });
+  });
+
+  it('should rethrow non-404 errors in getRunDetail', () => {
+    service.getRunDetail('run-error').subscribe({
+      next: () => fail('Should have failed'),
+      error: (error) => {
+        expect(error.status).toBe(500);
+      }
+    });
+
+    const request = httpMock.expectOne('/api/runs/run-error');
+    request.flush('Server Error', { status: 500, statusText: 'Server Error' });
+  });
+
   it('should fetch run detail and map a populated response', () => {
     service.getRunDetail('run-1').subscribe((detail) => {
       expect(detail).toEqual({

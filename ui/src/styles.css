@@ -1,6 +1,6 @@
 /* MagnetarPrometheus UI design token baseline. */
 :root {
-  --mp-font-family-base: Inter, 'Segoe UI', sans-serif;
+  --mp-font-family-base: 'Inter', 'Segoe UI', sans-serif;
   --mp-color-surface: #0b1220;
   --mp-color-surface-raised: #101b2c;
   --mp-color-border: #223555;

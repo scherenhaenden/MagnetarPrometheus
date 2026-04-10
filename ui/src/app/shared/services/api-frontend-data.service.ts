@@ -10,10 +10,10 @@
  * - This adapter handles API transport details, such as endpoint URL construction and mapper orchestration.
  * - It relies on FrontendApiMappers to transform raw API JSON payloads into stable frontend contracts.
  */
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, of, throwError } from 'rxjs';
 import {
   JobSubmissionRequest,
   JobSubmissionResult,
@@ -82,8 +82,13 @@ export class ApiFrontendDataService extends FrontendDataService {
    */
   public getRunDetail(runId: string): Observable<RunDetail | null> {
     return this.http
-      .get<RunDetailApiResponse | null>(`${this.baseUrl}/runs/${runId}`)
-      .pipe(map((response) => (response ? mapRunDetailApiResponseToRunDetail(response) : null)));
+      .get<RunDetailApiResponse>(`${this.baseUrl}/runs/${encodeURIComponent(runId)}`)
+      .pipe(
+        map((response) => mapRunDetailApiResponseToRunDetail(response)),
+        catchError((error: HttpErrorResponse) =>
+          error.status === 404 ? of(null) : throwError(() => error)
+        )
+      );
   }
 
   /**

@@ -306,14 +306,14 @@ describe('WorkflowStudioPageComponent', () => {
     const preventDefault = jasmine.createSpy('preventDefault');
 
     studio.onNodePointerDown({ button: 0, pointerId: 3, clientX: 100, clientY: 100 } as PointerEvent, 'node_trigger');
-    studio.onDocumentPointerMove({ pointerId: 4, clientX: 110, clientY: 110, preventDefault } as unknown as PointerEvent);
+    studio.onDocumentPointerMove({ pointerId: 4, clientX: 110, clientY: 110, preventDefault, cancelable: true } as unknown as PointerEvent);
     expect(studio.nodes[0].x).toBe(72);
 
-    studio.onDocumentPointerMove({ pointerId: 3, clientX: 102, clientY: 102, preventDefault } as unknown as PointerEvent);
+    studio.onDocumentPointerMove({ pointerId: 3, clientX: 102, clientY: 102, preventDefault, cancelable: true } as unknown as PointerEvent);
     expect(studio.isActuallyDragging).toBeFalse();
-    expect(preventDefault).not.toHaveBeenCalled();
+    expect(preventDefault).toHaveBeenCalled();
 
-    studio.onDocumentPointerMove({ pointerId: 3, clientX: -50, clientY: -30, preventDefault } as unknown as PointerEvent);
+    studio.onDocumentPointerMove({ pointerId: 3, clientX: -50, clientY: -30, preventDefault, cancelable: true } as unknown as PointerEvent);
     expect(studio.isActuallyDragging).toBeTrue();
     expect(preventDefault).toHaveBeenCalled();
     expect(studio.nodes[0].x).toBe(0);
@@ -325,7 +325,7 @@ describe('WorkflowStudioPageComponent', () => {
 
     studio.onNodePointerDown({ button: 0, pointerId: 7, clientX: 10, clientY: 10 } as PointerEvent, 'node_trigger');
     studio.nodes = [];
-    studio.onDocumentPointerMove({ pointerId: 7, clientX: 40, clientY: 40, preventDefault() {} } as PointerEvent);
+    studio.onDocumentPointerMove({ pointerId: 7, clientX: 40, clientY: 40, preventDefault() {}, cancelable: true } as unknown as PointerEvent);
 
     studio.onDocumentPointerUp();
     expect(studio.draggingNodeId).toBeNull();
@@ -363,22 +363,25 @@ describe('WorkflowStudioPageComponent', () => {
     const studio = component as any;
 
     studio.runWorkflow();
-    const timerCount = studio.timers.length;
+    const subscription = studio.workflowSubscription;
     studio.runWorkflow();
 
-    expect(studio.timers.length).toBe(timerCount);
+    expect(studio.workflowSubscription).toBe(subscription);
     studio.stopWorkflow();
   });
 
-  it('should clear timers during ngOnDestroy', () => {
+  it('should unsubscribe from workflow and stop during ngOnDestroy', () => {
     const studio = component as any;
-    spyOn(window, 'clearTimeout');
 
     studio.runWorkflow();
+    const subscription = studio.workflowSubscription;
+    spyOn(subscription, 'unsubscribe').and.callThrough();
+
     studio.ngOnDestroy();
 
-    expect(clearTimeout).toHaveBeenCalled();
-    expect(studio.timers).toEqual([]);
+    expect(subscription.unsubscribe).toHaveBeenCalled();
+    expect(studio.workflowSubscription).toBeNull();
+    expect(studio.isRunning).toBeFalse();
   });
 
   it('should keep the current example content when an older request fails after switching tabs', () => {

@@ -103,16 +103,26 @@ stop_daemon() {
     echo "Stopping MagnetarPrometheus API daemon PID ${daemon_pid} ..."
     kill "${daemon_pid}" 2>/dev/null || true
 
+    # Wait for the process to exit (up to 5 seconds)
+    local terminated=0
     for _ in {1..20}; do
         if ! is_pid_running "${daemon_pid}"; then
+            terminated=1
             break
         fi
         sleep 0.25
     done
 
-    if is_pid_running "${daemon_pid}"; then
+    if [ "${terminated}" -eq 0 ]; then
         echo "PID ${daemon_pid} did not stop with SIGTERM; sending SIGKILL."
         kill -9 "${daemon_pid}" 2>/dev/null || true
+
+        # Final verification that SIGKILL worked
+        sleep 0.5
+        if is_pid_running "${daemon_pid}"; then
+            echo "Error: MagnetarPrometheus API daemon (PID ${daemon_pid}) is unresponsive and could not be stopped."
+            exit 1
+        fi
     fi
 
     rm -f "${PID_FILE}"

@@ -16,14 +16,18 @@
       <label class="toolbar-select" for="studio-theme">
         Theme
         <select id="studio-theme" [value]="selectedThemeId" (change)="onThemeChange($any($event.target).value)">
-          <option *ngFor="let theme of themeOptions" [value]="theme.id">{{ theme.label }}</option>
+          @for (theme of themeOptions; track theme.id) {
+            <option [value]="theme.id">{{ theme.label }}</option>
+          }
         </select>
       </label>
 
       <label class="toolbar-select" for="studio-accent">
         Accent
         <select id="studio-accent" [value]="selectedAccent" (change)="onAccentChange($any($event.target).value)">
-          <option *ngFor="let accent of accentOptions" [value]="accent.value">{{ accent.label }}</option>
+          @for (accent of accentOptions; track accent.id) {
+            <option [value]="accent.value">{{ accent.label }}</option>
+          }
         </select>
       </label>
 
@@ -36,9 +40,11 @@
         Saved
         <select id="saved-projects-select" [ngModel]="selectedProjectId" (ngModelChange)="loadProject($event)">
           <option [ngValue]="null">Select project</option>
-          <option *ngFor="let project of savedProjects" [ngValue]="project.id">
-            {{ project.name }}
-          </option>
+          @for (project of savedProjects; track project.id) {
+            <option [ngValue]="project.id">
+              {{ project.name }}
+            </option>
+          }
         </select>
       </label>
 
@@ -60,43 +66,46 @@
         <span>{{ nodeTypes.length }} available</span>
       </header>
       <div class="library-list">
-        <button type="button" class="library-item" *ngFor="let type of nodeTypes">
-          <span class="icon" [ngClass]="type.accent">{{ type.icon }}</span>
-          <span class="meta">
-            <strong>{{ type.label }}</strong>
-            <small>{{ type.category }}</small>
-          </span>
-        </button>
+        @for (type of nodeTypes; track type.id) {
+          <button type="button" class="library-item">
+            <span class="icon" [ngClass]="type.accent">{{ type.icon }}</span>
+            <span class="meta">
+              <strong>{{ type.label }}</strong>
+              <small>{{ type.category }}</small>
+            </span>
+          </button>
+        }
       </div>
     </aside>
 
     <main class="canvas panel-surface" aria-label="Workflow Canvas" [ngClass]="{ dragging: !!draggingNodeId }">
       <div class="canvas-grid"></div>
-      <article
-        class="studio-node"
-        *ngFor="let node of nodes"
-        [style.left.px]="node.x"
-        [style.top.px]="node.y"
-        [ngClass]="[
-          getNodeType(node.typeId).accent,
-          isSelected(node.id) ? 'selected' : '',
-          isActive(node.id) ? 'active' : '',
-          isCompleted(node.id) ? 'completed' : '',
-          draggingNodeId === node.id ? 'dragging' : ''
-        ]"
-        tabindex="0"
-        role="button"
-        [attr.aria-label]="'Workflow node: ' + node.label"
-        (click)="selectNode(node.id)"
-        (keydown.enter)="selectNode(node.id)"
-        (keydown.space)="selectNode(node.id); $event.preventDefault()"
-        (pointerdown)="onNodePointerDown($event, node.id)">
-        <span class="node-icon">{{ getNodeType(node.typeId).icon }}</span>
-        <div>
-          <h4>{{ node.label }}</h4>
-          <p>{{ node.summary }}</p>
-        </div>
-      </article>
+      @for (node of nodes; track node.id) {
+        <article
+          class="studio-node"
+          [style.left.px]="node.x"
+          [style.top.px]="node.y"
+          [ngClass]="[
+            getNodeType(node.typeId).accent,
+            isSelected(node.id) ? 'selected' : '',
+            isActive(node.id) ? 'active' : '',
+            isCompleted(node.id) ? 'completed' : '',
+            draggingNodeId === node.id ? 'dragging' : ''
+          ]"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'Workflow node: ' + node.label"
+          (click)="selectNode(node.id)"
+          (keydown.enter)="selectNode(node.id)"
+          (keydown.space)="selectNode(node.id); $event.preventDefault()"
+          (pointerdown)="onNodePointerDown($event, node.id)">
+          <span class="node-icon">{{ getNodeType(node.typeId).icon }}</span>
+          <div>
+            <h4>{{ node.label }}</h4>
+            <p>{{ node.summary }}</p>
+          </div>
+        </article>
+      }
 
       <section class="example-browser">
         <h4>Saved Example Workflow</h4>
@@ -135,34 +144,36 @@
     </main>
 
     <aside class="inspector panel-surface" aria-label="Properties">
-      <section *ngIf="selectedNode && selectedNodeType" class="inspector-content">
-        <h3>Inspector</h3>
-        <div class="selected-node">
-          <span [ngClass]="selectedNodeType.accent">{{ selectedNodeType.icon }}</span>
-          <div>
-            <h4>{{ selectedNodeType.label }}</h4>
-            <p>{{ selectedNode.id }}</p>
+      @if (selectedNode && selectedNodeType) {
+        <section class="inspector-content">
+          <h3>Inspector</h3>
+          <div class="selected-node">
+            <span [ngClass]="selectedNodeType.accent">{{ selectedNodeType.icon }}</span>
+            <div>
+              <h4>{{ selectedNodeType.label }}</h4>
+              <p>{{ selectedNode.id }}</p>
+            </div>
           </div>
-        </div>
 
-        <label>
-          Node Name
-          <input type="text" [value]="selectedNode.label" (input)="updateSelectedNodeLabel($any($event.target).value)" />
-        </label>
+          <label>
+            Node Name
+            <input type="text" [value]="selectedNode.label" (input)="updateSelectedNodeLabel($any($event.target).value)" />
+          </label>
 
-        <label>
-          Description
-          <textarea rows="4" [value]="selectedNode.summary" (input)="updateSelectedNodeSummary($any($event.target).value)"></textarea>
-        </label>
+          <label>
+            Description
+            <textarea rows="4" [value]="selectedNode.summary" (input)="updateSelectedNodeSummary($any($event.target).value)"></textarea>
+          </label>
 
-        <div class="json-preview">
-          <p>Last execution output</p>
-          <pre>{{ '{' }}
+          <div class="json-preview">
+            <p>Last execution output</p>
+            <pre>{{ '{' }}
   "node": "{{ selectedNode.id }}",
   "status": "{{ isCompleted(selectedNode.id) ? 'completed' : (isActive(selectedNode.id) ? 'running' : 'idle') }}"
 {{ '}' }}</pre>
-        </div>
-      </section>
+          </div>
+        </section>
+      }
     </aside>
 
     <section class="diagnostics panel-surface" aria-label="Debug and Run Data">

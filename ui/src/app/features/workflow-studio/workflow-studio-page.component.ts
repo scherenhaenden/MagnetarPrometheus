@@ -7,10 +7,11 @@
  * from bundled assets while backend-powered graph editing remains in progress.
  */
 import { HttpClient } from '@angular/common/http';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, DestroyRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Subscription, concatMap, delay, from, of, tap } from 'rxjs';
 
 type NodeCategory = 'trigger' | 'process' | 'logic' | 'integration';
 
@@ -64,7 +65,7 @@ const WORKFLOW_EXAMPLES: ReadonlyArray<WorkflowExampleAsset> = [
 
 @Component({
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, FormsModule],
+  imports: [NgClass, FormsModule],
   templateUrl: './workflow-studio-page.component.html',
   styleUrl: './workflow-studio-page.component.css'
 })
@@ -130,7 +131,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
   private readonly storageKey = 'mp.workflowStudio.projects.v1';
   private readonly nodeTypesById = new Map(this.nodeTypes.map((type) => [type.id, type]));
-  private timers: ReturnType<typeof setTimeout>[] = [];
+  private workflowSubscription: Subscription | null = null;
   private dragStartPointer = { x: 0, y: 0 };
   private dragStartNode = { x: 0, y: 0 };
   private dragPointerId: number | null = null;
@@ -191,6 +192,12 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Prevent default browser behavior (e.g., selection, scrolling) while we are
+    // actively tracking a potential or ongoing node drag.
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+
     const node = this.nodes.find((candidate) => candidate.id === this.draggingNodeId);
     if (!node) {
       return;
@@ -206,8 +213,6 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
       }
       this.isActuallyDragging = true;
     }
-
-    event.preventDefault();
 
     node.x = Math.max(0, this.dragStartNode.x + dx);
     node.y = Math.max(0, this.dragStartNode.y + dy);
@@ -309,31 +314,45 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     this.activeNodeId = null;
     this.completedNodeIds.clear();
 
-    this.workflowSequence.forEach((nodeId, index) => {
-      const timer = setTimeout(() => {
-        this.activeNodeId = nodeId;
-        if (index > 0) {
-          this.completedNodeIds.add(this.workflowSequence[index - 1]);
-        }
+    const stepDelayMs = 700;
 
-        if (index === this.workflowSequence.length - 1) {
-          const endTimer = setTimeout(() => {
-            this.completedNodeIds.add(nodeId);
-            this.activeNodeId = null;
-            this.isRunning = false;
-          }, 700);
-          this.timers.push(endTimer);
+    this.workflowSubscription = from(this.workflowSequence)
+      .pipe(
+        concatMap((nodeId, index) =>
+          of(nodeId).pipe(
+            delay(stepDelayMs),
+            tap(() => {
+              this.activeNodeId = nodeId;
+              if (index > 0) {
+                this.completedNodeIds.add(this.workflowSequence[index - 1]);
+              }
+            })
+          )
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        complete: () => {
+          // Final delay for the last node completion
+          setTimeout(() => {
+            if (this.isRunning && this.workflowSequence.length > 0) {
+              this.completedNodeIds.add(this.workflowSequence[this.workflowSequence.length - 1]);
+              this.activeNodeId = null;
+              this.isRunning = false;
+            }
+          }, stepDelayMs);
         }
-      }, 700 * (index + 1));
-      this.timers.push(timer);
-    });
+      });
   }
 
   protected stopWorkflow(): void {
     this.isRunning = false;
     this.activeNodeId = null;
     this.completedNodeIds.clear();
-    this.clearTimers();
+    if (this.workflowSubscription) {
+      this.workflowSubscription.unsubscribe();
+      this.workflowSubscription = null;
+    }
   }
 
   protected getNodeType(typeId: string): StudioNodeType {
@@ -353,7 +372,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.clearTimers();
+    this.stopWorkflow();
   }
 
   private loadExample(example: WorkflowExampleAsset): void {
@@ -443,11 +462,6 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
     }
 
     return `project_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
-  }
-
-  private clearTimers(): void {
-    this.timers.forEach((timer) => clearTimeout(timer));
-    this.timers = [];
   }
 
   private getLocalStorage(): Storage | null {

@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-10 18:30 CEST
+**Author:** Gemini CLI
+**Entry:** Modernized the Workflow Studio UI to use Angular 21 standards, replacing all legacy `*ngIf` and `*ngFor` directives with the newer `@if` and `@for` control flow syntax. Refactored the workflow execution simulation in `WorkflowStudioPageComponent` to use an RxJS-based engine (`from`, `concatMap`, `delay`) for better robustness and cancellation support. Hardened the node drag interaction with early `event.preventDefault()` calls to prevent default browser behaviors. Improved the `run_app.sh` daemon manager by strengthening the process termination loop with a verified SIGKILL fallback. Updated the UI test suite to maintain 100% code coverage. Linked PR 177 to Issue #155.
+
+---
 **Timestamp:** 2026-04-10 18:00 CEST
 **Author:** Codex
 **Entry:** Cerré la brecha de pruebas que quedaba en `codex/add-example-workflow-display` para que la integración del Workflow Studio con el navegador de ejemplos no rebajara el estándar del repositorio. Añadí cobertura específica sobre persistencia local, carga de ejemplos con respuestas stale, generación de IDs, drag state, ejecución/stop del flujo, y ramas defensivas de storage y nombres vacíos. Verificado con `npm run test:ci`: 104/104 tests UI en verde y 100.00% en statements, branches, functions y lines.

@@ -161,6 +161,8 @@ describe('WorkflowStudioPageComponent', () => {
 
     studio.closeTab(projectId);
     expect(studio.activeTabId).toBe('draft');
+    expect(studio.selectedProjectId).toBeNull();
+    expect(studio.projectName).toBe('Untitled Workflow');
   });
 
   it('should close non-draft tabs and keep draft tab protected', () => {
@@ -174,6 +176,21 @@ describe('WorkflowStudioPageComponent', () => {
 
     studio.closeTab(projectId);
     expect(studio.openProjectTabs.some((tab: any) => tab.id === projectId)).toBeFalse();
+  });
+
+  it('should render tab close actions as separate accessible buttons', () => {
+    const studio = component as any;
+    studio.projectName = 'Closable';
+    studio.saveProject();
+    fixture.detectChanges();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const closeButton = Array.from(element.querySelectorAll('.close')).find(
+      (button) => button.getAttribute('aria-label') === 'Close Closable'
+    ) as HTMLButtonElement;
+
+    expect(closeButton).toBeTruthy();
+    expect(closeButton.tagName).toBe('BUTTON');
   });
 
   it('should guard pointerdown and pointermove edge cases and clear drag state on pointerup', () => {

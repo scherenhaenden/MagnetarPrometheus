@@ -137,6 +137,12 @@ p {
   flex-wrap: wrap;
 }
 
+.tab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mp-space-1);
+}
+
 .tab {
   padding: var(--mp-space-1) var(--mp-space-2);
 }
@@ -146,7 +152,7 @@ p {
 }
 
 .close {
-  margin-left: var(--mp-space-1);
+  padding: var(--mp-space-1) var(--mp-space-2);
   font-weight: 700;
 }
 

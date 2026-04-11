@@ -75,6 +75,8 @@ const WORKFLOW_EXAMPLES: ReadonlyArray<WorkflowExampleAsset> = [
   { format: 'json', label: 'JSON', path: '/assets/workflows/examples/support-ticket-triage.json' },
   { format: 'toml', label: 'TOML', path: '/assets/workflows/examples/support-ticket-triage.toml' }
 ];
+const STUDIO_NODE_WIDTH = 220;
+const STUDIO_NODE_CONNECTION_Y_OFFSET = 42;
 
 @Component({
   standalone: true,
@@ -193,10 +195,12 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   }
 
   protected openTab(tabId: string): void {
-    this.activeTabId = tabId;
     if (tabId === 'draft') {
+      this.newProject();
       return;
     }
+
+    this.activeTabId = tabId;
     this.loadProject(tabId);
   }
 
@@ -423,7 +427,7 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
 
   private upsertTab(project: StudioProject): void {
     if (!this.openProjectTabs.some((tab) => tab.id === project.id)) {
-      this.openProjectTabs.push({ id: project.id, name: project.name });
+      this.openProjectTabs = [...this.openProjectTabs, { id: project.id, name: project.name }];
       return;
     }
 
@@ -433,21 +437,23 @@ export class WorkflowStudioPageComponent implements OnInit, OnDestroy {
   }
 
   private buildConnections(): CanvasEdge[] {
+    const nodeMap = new Map(this.nodes.map((node) => [node.id, node]));
+
     return this.workflowSequence
       .slice(0, -1)
       .map((nodeId, index) => {
-        const source = this.nodes.find((node) => node.id === nodeId);
-        const target = this.nodes.find((node) => node.id === this.workflowSequence[index + 1]);
+        const source = nodeMap.get(nodeId);
+        const target = nodeMap.get(this.workflowSequence[index + 1]);
         if (!source || !target) {
           return null;
         }
 
         return {
           id: `${source.id}_${target.id}`,
-          x1: source.x + 220,
-          y1: source.y + 42,
+          x1: source.x + STUDIO_NODE_WIDTH,
+          y1: source.y + STUDIO_NODE_CONNECTION_Y_OFFSET,
           x2: target.x,
-          y2: target.y + 42
+          y2: target.y + STUDIO_NODE_CONNECTION_Y_OFFSET
         };
       })
       .filter((edge): edge is CanvasEdge => edge !== null);

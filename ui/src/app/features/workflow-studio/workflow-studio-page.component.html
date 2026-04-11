@@ -47,12 +47,20 @@
   <section class="project-tabs panel-surface" aria-label="Open projects">
     <div class="tabs">
       @for (tab of openProjectTabs; track tab.id) {
-        <button type="button" class="tab" [class.active]="activeTabId === tab.id" (click)="openTab(tab.id)">
-          {{ tab.name }}
+        <div class="tab-item">
+          <button type="button" class="tab" [class.active]="activeTabId === tab.id" (click)="openTab(tab.id)">
+            {{ tab.name }}
+          </button>
           @if (tab.id !== 'draft') {
-            <span class="close" (click)="$event.stopPropagation(); closeTab(tab.id)">×</span>
+            <button
+              type="button"
+              class="close"
+              [attr.aria-label]="'Close ' + tab.name"
+              (click)="$event.stopPropagation(); closeTab(tab.id)">
+              ×
+            </button>
           }
-        </button>
+        </div>
       }
     </div>
 

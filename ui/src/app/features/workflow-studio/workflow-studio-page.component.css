@@ -73,8 +73,6 @@ p {
   bottom: 0;
   width: 4rem;
   z-index: 40;
-  background: var(--studio-surface-raised);
-  border-right: 1px solid var(--studio-border);
   border-radius: var(--mp-radius-lg) 0 0 var(--mp-radius-lg);
   display: flex;
   flex-direction: column;
@@ -195,7 +193,6 @@ textarea {
   margin-left: 4rem;
   position: relative;
   overflow: hidden;
-  width: calc(100% - 4rem);
 }
 
 .canvas-grid {

@@ -71,7 +71,7 @@
 
   <div class="studio-layout">
     <div class="canvas-container">
-      <aside class="workflow-rail group panel-surface" aria-label="Workflow shortcuts">
+      <aside class="workflow-rail panel-surface" aria-label="Workflow shortcuts">
         @for (type of nodeTypes; track type.id) {
           <button type="button" class="rail-item" [attr.aria-label]="type.label">
             <span class="icon" [ngClass]="type.accent">{{ type.icon }}</span>

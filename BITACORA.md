@@ -40,7 +40,7 @@ Each entry should use:
 ---
 **Timestamp:** 2026-04-11 11:58 CEST
 **Author:** Codex
-**Entry:** Cerré el bloqueo final de PR `#180` en `feature/workflow-rail-sidebar-16622386908138545927`. El cambio visual del rail lateral ya estaba correcto, pero la integración había dejado a `WorkflowStudioPageComponent` con cobertura insuficiente. Añadí pruebas dirigidas para tabs, drag guards, persistencia local, carga/errores de ejemplos, ejecución simulada del workflow, rutas defensivas de storage y conexiones inválidas. Verificado con `npm run test:ci`: 102/102 tests UI en verde y 100.00% en statements, branches, functions y lines. También normalicé el `ui/package-lock.json` para que `npm ci` bajo npm 10/Node 22 no vuelva a fallar por entradas anidadas faltantes de `chokidar` y `readdirp`.
+**Entry:** Cerré el último pase de PR `#179` en `codex/redisenar-interfaz-y-funcionalidad-del-menu`. Ajusté `WorkflowStudioPageComponent` para responder a los reviews finales: tabs con botón de cierre accesible como control hermano, restauración real del draft al volver a la pestaña Draft, actualización inmutable de `openProjectTabs`, conexiones calculadas con `Map` y constantes descriptivas, y cobertura dirigida para ese comportamiento. Verificado con `npm run test:ci`: 103/103 tests UI en verde y 100.00% en statements, branches, functions y lines.
 
 ---
 **Timestamp:** 2026-04-10 18:30 CEST

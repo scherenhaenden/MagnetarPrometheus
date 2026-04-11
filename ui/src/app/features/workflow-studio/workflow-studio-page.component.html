@@ -66,7 +66,10 @@
 
     <div class="project-search">
       <input type="text" [(ngModel)]="projectSearch" placeholder="Buscar guardados..." aria-label="Search saved projects" />
-      <select [ngModel]="selectedProjectId" (ngModelChange)="loadProject($event)">
+      <select
+        aria-label="Load saved project"
+        [ngModel]="selectedProjectId"
+        (ngModelChange)="loadProject($event)">
         <option [ngValue]="null">Selecciona proyecto guardado</option>
         @for (project of filteredProjects; track project.id) {
           <option [ngValue]="project.id">{{ project.name }}</option>

@@ -408,26 +408,28 @@ describe('WorkflowStudioPageComponent', () => {
   it('should use fallback project ids and handle missing browser localStorage', () => {
     const studio = component as any;
     const originalCrypto = globalThis.crypto;
+    const cryptoDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'crypto');
     const storageDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
 
-    Object.defineProperty(globalThis, 'crypto', {
-      configurable: true,
-      value: { ...originalCrypto, randomUUID: undefined }
-    });
-    expect(studio.createProjectId()).toMatch(/^project_/);
+    try {
+      Object.defineProperty(globalThis, 'crypto', {
+        configurable: true,
+        value: { ...originalCrypto, randomUUID: undefined }
+      });
+      expect(studio.createProjectId()).toMatch(/^project_/);
 
-    Object.defineProperty(globalThis, 'localStorage', {
-      configurable: true,
-      value: undefined
-    });
-    expect(studio.getLocalStorage()).toBeNull();
-
-    Object.defineProperty(globalThis, 'crypto', {
-      configurable: true,
-      value: originalCrypto
-    });
-    if (storageDescriptor) {
-      Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
+      Object.defineProperty(globalThis, 'localStorage', {
+        configurable: true,
+        value: undefined
+      });
+      expect(studio.getLocalStorage()).toBeNull();
+    } finally {
+      if (cryptoDescriptor) {
+        Object.defineProperty(globalThis, 'crypto', cryptoDescriptor);
+      }
+      if (storageDescriptor) {
+        Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
+      }
     }
   });
 });

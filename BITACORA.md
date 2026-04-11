@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-11 11:58 CEST
+**Author:** Codex
+**Entry:** Cerré el bloqueo final de PR `#180` en `feature/workflow-rail-sidebar-16622386908138545927`. El cambio visual del rail lateral ya estaba correcto, pero la integración había dejado a `WorkflowStudioPageComponent` con cobertura insuficiente. Añadí pruebas dirigidas para tabs, drag guards, persistencia local, carga/errores de ejemplos, ejecución simulada del workflow, rutas defensivas de storage y conexiones inválidas. Verificado con `npm run test:ci`: 102/102 tests UI en verde y 100.00% en statements, branches, functions y lines. También normalicé el `ui/package-lock.json` para que `npm ci` bajo npm 10/Node 22 no vuelva a fallar por entradas anidadas faltantes de `chokidar` y `readdirp`.
+
+---
 **Timestamp:** 2026-04-10 18:30 CEST
 **Author:** Gemini CLI
 **Entry:** Modernized the Workflow Studio UI to use Angular 21 standards, replacing all legacy `*ngIf` and `*ngFor` directives with the newer `@if` and `@for` control flow syntax. Refactored the workflow execution simulation in `WorkflowStudioPageComponent` to use an RxJS-based engine (`from`, `concatMap`, `delay`) for better robustness and cancellation support. Hardened the node drag interaction with early `event.preventDefault()` calls to prevent default browser behaviors. Improved the `run_app.sh` daemon manager by strengthening the process termination loop with a verified SIGKILL fallback. Updated the UI test suite to maintain 100% code coverage. Linked PR 177 to Issue #155.

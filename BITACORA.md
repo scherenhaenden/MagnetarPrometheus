@@ -38,6 +38,11 @@ Each entry should use:
 ## Entries
 
 ---
+**Timestamp:** 2026-04-11 11:58 CEST
+**Author:** Codex
+**Entry:** Cerré el último pase de PR `#179` en `codex/redisenar-interfaz-y-funcionalidad-del-menu`. Ajusté `WorkflowStudioPageComponent` para responder a los reviews finales: tabs con botón de cierre accesible como control hermano, restauración real del draft al volver a la pestaña Draft, actualización inmutable de `openProjectTabs`, conexiones calculadas con `Map` y constantes descriptivas, y cobertura dirigida para ese comportamiento. Verificado con `npm run test:ci`: 103/103 tests UI en verde y 100.00% en statements, branches, functions y lines.
+
+---
 **Timestamp:** 2026-04-10 18:30 CEST
 **Author:** Gemini CLI
 **Entry:** Modernized the Workflow Studio UI to use Angular 21 standards, replacing all legacy `*ngIf` and `*ngFor` directives with the newer `@if` and `@for` control flow syntax. Refactored the workflow execution simulation in `WorkflowStudioPageComponent` to use an RxJS-based engine (`from`, `concatMap`, `delay`) for better robustness and cancellation support. Hardened the node drag interaction with early `event.preventDefault()` calls to prevent default browser behaviors. Improved the `run_app.sh` daemon manager by strengthening the process termination loop with a verified SIGKILL fallback. Updated the UI test suite to maintain 100% code coverage. Linked PR 177 to Issue #155.
